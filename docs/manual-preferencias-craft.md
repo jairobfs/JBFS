@@ -22,6 +22,7 @@ Manuais irmãos (não substituir):
 - §§11–17: tabelas, mermaid operacional, LaTeX, imagens, organização, MCP, contraste
 - §§18–22: persistência, zero-loss, anti-padrões, checklist, mapa TUT
 - §§23–29: apêndices MCP (newline/GFM, imagens, 502, lixeira, mutação, IDs, hiperligações)
+- §30: fatals KaTeX e camadas de escape (operativo para agentes)
 
 Edição: 13/09/2026. Numeração dos apêndices regularizada nesta cópia (no Craft alguns H2 repetiam 8 / 9 / 18 / 19).
 
@@ -689,5 +690,36 @@ A “memória editorial” **não** é nota autónoma — vive em dumps de arqui
 Proibido mandar TFG, ECG ou DPOC para o sumário inteiro. Proibido bookmarklet. `--markdown` que resume um núcleo de 60 s é corrupção — o texto novo é o antigo com a transformação (UUID / ligação), nunca um resumo.
 
 ---
+
+*Fim da exportação Markdown. Fonte: Craft `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`. Atualize in-place.*
+
+
+---
+
+## 30 · Fatals KaTeX e camadas de escape (agentes)
+
+| Fatal | Correção |
+| --- | --- |
+| `\[12pt]` como “espaço” | `\[` abre display math; a quebra em ambiente é `\\[12pt]` |
+| Unicode solto no math | `\text{porta-balão}` |
+| `● ◆ º` e `\Huge` | `\bullet`, palavras, `1^{\circ}` |
+| Decimal `1,0` | `1{,}0` |
+| `--markdown` com `\begin` / `\frac` / `\text` | JSON/MCP come `\b` `\f` `\t` — usar `--json` + `rawCode` |
+
+| TeX desejado em `rawCode` | JSON do `--json` | String da tool call |
+| --- | --- | --- |
+| `\begin` | `\\begin` | `\\\\begin` |
+| `\frac` | `\\frac` | `\\\\frac` |
+| `\text` | `\\text` | `\\\\text` |
+| `\\[6pt]` | `\\\\[6pt]` | `\\\\\\\\[6pt]` |
+| `\\` (quebra) | `\\\\` | `\\\\\\\\` |
+
+Read-back de `rawCode` deve mostrar `\begin` e `\\[npt]`. Validar KaTeX `strict: "warn"` e Craft claro/escuro.
+
+### Prompt-base
+
+> Objetivo: [o leitor precisa compreender/fazer X]. Público: [perfil]. Fonte: [referência]. Preserve o português e as exceções. Extraia conceitos, relações, decisões e riscos; escolha entre texto, tabela, LaTeX/KaTeX, Mermaid e imagem. Produza a versão principal, descrição equivalente quando houver visual, checklist e limitações. Não invente fontes nem prometa compatibilidade não testada. Persista in place e releia.
+
+*Espelho git de `8db4e12c` + contrato operativo. Próxima revisão no Craft real: fórmula `gathered` com `\\[npt]`, flowchart com `classDef` + `linkStyle` + fundo dual, card sem toggle falso, toggle `◇` com sub-toggle `▸`, em claro e escuro.*
 
 *Fim da exportação Markdown. Fonte: Craft `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`. Atualize in-place.*
