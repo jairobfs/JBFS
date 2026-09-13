@@ -905,6 +905,23 @@ Read-back de `rawCode` deve mostrar `\begin` e `\\[npt]`.
 | `98d0b5ee` | Imagens via MCP |
 | `e4a9218b` | Incorporar via MCP |
 
+### 34.5b Cópias operacionais nos Crafts MCP ativos (13/09/2026)
+
+Canónico vivo: **⌕ TUT** · `8db4e12c-f306-4551-49c6-9d7e5fbd5c63` · pasta **How to use Craft**. Se divergir, **Craft TUT vence**. Atualize in place; não crie V2.
+
+| Espaço MCP | Pasta | rootBlockId (ID de criação) |
+| --- | --- | --- |
+| ⌕ TUT / Craft | How to use Craft | `8db4e12c-f306-4551-49c6-9d7e5fbd5c63` |
+| ⌯ MED Craft | How to use Craft | `b764642b-50ea-2584-6b1b-d72260e2c40d` |
+| ᜰ CAB Craft | How to use Craft | `b785c8a3-7abe-bad0-f840-d95d6864b8b0` |
+| ꉩ JBFS Craft | How to use Craft | `397f2b17-8b12-4d04-3f5a-37ad12d3b3bc` |
+| ꀬ Config. Craft | How to use Craft *(criada)* | `3363d7f0-d669-77cd-a9ec-f9130de8d903` |
+| Integrado Craft | How to use Craft *(criada)* | `d477437c-9527-e287-3180-12f3e2b4d115` |
+| MCP CP֍P | How to use Craft *(criada)* | `6773a8fd-df38-93ec-82a3-9e416d700191` |
+
+Satélites: intro de contrato + §§1–34; apontam ao TUT. Em CP֍P, callout local: hexes/marca do §31 não generalizam.
+
+
 ### 34.6 Hiperligações específicas
 
 Clique = o bloco que **responde**. Sigla no texto → ficha daquela sigla; mecanismo → portal; «SIGLAS»/índice → catálogo. Proibido mandar termo para o sumário inteiro. Proibido bookmarklet. `--markdown` que resume um núcleo de 60 s é corrupção.
