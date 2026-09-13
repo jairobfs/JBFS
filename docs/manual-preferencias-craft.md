@@ -1,13 +1,13 @@
 # ⌘ Manual Extenso · Preferências no Craft
 
-*Editorial · Unicode · Tabelas · Mermaid · LaTeX/KaTeX · MCP*
+*Estrutura · Estética · Mermaid · LaTeX · Continuidade de trabalho*
 
 **Espelho git do Craft vivo.** Destino canónico: space **⌕ TUT**, pasta **How to use Craft**, bloco `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`.  
 Se este ficheiro divergir do Craft, **Craft vence**. Atualize in place; não crie V2.
 
-> **MANUAL PERSISTENTE · PREFERÊNCIAS DE EDIÇÃO NO CRAFT** — Documento genérico e reutilizável: orienta qualquer pessoa ou IA a criar, revisar e reorganizar notas no Craft neste padrão — editorial, visual, Mermaid e LaTeX. Vale para qualquer tema (não só Medicina). Em conflito, valem: **verdade > beleza**, **zero-loss** e **português impecável**.
+**JBFS** · Referência pessoal de aplicação geral · 13 de setembro de 2026.
 
-JBFS · Referência pessoal de aplicação geral · 13 de setembro de 2026.
+> **CONTRATO ASSIMILADO** — Agentes e colaboradores devem seguir este manual **sem pedir que as preferências sejam repetidas**. Pedido atual + regras do projeto adaptam (nunca invertendo) estes princípios. Em conflito: **verdade > beleza**, **zero-loss**, **português impecável**.
 
 Este manual descreve como os documentos devem ser concebidos, escritos, organizados, ilustrados, editados e verificados no Craft. Serve para orientar pessoas e assistentes que trabalhem com as notas, independentemente do assunto, do espaço ou do projeto. O resultado esperado é conteúdo completo, correto, visualmente elaborado, agradável de estudar e fácil de percorrer no iPhone em retrato e no computador.
 
@@ -15,11 +15,11 @@ O padrão combina profundidade e acabamento. Uma nota pode ser extensa e continu
 
 As preferências gerais devem ser adaptadas ao pedido atual e às regras do projeto. Uma restrição localizada, como não criar novas subpáginas em determinada nota, não deve virar uma proibição universal. Da mesma forma, uma autorização para excluir legados de um projeto não se estende automaticamente aos demais.
 
-**Como utilizar.** Ler os princípios e a arquitetura antes de editar; consultar os capítulos específicos para Mermaid, LaTeX, cores ou mídia; usar os critérios de auditoria ao terminar. O apêndice final contém um prompt mestre reutilizável. Há ainda um **Apêndice MCP** operativo para agentes (newline, 502, KaTeX escape).
+**Como utilizar.** Ler os princípios e a arquitetura antes de editar; consultar os capítulos específicos para Mermaid, LaTeX, cores ou mídia; usar os critérios de auditoria ao terminar. O apêndice §32 contém o prompt mestre; o §34 (MCP) é operativo para agentes.
 
 **Natureza das orientações.** Preferências pessoais definem o resultado desejado. Exemplos e parâmetros propostos ajudam a implementá-lo. Informações sobre o funcionamento do aplicativo dependem da versão e do ambiente; as notas técnicas possuem links para documentação oficial. A presença de um recurso em um manual não substitui sua verificação no destino real.
 
-Manuais irmãos (não substituir): Manual Geral Canónico `0360ff09` · Manual para IAs `04025d1f` · Demonstração Mermaid `6efc0f65` · Demonstração LaTeX/KaTeX `2b2e76d6`.
+Manuais irmãos (não substituir): Manual Geral Canónico `0360ff09` · Manual para IAs `04025d1f` · Demo Mermaid `6efc0f65` · Demo LaTeX/KaTeX `2b2e76d6`.
 
 ### Sumário
 
@@ -138,7 +138,7 @@ Os títulos devem identificar o conteúdo que realmente existe. Evitar títulos 
 
 O Craft organiza documentos com blocos e páginas; cards são uma apresentação visual de páginas. Essa distinção ajuda a escolher a estrutura que terá comportamento real no aplicativo.
 
-| Necessidade | Recurso preferido e critério |
+| Necessidade | Recurso preferido e critério de uso |
 | --- | --- |
 | Desenvolver um raciocínio | Parágrafos e headings com progressão clara |
 | Ocultar uma resposta ou um aprofundamento | Toggle nativo com filhos reais |
@@ -159,7 +159,7 @@ Na ausência temporária de um recurso, uma representação textual pode preserv
 
 ### 4.2 Recursos avançados com propósito
 
-Explorar fontes, cores de texto, highlights, estilos de página, fundos, capas, separadores e cards de maneira integrada. Collections, whiteboards, galerias e outras estruturas são bem-vindos quando resolvem uma necessidade concreta. Evitar introduzi-los apenas para aumentar a quantidade de tipos de bloco.
+Explorar fontes, cores de texto, highlights, estilos de página, fundos, capas, separadores e cards de maneira integrada. Collections, whiteboards, galerias e outras estruturas são bem-vindos quando resolvem uma necessidade concreta. Evitar introduzi-los apenas para aumentar a quantidade de tipos de bloco. O documento precisa manter uma lógica de leitura reconhecível.
 
 ---
 
@@ -178,13 +178,13 @@ Sintaxe MCP obrigatória:
     - resposta no recuo 2
 ```
 
-Filho alinhado à esquerda vira bloco solto **fora** do toggle. Cards (`type: page` + `textStyle: card`) **não** levam `listStyle: toggle` — isso é toggle falso (proibido).
+Filho alinhado à esquerda vira bloco solto **fora** do toggle. Cards (`type: page` + `textStyle: card`) **não** levam `listStyle: toggle` — toggle falso é proibido.
 
 ### 5.2 Organização interna
 
 O rótulo do toggle deve antecipar o conteúdo: “Como interpretar”, “Por que acontece”, “Exceções”, “Resposta comentada” ou uma pergunta específica. Evitar rótulos repetidos como “Mais”.
 
-Subtoggles são úteis para dividir respostas, situações especiais ou níveis de explicação. Informações necessárias à primeira compreensão ficam expostas. Respostas de exercícios podem ficar recolhidas; o enunciado deve permanecer legível.
+Subtoggles são úteis para dividir respostas, situações especiais ou níveis de explicação. Usar apenas a profundidade que preserve orientação. Informações necessárias à primeira compreensão ficam expostas. Respostas de exercícios podem ficar recolhidas; o enunciado deve permanecer legível. Alertas indispensáveis não devem desaparecer dentro de uma cadeia de aprofundamentos.
 
 ### 5.3 Verificação funcional
 
@@ -202,7 +202,7 @@ Um toggle tecnicamente verdadeiro ainda pode estar ruim. Também avaliar rótulo
 
 ### 6.1 Português e terminologia
 
-Português brasileiro correto, preciso e elegante, com registro acadêmico adequado ao tema. Rever acentuação, concordância, regência, crase, pontuação, siglas e uniformidade de termos. Explicar siglas quando forem introduzidas. Preservar os termos consagrados de cada área quando forem mais precisos.
+Português brasileiro correto, preciso e elegante, com registro acadêmico adequado ao tema. A escrita deve ser polida sem ficar artificial, excessivamente burocrática ou difícil de acompanhar. Rever acentuação, concordância, regência, crase, pontuação, siglas e uniformidade de termos. Explicar siglas quando forem introduzidas. Preservar os termos consagrados de cada área quando forem mais precisos.
 
 ### 6.2 Parágrafos e transições
 
@@ -252,22 +252,9 @@ Cor tipográfica, highlight, fundo de bloco, fundo de página, backdrop, cor de 
 
 ### 8.2 Paleta com funções reconhecíveis
 
-Preservar a paleta aprovada do projeto. Sem paleta definida, proposta coerente: azul = conceitos; âmbar = atenção/decisão; verde = ação/confirmação; vermelho = alertas; roxo = síntese/aprofundamento.
+Preservar a paleta aprovada do projeto. Sem paleta definida: azul = conceitos; âmbar = atenção/decisão; verde = ação/confirmação; vermelho = alertas; roxo = síntese/aprofundamento.
 
-**Highlights nativos do MCP** (não existe `orange` nem `brown` simples):
-
-| Highlight | Papel |
-| --- | --- |
-| `blue` / `gradient-blue` | Navegação / definição |
-| `purple` / `gradient-purple` | Mecanismo / síntese |
-| `mint` | Evidência / validado |
-| `green` | Resultado concreto |
-| `yellow` / `gradient-yellow` | Decisão / critério |
-| `cyan` | Cautela / transversal |
-| `red` / `gradient-red` | Urgência / erro |
-| `pink` | Eixo secundário |
-| `gradient-brown` | Governança / acervo |
-| `gray` | Metadado |
+**Highlights nativos do MCP** (não existe `orange` nem `brown` simples): `blue`/`gradient-blue` navegação; `purple`/`gradient-purple` mecanismo; `mint` evidência; `green` resultado; `yellow`/`gradient-yellow` decisão; `cyan` cautela; `red`/`gradient-red` urgência; `pink` eixo secundário; `gradient-brown` governança; `gray` metadado.
 
 ### 8.3 Legenda local e discreta
 
@@ -340,7 +327,7 @@ Títulos elegantes, símbolos bem escolhidos e variações tipográficas Unicode
 
 Conferir leitura, acentuação, aparência em iPhone e desktop, cópia, pesquisa e exportação. Preferir poucos sinais consistentes com função. Evitar emojis decorativos como padrão.
 
-**Repertório seguro (anti-tofu):** `⌁ ⌕ ◇ ◆ ⊹ ⊙ ↳ → ▸ ☑︎ ☒ ⚠︎ ✦`. Proibido: Mathematical Alphanumeric (U+1D400–U+1D7FF), CJK tofu (`〤 〴 〄` em notas novas), Dogra, Linear B, PUA. Legado UCT: `〤` (U+3024) permanece até eleição.
+**Repertório seguro (anti-tofu):** `⌁ ⌕ ◇ ◆ ⊹ ⊙ ↳ → ▸ ☑︎ ☒ ⚠︎ ✦`. Proibido: Mathematical Alphanumeric (U+1D400–U+1D7FF), CJK tofu em notas novas. Legado UCT: `〤` (U+3024) permanece até eleição.
 
 ### 11.3 Títulos compactos e completos
 
@@ -348,7 +335,7 @@ Manter o nome principal identificável; qualificadores numa linha de apoio quand
 
 ### 11.4 Autoria
 
-Assinatura preferencial: **JBFS**, discreta. Perfil de referência: [@jairobfs](https://github.com/jairobfs), com hyperlink quando o formato permitir. Evitar repetir a assinatura em cada microbloco.
+Assinatura preferencial: **JBFS**, discreta. Perfil de referência: **@jairobfs**, com hyperlink quando o formato permitir. Evitar repetir a assinatura em cada microbloco.
 
 ---
 
@@ -356,7 +343,7 @@ Assinatura preferencial: **JBFS**, discreta. Perfil de referência: [@jairobfs](
 
 ### 12.1 Retrato como referência
 
-Projetar para leitura real em iPhone na faixa aproximada de 320–430 px. Coluna única, sequência inteligível. Títulos não podem virar faixas de muitas linhas; tabelas não devem exigir arraste constante; diagramas não devem virar miniaturas.
+Projetar para leitura real em iPhone na faixa aproximada de 320–430 px. Coluna única, sequência inteligível. Títulos não podem virar faixas de muitas linhas; tabelas não devem exigir arraste constante; diagramas não devem virar miniaturas; fórmulas não podem depender de redução extrema.
 
 ### 12.2 O que revisar em cada módulo
 
@@ -574,8 +561,6 @@ Registrar recurso, exemplo, ambiente, data e o que foi confirmado: sintaxe, pers
 ---
 
 ## 21 · Exemplos de composição em LaTeX
-
-Fontes didáticas copiáveis. Inserção no Craft: bloco `math_formula`.
 
 ### 21.1 Relação proporcional
 
@@ -809,9 +794,9 @@ Correção, preservação, uso nativo, leitura em retrato, coerência claro/escu
 
 > Destino e objetivo. Trabalhe no documento ou módulo indicado, no espaço correto, e execute integralmente a criação, continuação, revisão ou lapidação solicitada. Identifique a base canónica pelo estado vivo. Não crie versões concorrentes.
 >
-> Contexto e preservação. Leia o trecho e o contexto. Preserve conteúdo válido, exemplos, exceções, imagens, fontes, fórmulas, diagramas, links, hierarquia e avanços aprovados. Corrija erros com fundamento. Zero-loss ≠ manter informação incorreta ≠ autorização para resumir.
+> Contexto e preservação. Leia o trecho e o contexto. Preserve conteúdo válido, exemplos, exceções, imagens, fontes, fórmulas, diagramas, links, hierarquia e avanços aprovados. Corrija erros com fundamento. Zero-loss ≠ manter erro ≠ resumir.
 >
-> Arquitetura. Organize entrada, progressão, aprofundamentos e encerramento. Páginas/cards reais para módulos autônomos quando autorizados. Toggles nativos com filhos subordinados. Sem triângulos digitados como toggle.
+> Arquitetura. Organize entrada, progressão, aprofundamentos e encerramento. Páginas/cards reais para módulos autônomos quando autorizados. Toggles nativos com filhos indentados. Sem toggle falso.
 >
 > Escrita. Português brasileiro correto, preciso, elegante e didático. Explique relações e mecanismos. Exemplos próximos da exposição; atividades depois da base teórica.
 >
@@ -859,6 +844,7 @@ Consulta: 13/09/2026. Verificar novamente capacidades que possam ter mudado.
 | Concluído | Escopo cumprido e critérios conferidos, com limites explicitados |
 
 ---
+
 
 ## 34 · Apêndice MCP operativo (agentes)
 
@@ -926,3 +912,7 @@ Clique = o bloco que **responde**. Sigla no texto → ficha daquela sigla; mecan
 ---
 
 *Espelho git de `8db4e12c`. Craft vence. Atualize in place. Identificação editorial: preferências de JBFS · @jairobfs. Edição 13/09/2026.*
+
+---
+
+*Espelho git de `8db4e12c`. Craft vence. Atualize in place. Identificação editorial: preferências de JBFS · @jairobfs. Edição 13/09/2026. Contrato assimilado — não repetir preferências a cada tarefa.*
