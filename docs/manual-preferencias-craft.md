@@ -2,80 +2,261 @@
 
 *Editorial · Unicode · Tabelas · Mermaid · LaTeX/KaTeX · MCP*
 
-**Exportação Markdown do documento Craft vivo.** Destino canónico: space **⌕ TUT**, pasta **How to use Craft**, bloco `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`.  
+**Espelho git do Craft vivo.** Destino canónico: space **⌕ TUT**, pasta **How to use Craft**, bloco `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`.  
 Se este ficheiro divergir do Craft, **Craft vence**. Atualize in place; não crie V2.
 
 > **MANUAL PERSISTENTE · PREFERÊNCIAS DE EDIÇÃO NO CRAFT** — Documento genérico e reutilizável: orienta qualquer pessoa ou IA a criar, revisar e reorganizar notas no Craft neste padrão — editorial, visual, Mermaid e LaTeX. Vale para qualquer tema (não só Medicina). Em conflito, valem: **verdade > beleza**, **zero-loss** e **português impecável**.
 
-Escopo: preferências duradouras e genéricas (qualquer tema). Consolidado a partir do Manual para IAs, do Manual Geral Canónico, da memória editorial e das falhas já pagas em notas reais. Espelho git: este ficheiro.
+JBFS · Referência pessoal de aplicação geral · 13 de setembro de 2026.
 
-Manuais irmãos (não substituir):
+Este manual descreve como os documentos devem ser concebidos, escritos, organizados, ilustrados, editados e verificados no Craft. Serve para orientar pessoas e assistentes que trabalhem com as notas, independentemente do assunto, do espaço ou do projeto. O resultado esperado é conteúdo completo, correto, visualmente elaborado, agradável de estudar e fácil de percorrer no iPhone em retrato e no computador.
 
-- [Manual Geral Canónico](block://0360ff09-4827-0f41-8638-f3304dd9cf40) — porta curta
-- [Manual para IAs](block://04025d1f-39e1-2fd3-2134-93280c6ccf06) — enciclopédia Mermaid
-- [Demonstração LaTeX/KaTeX](block://2b2e76d6-56c0-3eb0-e48a-186828f1b3ff) — labs de fórmula
+O padrão combina profundidade e acabamento. Uma nota pode ser extensa e continuar clara quando sua arquitetura distribui bem orientação, explicação, exemplos, imagens, fórmulas e aprofundamentos. Melhorar significa produzir um ganho concreto nessas dimensões, preservando o que já funciona e corrigindo o que estiver errado.
 
-**Como ler**
+As preferências gerais devem ser adaptadas ao pedido atual e às regras do projeto. Uma restrição localizada, como não criar novas subpáginas em determinada nota, não deve virar uma proibição universal. Da mesma forma, uma autorização para excluir legados de um projeto não se estende automaticamente aos demais.
 
-- §§1–5: princípios, escolha de meio, visual, Mermaid, LaTeX
-- §§6–10: unicode, qualidade, hierarquia, cards versus toggles, repertório anti-tofu
-- §§11–17: tabelas, mermaid operacional, LaTeX, imagens, organização, MCP, contraste
-- §§18–22: persistência, zero-loss, anti-padrões, checklist, mapa TUT
-- §§23–29: apêndices MCP (newline/GFM, imagens, 502, lixeira, mutação, IDs, hiperligações)
-- §30: fatals KaTeX e camadas de escape (operativo para agentes)
+**Como utilizar.** Ler os princípios e a arquitetura antes de editar; consultar os capítulos específicos para Mermaid, LaTeX, cores ou mídia; usar os critérios de auditoria ao terminar. O apêndice final contém um prompt mestre reutilizável. Há ainda um **Apêndice MCP** operativo para agentes (newline, 502, KaTeX escape).
 
-Edição: 13/09/2026. Numeração dos apêndices regularizada nesta cópia (no Craft alguns H2 repetiam 8 / 9 / 18 / 19).
+**Natureza das orientações.** Preferências pessoais definem o resultado desejado. Exemplos e parâmetros propostos ajudam a implementá-lo. Informações sobre o funcionamento do aplicativo dependem da versão e do ambiente; as notas técnicas possuem links para documentação oficial. A presença de um recurso em um manual não substitui sua verificação no destino real.
+
+Manuais irmãos (não substituir): Manual Geral Canónico `0360ff09` · Manual para IAs `04025d1f` · Demonstração Mermaid `6efc0f65` · Demonstração LaTeX/KaTeX `2b2e76d6`.
+
+### Sumário
+
+1. Princípios que orientam todas as notas
+2. Escopo, contexto e identidade canónica
+3. Arquitetura da informação e página inicial
+4. Recursos nativos e escolha do contêiner
+5. Toggles verdadeiros e camadas de leitura
+6. Escrita editorial, profundidade e ritmo
+7. Identidade visual e acabamento avançado
+8. Cores reais, paletas e semântica visual
+9. Claro, escuro, contraste e paletas de exemplo
+10. Recursos não documentados e o caso `undefined`
+11. Tipografia, Unicode, títulos e assinatura
+12. Leitura no iPhone e no computador
+13. Tabelas, comparações e dados estruturados
+14. Mermaid como instrumento de raciocínio
+15. Mermaid: verticalidade, densidade e semântica
+16. Mermaid: sintaxe e validação
+17. Modelos de Mermaid para reutilização
+18. LaTeX como linguagem matemática e visual
+19. LaTeX: composição didática e biblioteca de recursos
+20. LaTeX: cores, largura e estabilidade
+21. Exemplos de composição em LaTeX
+22. Imagens, figuras, infográficos e whiteboards
+23. Capas, backdrops e identidade dos espaços
+24. Aprendizagem ativa e aplicações por domínio
+25. Fontes, evidências e rastreabilidade
+26. Execução por etapas e auditoria sem perda
+27. Fusão de materiais legados e exclusão
+28. Autonomia, comunicação e critérios de conclusão
+29. Modelos de arquitetura para adaptar
+30. Auditoria rápida de qualidade
+31. Particularidades de projetos sem generalização indevida
+32. Prompt mestre reutilizável
+33. Referências técnicas e vocabulário de revisão
+34. Apêndice MCP operativo (agentes)
 
 ---
 
-## 1 · Direção editorial · princípios inegociáveis
+## 1 · Princípios que orientam todas as notas
 
-- **Verdade antes da beleza.** Nenhum ganho visual justifica erro conceitual, inversão de relação, remoção de exceção ou ocultação de incerteza.
-- **Zero-loss.** Preservar integralmente o conhecimento válido. Não mover fontes para a lixeira sem confirmar backlinks, anexos, imagens, versão mais recente e equivalência.
-- **Português brasileiro impecável.** Acentos, crase, regência, concordância, siglas, unidades e intervalos corretos. A redação canónica vem antes do código; o parser não tem autoridade para impor ortografia errada.
-- **Refatorar in place.** Uma nota-mãe canónica por tema; evitar V2/V3 concorrentes; corrigir o bloco canónico em vez de duplicar.
-- **Função antes de ornamento.** Cor, forma e posição são semânticas e redundantes com o rótulo — nunca decoração.
-- **Mobile-first.** Projetar para 320–430 px de largura.
-- **Testar no Craft real.** Todo recurso frágil precisa de fallback em texto, tabela ou microdiagrama.
+### 1.1 Conteúdo completo e elaboração real
+
+Documentos que permitam compreender o assunto, estudar com profundidade e retornar rapidamente a uma dúvida. Não basta reunir títulos, listas curtas e um diagrama geral. Cada seção deve desenvolver o raciocínio que seu título promete, apresentar relações e explicar as diferenças importantes.
+
+O nível de aprofundamento acompanha a finalidade. Uma nota de consulta rápida pode ser breve; um atlas, manual ou revisão extensa deve oferecer exposição suficiente, referências, exemplos e recursos visuais proporcionais à complexidade. A preferência por profundidade não autoriza repetições que apenas aumentem o volume.
+
+Em uma lapidação, espera-se melhorias perceptíveis de escrita, organização e apresentação. A troca de cores, a adição de um título ou a multiplicação de negritos não esgota uma solicitação de melhoria editorial. O trabalho deve alcançar os trechos difíceis, as transições, os visuais, os exemplos e o encerramento da nota.
+
+### 1.2 Preservação com correção
+
+O conteúdo válido, os exemplos úteis, as exceções, as imagens relevantes e os avanços já aprovados são patrimônio do documento. Uma edição deve conservá-los ou integrá-los em uma forma demonstravelmente melhor. A aparência de simplicidade não justifica apagar profundidade.
+
+Preservar não significa perpetuar erro. Uma afirmação incorreta deve ser corrigida com base adequada; uma contradição precisa ser resolvida; uma repetição pode ser consolidada quando nenhum detalhe relevante se perder. O princípio de zero-loss se aplica ao valor informacional e funcional, com rastreabilidade das mudanças relevantes.
+
+### 1.3 Hierarquia de prioridades
+
+Em conflitos de implementação, priorizar: a instrução atual → a correção do conteúdo → a preservação dos avanços → a clareza estrutural → a legibilidade → o acabamento visual. Buscar uma solução que satisfaça o conjunto. Quando um recurso visual falhar, corrigir sua implementação e manter o conteúdo acessível.
+
+**Critério de aceitação.** A nova apresentação deve continuar correta quando os estilos forem removidos e continuar utilizável quando o documento for lido em uma tela pequena.
 
 ---
 
-## 2 · Arquitetura da informação · quando usar cada recurso
+## 2 · Escopo, contexto e identidade canónica
 
-| Objetivo | Recurso preferido |
+### 2.1 Identificar o documento certo
+
+Antes de qualquer edição, confirmar espaço, documento, localização na hierarquia e conteúdo. Títulos semelhantes, datas recentes ou a palavra “oficial” isoladamente não bastam. A nota mais avançada pode não ser a última editada.
+
+Usar links, relações entre páginas, IDs retornados pela conexão, conteúdo presente e instruções atuais. Quando houver dúvida que possa levar à alteração de outro documento, investigar antes de pedir informação objetiva.
+
+### 2.2 Estado vivo como referência operacional
+
+Memórias, exportações, arquivos antigos e relatos anteriores orientam a busca. A edição deve partir da leitura atual do Craft. Comparar o material auxiliar com o que existe e identificar o que já está incorporado, o que falta e o que mudou.
+
+Não confundir uma resposta que expande subpáginas com uma lista de filhos diretos. Um bloco aparecer na leitura de uma página não prova que esteja solto naquela página. Verificar o parentesco real antes de mover, drenar, reorganizar ou excluir.
+
+### 2.3 Continuidade sem documentos concorrentes
+
+Ao continuar uma nota, trabalhar na base canónica. Evitar criar outra matriz, nova versão paralela, cópia de conveniência ou documento homônimo para contornar dificuldades. Um documento novo é adequado quando constitui um novo objeto solicitado.
+
+Não transformar uma restrição antiga em regra permanente quando houver autorização posterior que a substitua. Se um projeto passou a admitir capítulos em cards, utilizar essa autorização dentro daquele projeto. Se uma nota continua limitada a determinadas subpáginas, respeitar esse limite específico.
+
+**Registro operacional útil.** Manter fora do corpo pedagógico a identificação do destino, a região trabalhada, o último estado confirmado e os próximos passos concretos. O leitor da nota deve encontrar conteúdo, não um diário de ferramentas.
+
+---
+
+## 3 · Arquitetura da informação e página inicial
+
+### 3.1 Uma entrada que permita compreender e navegar
+
+A frente principal deve explicar o assunto, delimitar o escopo e tornar visíveis os caminhos de leitura. Um título compacto, uma apresentação breve, uma síntese orientadora e um índice útil geralmente resolvem essa entrada. Evitar repetições da mesma marca ou do mesmo título em vários blocos consecutivos.
+
+Em um atlas, a raiz funciona como ponto de orientação. Os capítulos autônomos podem ocupar páginas ou cards quando isso estiver autorizado. O conteúdo essencial à decisão inicial permanece acessível na entrada; bancos extensos, aprofundamentos e galerias recebem destinos próprios quando a arquitetura pedir.
+
+Se o pedido enfatizar “começar pelo início”, concluir uma melhoria coerente da frente principal antes de percorrer indiscriminadamente todas as subpáginas. Ao mesmo tempo, ler contexto suficiente para não quebrar a lógica do conjunto.
+
+### 3.2 Profundidade com divulgação progressiva
+
+Organizar cada assunto em camadas: orientação, exposição principal, detalhes, exceções, aplicação e revisão. O leitor deve poder avançar gradualmente e também acessar diretamente uma dúvida.
+
+Toggles acomodam conteúdos dependentes; páginas e cards acomodam módulos com autonomia. Não colocar todo parágrafo em um toggle nem transformar todo subtítulo em uma subpágina. A escolha deve reduzir esforço de navegação sem esconder relações importantes.
+
+### 3.3 Numeração e títulos
+
+Numerar quando existir sequência, plano de estudo, referência cruzada ou hierarquia que se beneficie disso. Manter o padrão já consolidado em cada projeto. Uma renumeração ampla exige conferir links, menções, exercícios e títulos dependentes.
+
+Os títulos devem identificar o conteúdo que realmente existe. Evitar títulos grandiosos para seções vazias, abreviações improvisadas e subtítulos tão extensos que percam leitura em retrato. O detalhe cabe na linha de apoio ou na abertura do módulo.
+
+**Pergunta de revisão.** Uma pessoa que abra apenas a página inicial consegue entender o que encontrará, por onde começar e onde localizar o próximo nível de detalhe?
+
+---
+
+## 4 · Recursos nativos e escolha do contêiner
+
+O Craft organiza documentos com blocos e páginas; cards são uma apresentação visual de páginas. Essa distinção ajuda a escolher a estrutura que terá comportamento real no aplicativo.
+
+| Necessidade | Recurso preferido e critério |
 | --- | --- |
-| Nuance, argumento, explicação | Texto estruturado |
-| Poucos itens sem relação | Lista |
-| Comparação célula a célula | Tabela nativa |
-| Processo, decisão, estado, sequência | Mermaid |
-| Fórmula, escore, relação compacta | LaTeX (`math_formula`) |
-| Posição espacial real | Imagem legendada |
-| Alerta, definição, critério | Callout semântico |
-| Conteúdo progressivo | Toggle de texto |
-| Ambiente autónomo | Card (`type: page`) |
-| **Regra de ouro** | Se o recurso custa mais que o texto, redesenhar ou abandonar. |
+| Desenvolver um raciocínio | Parágrafos e headings com progressão clara |
+| Ocultar uma resposta ou um aprofundamento | Toggle nativo com filhos reais |
+| Abrir um capítulo autônomo | Página ou card real com título identificável |
+| Comparar valores ou atributos exatos | Tabela estreita com campos equivalentes |
+| Destacar uma ressalva ou síntese | Callout ou destaque nativo com função definida |
+| Representar relações e decisões | Mermaid quando a topologia acrescentar compreensão |
+| Compor uma equação ou análise simbólica | Fórmula nativa em linha ou em bloco (`math_formula`) |
+| Mostrar morfologia ou aparência real | Imagem relevante com legenda e atribuição |
+| Manter registros filtráveis | Collection quando o volume e a manutenção justificarem |
+| Explorar relações espaciais | Whiteboard quando a edição espacial for útil |
+
+### 4.1 Sem simulações enganosas
+
+Um triângulo digitado não cria um toggle. Um retângulo desenhado não cria um card navegável. Texto azul não se torna link sem destino. Escrever uma receita hexadecimal não aplica cor. O resultado precisa usar o recurso correspondente e produzir o comportamento anunciado.
+
+Na ausência temporária de um recurso, uma representação textual pode preservar o conteúdo, mas sua natureza deve estar clara. Ela não deve ser entregue como implementação nativa concluída.
+
+### 4.2 Recursos avançados com propósito
+
+Explorar fontes, cores de texto, highlights, estilos de página, fundos, capas, separadores e cards de maneira integrada. Collections, whiteboards, galerias e outras estruturas são bem-vindos quando resolvem uma necessidade concreta. Evitar introduzi-los apenas para aumentar a quantidade de tipos de bloco.
 
 ---
 
-## 3 · Sistema visual do Craft
+## 5 · Toggles verdadeiros e camadas de leitura
 
-Estilo de página (aplicável por bloco de página): defina identidade com tema, fonte, separador, washi, backdrop e capa — sempre a serviço da leitura, nunca só estética.
+### 5.1 O que é um toggle correto
 
-| Elemento | Preferência |
+O título deve ser um bloco recolhível real e seu conteúdo deve pertencer à hierarquia interna desse bloco. Recolher o título precisa ocultar os filhos previstos; expandi-lo deve restituir o conjunto na ordem correta.
+
+Sintaxe MCP obrigatória:
+
+```text
++ Toggle título
+  - filho no recuo 1
+  + ▸ Gabarito
+    - resposta no recuo 2
+```
+
+Filho alinhado à esquerda vira bloco solto **fora** do toggle. Cards (`type: page` + `textStyle: card`) **não** levam `listStyle: toggle` — isso é toggle falso (proibido).
+
+### 5.2 Organização interna
+
+O rótulo do toggle deve antecipar o conteúdo: “Como interpretar”, “Por que acontece”, “Exceções”, “Resposta comentada” ou uma pergunta específica. Evitar rótulos repetidos como “Mais”.
+
+Subtoggles são úteis para dividir respostas, situações especiais ou níveis de explicação. Informações necessárias à primeira compreensão ficam expostas. Respostas de exercícios podem ficar recolhidas; o enunciado deve permanecer legível.
+
+### 5.3 Verificação funcional
+
+1. Conferir o título e o tipo do bloco.
+2. Confirmar que os blocos subordinados são filhos reais.
+3. Verificar que nenhum parágrafo previsto como filho virou irmão.
+4. Recolher e expandir quando houver acesso visual ou funcional.
+5. Reabrir o trecho e conferir a persistência da hierarquia.
+
+Um toggle tecnicamente verdadeiro ainda pode estar ruim. Também avaliar rótulo, extensão, ordem interna, respiro, posição e pertinência.
+
+---
+
+## 6 · Escrita editorial, profundidade e ritmo
+
+### 6.1 Português e terminologia
+
+Português brasileiro correto, preciso e elegante, com registro acadêmico adequado ao tema. Rever acentuação, concordância, regência, crase, pontuação, siglas e uniformidade de termos. Explicar siglas quando forem introduzidas. Preservar os termos consagrados de cada área quando forem mais precisos.
+
+### 6.2 Parágrafos e transições
+
+Uma ideia principal por parágrafo. Os parágrafos seguintes devem desenvolver causa, consequência, contraste, condição ou aplicação de forma explícita. Listas são apropriadas para elementos paralelos; processos e mecanismos frequentemente precisam de frases que expliquem as relações.
+
+### 6.3 Personalização linha a linha
+
+Avaliar cada bloco: o título descreve o conteúdo? O negrito marca a informação decisiva? A cor tem função? O exemplo está no lugar certo? A transição ficou brusca? O recurso visual acrescenta alguma coisa?
+
+**Resultado esperado.** O texto deve sustentar a leitura contínua, enquanto os destaques permitem revisão rápida sem deformar o raciocínio.
+
+---
+
+## 7 · Identidade visual e acabamento avançado
+
+### 7.1 Linguagem visual desejada
+
+Apresentação acadêmica, elegante, contemporânea e reconhecível. Riqueza visual quando ela organiza o pensamento: cores variadas com função, contraste tipográfico, símbolos discretos, esquemas bem compostos, mídia pertinente e uso competente das possibilidades do Craft.
+
+Sobriedade não deve ser interpretada como ausência de personalidade. O problema está na competição entre elementos, na falta de significado e na perda de leitura.
+
+### 7.2 Sistema coerente por documento
+
+Definir famílias de títulos, tratamento de conceitos, alertas, exemplos, fontes e exercícios. Capítulos podem ter identidade própria, desde que continuem pertencendo ao mesmo sistema. Evitar colocar todos os trechos em negrito ou todos os títulos em cores diferentes.
+
+### 7.3 Explorar e consolidar
+
+Quando o pedido for de estética avançada, investigar recursos disponíveis e exemplos aprovados antes de concluir que algo não pode ser feito. O acabamento inclui a entrada, as páginas intermediárias e o final.
+
+Preferências de página técnicas: tema `prism` ou `techy`; fonte `system-rounded`; washi (`hex` conexões, `wave` fluxo, `stripe` urgência, `dot` revisão).
+
+---
+
+## 8 · Cores reais, paletas e semântica visual
+
+### 8.1 Distinguir o que está sendo colorido
+
+Cor tipográfica, highlight, fundo de bloco, fundo de página, backdrop, cor de card, cor de fórmula e cor de Mermaid são camadas distintas. Se for pedida letra colorida, esperar a cor aplicada ao texto — não um fundo atrás dela.
+
+| Termo | Significado |
 | --- | --- |
-| Tema | Claro por padrão. `prism` ou `techy` em notas técnicas. Uma família por nota-mãe. |
-| Fonte | **system-rounded** em notas técnicas; **system-serif** em long-form; mono só em código. |
-| Separador | **washi** (`hex` conexões, `wave` fluxo, `stripe` urgência, `dot` revisão). `line` quando sóbrio. |
-| Backdrop | Gradiente suave do eixo; `none` quando o foco é texto. |
-| Capa | Hero abstrata, coerente com o eixo. |
-| Cards | `card` regular/large para secções autónomas; `small` só em subcards. |
-| Cor adaptativa | `#claro #escuro` (ex. `#2563EB #93C5FD`). Contraste WCAG ≥ 4,5:1. |
+| Cor real do texto | Cor pertencente ao trecho tipográfico editável |
+| Highlight ou proxy | Destaque de fundo ou representação substituta identificada |
+| Receita de cor | Valor e função planejados para aplicação |
+| Recurso persistido | Propriedade recuperada na leitura posterior |
+| Recurso visualmente validado | Resultado inspecionado no ambiente e nas condições declaradas |
 
-### Cores de highlight · uso semântico
+### 8.2 Paleta com funções reconhecíveis
 
-A cor é **redundante** com rótulo, posição e forma — nunca a única portadora de significado.
+Preservar a paleta aprovada do projeto. Sem paleta definida, proposta coerente: azul = conceitos; âmbar = atenção/decisão; verde = ação/confirmação; vermelho = alertas; roxo = síntese/aprofundamento.
 
-| Highlight nativo | Papel semântico |
+**Highlights nativos do MCP** (não existe `orange` nem `brown` simples):
+
+| Highlight | Papel |
 | --- | --- |
 | `blue` / `gradient-blue` | Navegação / definição |
 | `purple` / `gradient-purple` | Mecanismo / síntese |
@@ -88,40 +269,161 @@ A cor é **redundante** com rótulo, posição e forma — nunca a única portad
 | `gradient-brown` | Governança / acervo |
 | `gray` | Metadado |
 
-O MCP **rejeita** highlight `orange` e `brown` simples. HEX arbitrário no highlight nativo também é recusado — cor customizada vive no mermaid `classDef`.
+### 8.3 Legenda local e discreta
 
-### Callouts semânticos · modelos
-
-> **INFORMAÇÃO** — Contexto, definição ou compatibilidade.
-
-> **DECISÃO** — Critérios, escolhas e limitações.
-
-> **VALIDADO** — Apenas quando houver teste ou evidência concreta.
-
-> **URGÊNCIA / ERRO** — Ameaça tempo-dependente, armadilha ou bloqueio.
-
-> **GOVERNANÇA / ACERVO** — Proveniência, preservação e regras de “não excluir”.
-
-**Toggles e cards.** Use `+ Toggle` para conteúdo progressivo (filhos sempre indentados como `  - item`, nunca colados à esquerda). Use cards (sub-páginas) para blocos temáticos autónomos; `>` (quote) para leituras/notas de rodapé curtas.
+Quando a nota usar convenções cromáticas recorrentes, explicá-las em uma legenda curta (pode ficar em toggle). Receitas devem registrar função, alvo e par texto/fundo.
 
 ---
 
-## 4 · Mermaid no Craft
+## 9 · Claro, escuro, contraste e paletas de exemplo
 
-> **CAMADAS DE COMPATIBILIDADE** — **Núcleo seguro no Craft:** flowchart, state, sequence, class, ER e `xychart-beta`. **Testar antes de publicar:** Gantt, gitgraph, journey, quadrant, mindmap, timeline, Sankey e recursos recém-lançados. **Frágil (testar sempre):** HTML em rótulos, Markdown strings, ícones/imagens, clique/callback, CSS externo, frontmatter. Não confundir sintaxe oficial do Mermaid com o suporte do renderer do Craft.
+### 9.1 Compatibilidade simultânea
 
-### Silhueta e leitura (mobile-first)
+Coerência em modo claro e escuro. Examinar texto, highlights, callouts, tabelas, cards, fórmulas, Mermaid, imagens, capas e separadores. Uma captura em apenas um modo não comprova o outro.
 
-- Projetar para **320–430 px**; mirar proporção **4:5** (aceitar 4:3 com paralelismos reais).
-- **TB/TD** para triagens, árvores e rótulos largos; **LR** apenas para cadeias curtas e paralelismos genuínos.
-- Evitar **torres** com mais de 5–6 níveis e pôsteres com mais de ~12–15 nós; agrupar, abrir faixa curta ou repartir em microdiagramas.
-- Um nó = uma ideia; usar `<br/>` para 2–3 linhas curtas, não para alongar altura.
+### 9.2 Contraste como critério verificável
 
-### Família geométrica dominante
+WCAG 2.2: contraste mínimo de 4,5:1 para texto comum e 3:1 para texto grande. Medir os pares personalizados e depois observar a composição real.
 
-Escolha **uma** família por diagrama: **retilínea/angulosa** para protocolos, triagens, regras e validações; **arredondada/orgânica** para mapas conceptuais, históricos e interpretativos. O **losango é exceção semântica** — só decisão real. Não alternar retângulo/arredondado/stadium sem função.
+### 9.3 Pares propostos (exemplos)
 
-### Paleta semântica · `classDef` (claro)
+| Função e modo | Texto sobre fundo · contraste |
+| --- | --- |
+| Conceito claro | `#1C3B8E` sobre `#EEF3FF` · 9,15:1 |
+| Conceito escuro | `#BFD2FF` sobre `#122344` · 10,28:1 |
+| Atenção claro | `#6C4400` sobre `#FFF3D6` · 7,73:1 |
+| Atenção escuro | `#FFD887` sobre `#352508` · 10,87:1 |
+| Ação claro | `#255421` sobre `#EAF5E7` · 7,90:1 |
+| Ação escuro | `#BAE6AC` sobre `#15311A` · 10,09:1 |
+| Alerta claro | `#8F211D` sobre `#FCEBEA` · 7,58:1 |
+| Alerta escuro | `#FFC8C2` sobre `#401B1B` · 10,28:1 |
+| Síntese claro | `#533080` sobre `#F1EBFA` · 8,56:1 |
+| Síntese escuro | `#DCCBFA` sobre `#2B1C40` · 10,40:1 |
+
+Cor deve ser acompanhada de palavras, posição ou forma quando comunica significado.
+
+---
+
+## 10 · Recursos não documentados e o caso `undefined`
+
+### 10.1 Preservar o exemplo que funciona
+
+Se houver um exemplo com aparência correta, estudá-lo e preservá-lo antes de qualquer normalização. O termo `undefined` apareceu como parte de possibilidades de formatação que precisam ser compreendidas — investigar o caso real; não assumir sujeira a eliminar.
+
+### 10.2 Não transformar um indício em regra universal
+
+Há diferenças entre campo ausente, valor especial mostrado por ferramenta, representação textual, propriedade herdada e resultado exibido. Em JSON, `undefined` não é valor válido — isso não determina o significado de uma representação vista numa interface. Nunca inventar payload com esse literal.
+
+### 10.3 Protocolo de investigação
+
+1. Localizar e ler o bloco aprovado.
+2. Registrar o exemplo completo e sua posição.
+3. Separar texto visível das propriedades de cor, highlight e herança.
+4. Formular hipótese restrita.
+5. Fazer a menor alteração reversível.
+6. Comparar estado retornado e resultado visual (claro e escuro).
+7. Estender o padrão somente depois de confirmar a reprodução.
+
+### 10.4 Documentar capacidades por evidência
+
+Registrar “observado”, “persistido”, “renderizado” e “validado em determinada plataforma” separadamente.
+
+---
+
+## 11 · Tipografia, Unicode, títulos e assinatura
+
+### 11.1 Expressividade com português íntegro
+
+Títulos elegantes, símbolos bem escolhidos e variações tipográficas Unicode quando forem viáveis. O corpo principal precisa manter conforto de leitura. Acentos e grafia são obrigatórios — não remover acento para encaixar alfabeto estilizado.
+
+### 11.2 Critérios para aceitar um glifo
+
+Conferir leitura, acentuação, aparência em iPhone e desktop, cópia, pesquisa e exportação. Preferir poucos sinais consistentes com função. Evitar emojis decorativos como padrão.
+
+**Repertório seguro (anti-tofu):** `⌁ ⌕ ◇ ◆ ⊹ ⊙ ↳ → ▸ ☑︎ ☒ ⚠︎ ✦`. Proibido: Mathematical Alphanumeric (U+1D400–U+1D7FF), CJK tofu (`〤 〴 〄` em notas novas), Dogra, Linear B, PUA. Legado UCT: `〤` (U+3024) permanece até eleição.
+
+### 11.3 Títulos compactos e completos
+
+Manter o nome principal identificável; qualificadores numa linha de apoio quando necessário.
+
+### 11.4 Autoria
+
+Assinatura preferencial: **JBFS**, discreta. Perfil de referência: [@jairobfs](https://github.com/jairobfs), com hyperlink quando o formato permitir. Evitar repetir a assinatura em cada microbloco.
+
+---
+
+## 12 · Leitura no iPhone e no computador
+
+### 12.1 Retrato como referência
+
+Projetar para leitura real em iPhone na faixa aproximada de 320–430 px. Coluna única, sequência inteligível. Títulos não podem virar faixas de muitas linhas; tabelas não devem exigir arraste constante; diagramas não devem virar miniaturas.
+
+### 12.2 O que revisar em cada módulo
+
+Primeira tela, passagem para o capítulo seguinte, níveis de toggle, largura de tabelas e fórmulas, escala de imagens, acesso a fontes. Cabeçalho de card deve comunicar o assunto antes da abertura.
+
+### 12.3 Coerência no desktop
+
+Evitar usar a preferência por mobile como justificativa para fragmentar excessivamente a nota. Reduzir ramificações e encurtar rótulos é mais robusto que diminuir fontes.
+
+---
+
+## 13 · Tabelas, comparações e dados estruturados
+
+### 13.1 Quando usar tabela
+
+Comparar itens pelos mesmos atributos, mapear critérios, apresentar valores ou organizar registros repetíveis. Preferência: tabelas estreitas (frequentemente duas colunas) no celular. Cabeçalho com highlight `yellow` (ou cor do eixo) + negrito; primeira coluna em negrito.
+
+`--markdown` exige **Enter real** entre linhas. A sequência barra+n quebra (*Markdown must contain exactly one table*).
+
+### 13.2 O que deve ficar fora da tabela
+
+Narrativas longas, raciocínios com muitas condições, explicações de mecanismo. **LaTeX e KaTeX devem ficar fora das tabelas do Craft.**
+
+### 13.3 Collections e tarefas
+
+Usar Collection quando houver volume, filtros, relações ou atualizações recorrentes. Tarefas devem representar ações acompanháveis — não transformar conceito em checkbox.
+
+---
+
+## 14 · Mermaid como instrumento de raciocínio
+
+### 14.1 A função vem antes do código
+
+Mermaid deve tornar relações difíceis mais claras: mecanismos, condições, decisões, dependências, estados, comparações e interações. Antes de escrever a sintaxe, definir a pergunta que o visual resolve.
+
+### 14.2 Seleção do tipo
+
+**Núcleo seguro no Craft:** flowchart, state, sequence, class, ER, `xychart-beta`. **Testar antes:** Gantt, gitgraph, journey, quadrant, mindmap, timeline, Sankey.
+
+| Relação dominante | Tipo |
+| --- | --- |
+| Decisão ou mecanismo | Flowchart |
+| Mudança de condição | State diagram |
+| Interação temporal | Sequence diagram |
+| Estrutura conceitual | Class diagram |
+| Entidades com cardinalidades | ER |
+| Valores ao longo de categorias | XY |
+
+### 14.3 Integração com o texto
+
+Introduzir o propósito antes; explicar o que merece atenção depois. Descrição textual equivalente obrigatória. Persistência JSON ≠ prova visual no app.
+
+---
+
+## 15 · Mermaid: verticalidade, densidade e semântica
+
+### 15.1 Orientação e tamanho
+
+Preferência predominante: **TB/TD**. LR excepcional. Dividir mapa quando reunir várias perguntas independentes ou muitos cruzamentos. Proporção alvo ≈ 4:5. Torre máxima ≈ 5–6 níveis; pôster > ~12–15 nós → modularizar.
+
+### 15.2 Formas e setas
+
+Losangos só para decisões reais (perguntas). Setas direcionais com sentido identificável. Família geométrica dominante: angulosa = protocolo; arredondada = mapa.
+
+### 15.3 Cor e hierarquia
+
+`classDef` com fill + stroke + color juntos e opacos. Dual-mode: `--bg-color "#F8FAFC #0F172A"`. Todo nó classificado. `linkStyle` depois da topologia (índices 0-based).
 
 | Papel | fill | stroke | color |
 | --- | --- | --- | --- |
@@ -130,573 +432,461 @@ Escolha **uma** família por diagrama: **retilínea/angulosa** para protocolos, 
 | Decisão | `#FEF3C7` | `#B45309` | `#78350F` |
 | Urgência / erro | `#FEE2E2` | `#B42318` | `#7A271A` |
 | Resultado / validado | `#DCFCE7` | `#15803D` | `#14532D` |
-| Linha-base (`linkStyle`) | `#64748B` | 1.8 px | tracejado no retorno |
+
+IDs ASCII; UTF-8 só no rótulo. Quebra = `<br/>` (nunca barra+n no nó).
+
+---
+
+## 16 · Mermaid: sintaxe e validação
+
+### 16.1 Convenções de autoria
+
+IDs técnicos ASCII curtos e estáveis; português completo nos rótulos. Evitar HTML, CSS externo, `click`/callbacks, frontmatter.
+
+### 16.2 Quebras de linha
+
+Preservar quebra legível de rótulos extensos. Se o texto ficar longo: melhorar redação, distribuir na prosa ou dividir o mapa — não reduzir fonte.
+
+### 16.3 Camadas de verificação
+
+1. Conceito · 2. Português · 3. Sintaxe · 4. Persistência · 5. Renderização · 6. Uso (largura, contraste, hierarquia).
+
+Renderização externa ≠ renderização nativa. Declarar exatamente o que foi testado.
+
+---
+
+## 17 · Modelos de Mermaid para reutilização
+
+### 17.1 Decisão sobre profundidade de revisão
 
 ```mermaid
-flowchart TB
-    A(["ENTRADA"]) --> B{"Decisão?"}
-    B -->|Sim| C["MECANISMO / AÇÃO"]
-    B -->|Não| D["ALTERNATIVA"]
-    C --> E(["RESULTADO"])
-    D --> E
-    classDef anchor fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E,stroke-width:2.4px,font-weight:bold
+flowchart TD
+    leitura["Ler a seção"] --> problema{"A estrutura dificulta a leitura?"}
+    problema -->|Sim| organizar["Reorganizar preservando conteúdo"]
+    problema -->|Não| lapidar["Lapidar os blocos existentes"]
+    organizar --> conferir["Conferir conteúdo e navegação"]
+    lapidar --> conferir
     classDef decision fill:#FEF3C7,stroke:#B45309,color:#78350F,stroke-width:2.2px,font-weight:bold
     classDef process fill:#EDE9FE,stroke:#7C3AED,color:#4C1D95,stroke-width:2px,font-weight:bold
     classDef success fill:#DCFCE7,stroke:#15803D,color:#14532D,stroke-width:2.3px,font-weight:bold
-    class A anchor
-    class B decision
-    class C,D process
-    class E success
+    class problema decision
+    class leitura,organizar,lapidar process
+    class conferir success
     linkStyle default stroke:#64748B,stroke-width:1.8px
 ```
 
-*Como ler:* o losango é a única decisão; o violeta explica o mecanismo; o verde é o resultado. IDs ASCII; português nos rótulos.
+### 17.2 Estados de um recurso visual
 
-> **GATE DE QUALIDADE (MERMAID)** — Antes de manter: sintaxe válida no Craft real, uma família geométrica, paleta semântica com contraste em claro/escuro, proporção ≈ 4:5, rótulos curtos, sem cruzamentos inúteis e **read-back** confirmando persistência. Persistência ≠ render visual: não reivindique que o aluno vê o diagrama sem inspeção no app. Se ficar mais difícil que o texto, redesenhar, modularizar ou abandonar.
+```mermaid
+stateDiagram-v2
+    state "Proposto" as proposto
+    state "Implementado" as implementado
+    state "Em ajuste" as ajuste
+    state "Verificado" as verificado
+    [*] --> proposto
+    proposto --> implementado: Aplicar
+    implementado --> ajuste: Detectar falha
+    ajuste --> implementado: Corrigir
+    implementado --> verificado: Confirmar resultado
+    verificado --> [*]
+```
 
-### Contrato operacional · IDs, dual-mode e linkStyle
+### 17.3 Interação com verificação e recuperação
 
-- IDs ASCII (`n1`, `decisao_1`). UTF-8 só no rótulo.
-- Quebra dentro do rótulo = `<br/>`. Nunca os dois caracteres barra + n dentro do nó.
-- Losango `{ }` só para decisão real (pergunta com pelo menos dois ramos).
-- Todo nó recebe `class` de papel. Não deixar nó nu no meio de um grafo classificado.
-- `classDef` traz fill + stroke + color juntos e opacos. HEX **não** segue o tema do Craft.
-- Dual-mode: fundo do bloco `--bg-color "#F8FAFC #0F172A"` + chips opacos. Verificar claro e escuro.
-- Contraste WCAG ≥ 4,5:1 no par fundo/texto do chip.
-- `linkStyle` só depois da topologia estável — os índices mudam quando se insere uma aresta.
-- Sem HTML cru, sem `click` / callbacks, sem frontmatter barroco.
-- Descrição textual equivalente imediatamente abaixo.
-- Validar no playground estático e depois no Craft (claro, escuro, estreito).
+```mermaid
+sequenceDiagram
+    participant E as Edição
+    participant C as Craft
+    participant V as Verificação
+    E->>C: Ler o trecho atual
+    C-->>E: Retornar conteúdo e estrutura
+    E->>C: Aplicar mudança localizada
+    V->>C: Reler o trecho alterado
+    C-->>V: Retornar estado persistido
+    alt Resultado coerente
+        V-->>E: Confirmar a etapa
+    else Resultado divergente
+        V-->>E: Indicar a falha
+        E->>C: Corrigir ou restaurar o trecho
+    end
+```
 
 ---
 
-## 5 · LaTeX no Craft (`math_formula`)
+## 18 · LaTeX como linguagem matemática e visual
 
-O Craft renderiza LaTeX em blocos de código com a linguagem **`math_formula`**. Dois usos: (1) **fórmulas e notação** (frações, índices, operadores, unidades) e (2) **painéis visuais** de decisão/escore — blocos coloridos e emoldurados que funcionam como fallback quando uma imagem não é viável.
+### 18.1 Escopo
 
-### Tokens mais usados
+LaTeX no Craft para equações e composição didática: decompor expressões, alinhar comparações, marcar partes, mostrar transformações. Blocos úteis, elegantes, modulares. Manter alternativa simples quando um recurso não funcionar.
 
-| Token | Uso |
-| --- | --- |
-| `\begin{gathered} … \end{gathered}` | Empilhar linhas centralizadas |
-| `\\[Npt]` | Quebra de linha com espaço vertical |
-| `\color{#hex}{…}` | Cor semântica (mesma paleta) |
-| `\boxed{…}` | Caixa de realce |
-| `\text{…}` e `\text{\large …}` | Texto com acentos e tamanho |
-| `\mathbf{…}` | Negrito |
-| `\rule{Wpt}{Hpt}` | Régua/divisória |
-| `\Downarrow` , `\longrightarrow` | Setas de fluxo |
-| `\le \ge \times \pm` | Operadores |
-| `+3{,}0` | Vírgula decimal (chaves protegem o espaçamento) |
-| `\; \, \quad \qquad` | Espaçamentos crescentes |
+### 18.2 Fórmula em linha e em bloco
 
-> **CUIDADOS (LaTeX)** — acentos vão dentro de `\text{…}` (ou direto no rótulo); use vírgula decimal com `{,}`; reutilize a paleta semântica nas cores `\color{#hex}`; teste em claro/escuro e no iPhone; painéis são recurso de exceção — legibilidade acima do enfeite.
+Inline `$...$` para notação curta. Bloco `math_formula` para expressões importantes, derivações e alinhamentos. Não presumir delimitadores de outro editor.
 
-### Exemplos · fórmula e painel
+### 18.3 LaTeX ≠ KaTeX como garantia
 
-```math
+LaTeX é a linguagem; KaTeX é o renderer (subconjunto). Comando válido no TeX completo **não** garante Craft.
+
+---
+
+## 19 · LaTeX: composição didática e biblioteca
+
+### 19.1 Fórmulas com significado explícito
+
+Apresentar a expressão, definir símbolos e unidades **fora** da fórmula, explicar a relação e discutir condições de uso.
+
+### 19.2 Famílias a explorar
+
+Alinhamentos, agrupamentos, chaves explicativas, índices, frações, relações, condições, matrizes pequenas, cancelamentos justificados e destaques localizados. Para cada família: exemplo mínimo, aplicação útil, versão compacta para celular e alternativa de maior compatibilidade.
+
+### 19.3 Gramática de composição
+
+Expressão principal + marcação de partes + interpretação abaixo; ou comparação alinhada destacando só a diferença decisiva. Evitar empilhar todas as possibilidades no mesmo bloco.
+
+### 19.4 Fallback em três níveis
+
+- **A** — renderizada, se o Craft confirmar
+- **B** — simplificada, sem mudar a relação
+- **C** — leitura linear em português
+
+Tokens: `\begin{gathered}`, `\\[Npt]`, `\color{#hex}{…}`, `\boxed{…}`, `\text{…}`, `\mathbf{…}`, `1{,}0`.
+
+---
+
+## 20 · LaTeX: cores, largura e estabilidade
+
+### 20.1 Cor dentro da fórmula
+
+Usar cores para destacar termos com função explícita. A cor na fórmula não é prova de cor tipográfica nativa no parágrafo.
+
+### 20.2 Mobile e largura
+
+Blocos compactos e alinhamentos verticais. Não usar fórmula como contêiner para todo o capítulo.
+
+### 20.3 Restrições
+
+**Não inserir LaTeX/KaTeX nas tabelas do Craft.** Matrizes matemáticas em blocos de fórmula são outro caso (pequenas). Se uma expressão falhar: reduzir até identificar o comando, preservar cópia do conteúdo correto.
+
+### 20.4 Matriz de capacidades
+
+Registrar recurso, exemplo, ambiente, data e o que foi confirmado: sintaxe, persistência, renderização, claro, escuro, retrato e exportação.
+
+---
+
+## 21 · Exemplos de composição em LaTeX
+
+Fontes didáticas copiáveis. Inserção no Craft: bloco `math_formula`.
+
+### 21.1 Relação proporcional
+
+```tex
 \begin{gathered}
-DC = VS \times FC \qquad PA = DC \times RVS \\[6pt]
-FE = \dfrac{VS}{VDF} \qquad t_{\mathrm{porta\text{-}balão}} \le 90\,\mathrm{min}
+v = \frac{d}{t}
 \end{gathered}
 ```
 
-```math
-\begin{gathered}
-\color{#4338CA}{\boxed{\;\mathbf{\text{PAINEL DE DECISÃO}}\;}}\\[12pt]
-\color{#0284C7}{\mathbf{\text{ENTRADA}}}\ \longrightarrow\ \text{avaliar critério}\\[8pt]
-\color{#D97706}{\Downarrow}\\[8pt]
-\color{#059669}{\boxed{\text{RESULTADO: conduta validada}}}
-\end{gathered}
+**Leitura:** v é a razão entre distância d e intervalo t (t ≠ 0). Unidades fora da fórmula.
+
+### 21.2 Alinhamento
+
+```tex
+\begin{aligned}
+3(x + 2) &= 3x + 6 \\
+3x + 6 &= 3x + 2 + 4
+\end{aligned}
 ```
 
-No Craft, a cerca é `math_formula`, não `math`.
+### 21.3 Marcação
 
-### Fallback LaTeX em três níveis
-
-- **Nível A — renderizado:** usar quando o Craft/KaTeX confirmar a expressão.
-- **Nível B — simplificado:** remover comandos frágeis sem alterar a relação.
-- **Nível C — linear em português:** ler a fórmula em prosa e definir variáveis.
-
-A fórmula nunca é a única forma de transmitir o essencial. Variáveis explicadas **fora** da fórmula. Comandos portáteis KaTeX apenas. Fórmula compacta ao lado do núcleo; pôster largo vai para lab/card. Não usar LaTeX como tabela, fluxograma ou anatomia — o painel visual desta secção é **exceção**, não o default.
-
----
-
-## 6 · Unicode, língua e marcas de texto
-
-Preservar acentos, crase, regência, siglas, unidades e intervalos (“não”, “decisão”, “Cl⁻”, “PaO₂/FiO₂”, “≥ 48 h”, “48–72 h”). Separar **IDs ASCII técnicos** dos **rótulos UTF-8 visíveis**. Usar Unicode apenas quando **funcional**, curto, normalizado em **NFC** e validado em claro, escuro, busca, cópia e iPhone. Nunca remover diacríticos nem misturar alfabetos estilizados para reconstruir palavras; evitar emoji pictográfico, seletores de variação, espaços invisíveis e símbolos sem função.
-
-### Marcas de texto (≠ emoji)
-
-| Marca | Significado |
-| --- | --- |
-| `⌘` | método / como pensar |
-| `◇` | item recuperável / questão |
-| `▸` | gabarito / resposta |
-| `☑︎` / `☒` | feito / não feito |
-| `⚠︎` | alerta / cautela |
-| `✦` | destaque / rota |
-| `⌕` | aprofundamento / busca |
-| `◆` / `⊙` | síntese / índice |
-| `⌁` | fluxo / conexão |
-
-> **LEGADO vs REPERTÓRIO SEGURO** — Em **notas novas**, vale a tabela do §10: sem CJK (`〤 〴 〄`), sem Wancho, sem tofu. Na rota UCT já publicada, **〤** (U+3024) permanece até eleição — não misturar com 〴 nem “corrigir” à força. ⚡︎ ☑︎ ☒ ⚑ só se passarem no teste do glifo (claro, escuro, iPhone, busca). Uma marca por nota-mãe.
-
----
-
-## 7 · Processo de qualidade
-
-Ciclo obrigatório: **ler** → **diagnosticar** → **manter / corrigir / refatorar / criar** → **persistir** → **reler (read-back)** → **comparar** → **validar** → **avançar**.
-
-- Antes de editar: inventariar nós, relações, rótulos, ordem, exceções, legenda, cores e dependências.
-- Depois de cada onda: read-back do bloco e dos vizinhos, checando truncamento, duplicação, compatibilidade, contraste, acessibilidade e ausência de regressão.
-- Testar no **Craft real**, não só em editor externo; todo recurso frágil precisa de fallback.
-
-> **GANHO LÍQUIDO** — Uma nova versão só permanece se houver ganho demonstrável em clareza, mobile, acessibilidade, manutenção, sintaxe ou modelo mental. Caso contrário, reverter.
-
----
-
-## 8 · Hierarquia de leitura
-
-Título da página = H1 implícito. `##` = uma unidade de sentido. `###` só se o H2 tiver três ou mais núcleos distintos. Síntese de 1–3 frases no topo da secção, depois **um** objeto principal (tabela, Mermaid, LaTeX ou imagem), depois “como ler” / critério. Aprofundamento em card ou toggle — nunca no sítio do núcleo.
-
-- Uma secção = um H2 + síntese + um objeto principal.
-- Não empilhar três H2 sem prosa entre eles.
-- Não usar H3 como enfeite.
-- Núcleo de 60 s **antes** de atlas, fontes e labs.
-- Listas com mais de 8 itens viram tabela ou cards temáticos.
-
----
-
-## 9 · Cards, toggles e o toggle falso
-
-### Card / página aninhada
-
-Use quando o bloco tem **vida própria**: atlas, bateria, lab, dump histórico, apêndice. O leitor abre, estuda, fecha. O chevron do Craft **não é toggle de texto** — é navegação para subpágina (`type: page` + `textStyle: card`).
-
-### Toggle de texto
-
-Use quando o conteúdo é continuação da mesma linha de leitura e deve poder fechar-se: passo a passo, gabarito, nota longa.
-
-Sintaxe MCP (obrigatória):
-
-```
-+ Toggle título
-  - filho no recuo 1
-    - neto no recuo 2
+```tex
+\underbrace{a + a + a}_{\text{três parcelas}} = 3a
 ```
 
-- Filho alinhado à esquerda vira bloco solto **fora** do toggle.
-- U+2028 dentro de toggle nativo é Craft — o parser não “corrige”.
+### 21.4 Cor localizada
 
-### Perguntas de estudo
-
-Pergunta = toggle de enunciado + sub-toggle de gabarito. Não usar card para uma pergunta de uma linha. Não usar toggle para um atlas de 20 figuras.
-
-```
-+ Enunciado da pergunta
-  - contexto mínimo (opcional)
-  + ▸ Gabarito
-    - resposta
-    - critério de correção
+```tex
+\textcolor{#1C3B8E}{x} + 2 = 5
 ```
 
-### Anti-padrões de contentor
+---
 
-- Card cujo único filho é um parágrafo.
-- Toggle cujo título é um H2 e o corpo está vazio.
-- Página TEMP / MASTER restaurada da lixeira “para consertar a busca”.
+## 22 · Imagens, figuras, infográficos e whiteboards
 
-### Tabela rápida · card versus toggle
+### 22.1 Imagens que ensinam
 
-O título da página já é o H0. O corpo começa com síntese, não com um segundo título redundante. **H2** para movimento grande; **H3** para procedimento, exemplo ou exceção. Uma ideia por bloco.
+Função didática clara. No **ponto de leitura** (não no fim). Preservar imagens relevantes, legendas, fontes e créditos. `alt` descritivo; frase **Como ler** sem spoiler em questão.
 
-| Precisa de… | Use |
+### 22.2 Legenda e leitura dirigida
+
+Informar o que está representado e o que observar. Texto alternativo descreve a informação relevante.
+
+### 22.3 Infográficos e transparência
+
+Fundo transparente quando o recorte exigir. Para diagramas exatos, preferir ferramentas determinísticas. Imagens geradas por IA não substituem diagrama relacional nem exame real.
+
+### 22.4 Whiteboards
+
+Usar quando o ganho estiver em explorar relações espaciais. Testar a interação real.
+
+---
+
+## 23 · Capas, backdrops e identidade dos espaços
+
+### 23.1 Capa ambiental
+
+Wallpaper atmosférico, baixa densidade, muito respiro. Formato quadrado 1:1 como preferência de partida. Texto ausente por padrão.
+
+### 23.2 Capa de documento e card
+
+Considerar o título que o Craft sobrepõe, o recorte e o tamanho do card. Cover ≠ figura de ensino.
+
+### 23.3 Backdrop e contraste
+
+O backdrop deve sustentar a leitura. Conferir em claro e escuro.
+
+---
+
+## 24 · Aprendizagem ativa e aplicações por domínio
+
+### 24.1 Exposição antes da cobrança
+
+Base conceitual antes dos exercícios. Respostas em toggles nativos com justificativa.
+
+### 24.2 Diagnóstico do erro
+
+Identificar se o erro foi conceitual, de interpretação, de regra, de exceção ou de aplicação.
+
+### 24.3 Preferências para notas médicas
+
+Correção científica atualizada; conectar estrutura, fisiologia, mecanismo, manifestações, investigação, diagnóstico, tratamento, prognóstico e complicações conforme o assunto. Não inventar epidemiologia nem protocolos universais.
+
+### 24.4 Linguagens e outros campos
+
+Ligar forma, relação, função e efeito de sentido. O sistema visual é geral; a organização conceitual respeita cada área.
+
+---
+
+## 25 · Fontes, evidências e rastreabilidade
+
+Afirmações sensíveis precisam de fontes adequadas e data. Links descritivos; créditos de imagens preservados. Separar exemplo ilustrativo de dado real. Este manual: preferências pessoais + critérios editoriais; a documentação não certifica o comportamento de uma nota ainda não inspecionada.
+
+---
+
+## 26 · Execução por etapas e auditoria sem perda
+
+### 26.1 Antes de editar
+
+Ler o trecho e contexto; mapear conteúdo válido e dependências; registrar o que será preservado.
+
+### 26.2 Durante
+
+Trabalhar por regiões e lotes recuperáveis. Alterar o menor conjunto capaz de resolver o problema. Usar IDs confirmados (`rootBlockId` ≠ `documentId`).
+
+### 26.3 Depois de cada etapa crítica
+
+Reler o destino. Diante de sucesso parcial, interromper novos lotes. Não repetir cegamente após timeout.
+
+### 26.4 Regressão e recuperação
+
+Identificar o escopo afetado e restaurar o estado conhecido. Não improvisar uma “versão parecida”.
+
+---
+
+## 27 · Fusão de materiais legados e exclusão
+
+### 27.1 Auditoria de equivalência
+
+Classificar: já incorporados, complementares, conflitantes, obsoletos ou ainda não encontrados.
+
+### 27.2 Incorporação complementar
+
+Integrar no módulo pertinente. Ciclo: **incorporar nativo → eleger a 100% → excluir sem dúvida**.
+
+### 27.3 Exclusão dentro da autorização
+
+Só com autorização explícita e após comprovar equivalência. Autorização de um projeto não se estende a outro. **Não restaurar** TEMP/MASTER da lixeira “para limpar busca”.
+
+---
+
+## 28 · Autonomia, comunicação e critérios de conclusão
+
+### 28.1 Avançar até o resultado
+
+Executar o escopo. Evitar responder só com plano. Perguntas só para dúvidas materiais restantes.
+
+### 28.2 Atualizações úteis
+
+Informar descobertas, mudanças de direção, etapas consolidadas e pendências concretas.
+
+### 28.3 Não encerrar pela aparência de sucesso
+
+Requisição aceita ≠ conteúdo completo. Conferir início, corpo, final, navegação, fórmulas, diagramas, mídia e referências.
+
+### 28.4 Condições mínimas de conclusão
+
+- Destino correto recebeu as mudanças
+- Conteúdo prometido presente e desenvolvido
+- Hierarquia nativa corresponde à organização
+- Sem perda de regras, exemplos, exceções, imagens ou fontes
+- Visuais coerentes com o texto e o ambiente verificado
+- Leitura em retrato considerada
+- Encerramento completo; links corretos
+- Limitações descritas sem alegação exagerada
+
+---
+
+## 29 · Modelos de arquitetura para adaptar
+
+### 29.1 Nota de estudo
+
+Entrada → Exposição → Aprofundamento (toggles) → Aplicação → Encerramento.
+
+### 29.2 Atlas ou manual extenso
+
+Página central + módulos autônomos + bibliotecas + manutenção.
+
+### 29.3 Manual de possibilidades visuais
+
+Famílias por função → exemplo mínimo e contextualizado → compatibilidade → alternativa → expansão.
+
+---
+
+## 30 · Auditoria rápida de qualidade
+
+| Dimensão | Pergunta |
 | --- | --- |
-| Ambiente autónomo (bateria, atlas, aprofundamento, fontes) | **Card** (`type: page` + `textStyle: card`) |
-| Expandir no lugar (pergunta, detalhe, gabarito) | **Toggle de texto** (`listStyle: toggle`) |
+| Destino | Estou no espaço, documento e módulo corretos? |
+| Conteúdo | A seção entrega o que o título promete? |
+| Correção | Afirmações, exemplos e relações adequados? |
+| Preservação | Algum detalhe válido se perdeu? |
+| Estrutura | Cards, páginas e toggles nativos com parentesco correto? |
+| Escrita | Português correto e raciocínio contínuo? |
+| Cor | A camada de cor solicitada foi aplicada? |
+| Contraste | Legível nos modos previstos? |
+| Mermaid | Esclarece relação e cabe em retrato? |
+| LaTeX | Significado, largura e alternativa robusta? |
+| Tabelas | Comparação exata sem compressão excessiva? |
+| Imagens | Cada figura ensina algo e preserva fonte? |
+| Aprendizagem | Base teórica antes das atividades? |
+| Navegação | Links e títulos levam ao esperado? |
+| Encerramento | Final presente e bem acabado? |
+| Evidência | Conclusão descreve só o confirmado? |
 
-> **TOGGLE FALSO É PROIBIDO.** Página com chevron que abre subpágina em vez de expandir. Cards **não** levam `listStyle: toggle`.
-
-- Filhos sempre indentados: `  - item` no recuo 1; netos no recuo 2.
-- Texto colado à esquerda depois de `+ Toggle` esvazia o toggle.
-- Sub-toggle de revelação: título `▸` no recuo 1; resposta no recuo 2.
-- Pergunta curta: pergunta no título; resposta no recuo 1.
-
----
-
-## 10 · Unicode · repertório seguro (anti-tofu)
-
-Preferência: **marcas de texto**, não emoji colorido. Só entram glifos que o Craft renderiza sem quadrado (tofu) em claro, escuro e iPhone.
-
-| Função | Usar | Não usar |
-| --- | --- | --- |
-| Estrutura e navegação | `⌁ ⌕ ◇ ◆ ⊹ ⊙ ↳ →` | CJK (`〤 〴 〄`), APL (`⌯ ⌿`), Dogra, Linear B, PUA |
-| Estado textual | `☑︎ ☒ ⚠︎` | Emoji pictográfico |
-| Gabarito / revelar | `▸` | Chevron de página |
-| Item recuperável | `◇` | `〤` (Hangzhou; tofu em fonte latina) — **exceto legado UCT**, §6 |
-| Síntese / índice | `◆` ou `⊙` | `⌯ ⳹` e alfabetos raros |
-| Marca da nota-mãe | `✦` se renderizar; senão `◆` | Mathematical bold |
-| Lógica no texto | `≠ ≤ ≥ ± ∴ → ←` | Bloco U+1D400 |
-| Ciência | `Cl⁻ O₂ 16 °C` (NFC) | Fullwidth, espaços invisíveis |
-
-### Proibições duras
-
-1. **Mathematical Alphanumeric Symbols** (U+1D400–U+1D7FF). Não são fonte. Quebram busca, cópia, acento e Mermaid. Use latim + `**negrito**` / `*itálico*` / `classDef`.
-2. **Mistura rejeitada:** letra matemática + acento latino na mesma palavra.
-3. **Seletores de variação imprevisíveis.** Manter `☑︎ ☒ ⚠︎`. Não espalhar `U+FE0E` em `⚡ ⚙`.
-4. **Private Use**, Linear B, Brahmi, Dogra, Wancho, lookalikes.
-5. **Lookalikes no JSON.** Restaurar pelo codepoint; se o canónico for tofu, **trocar o canónico** pelo repertório seguro.
-
-> **TESTE DO GLIFO** — Entra só se (a) aparece sem quadrado; (b) copiar/buscar/editar não alteram a palavra; (c) o fallback remove estilo, não informação. Prefira NFC precomposto.
+**Falhas que exigem correção:** perda de conteúdo, fórmula quebrada, diagrama com relação errada, acento removido, toggle falso, trecho truncado, imagem desaparecida, link incorreto, alegação sem evidência.
 
 ---
 
-## 11 · Tabelas nativas
+## 31 · Particularidades de projetos sem generalização indevida
 
-Toda comparação célula a célula vira **tabela nativa**. Não pipe solto em parágrafo, não `\n` literal, não `U+2028` no lugar da linha.
+### 31.1 CPOP e marca
 
-- Cabeçalho em highlight `yellow` (ou cor do eixo) + **negrito**.
-- Primeira coluna (termo, sigla, critério) em **negrito**.
-- Coluna de eixo / estado / gravidade com highlight semântico: urgência `red`; validado `mint`; governança `gradient-brown`; mecanismo `purple`; definição `blue`; metadado `gray`; transversal `cyan`; escore `yellow`.
-- *Itálico* só na expansão/glossário.
-- Não existe highlight `orange` nem `brown` simples — o MCP rejeita.
-- Contraste pleno: texto escuro sobre fill claro.
-- Tabelas enormes: partir por faixa (A–C, D–G).
-- Se o update falhar em tabela aninhada, não destruir; formatar o mutável.
+No contexto CPOP, preservar a grafia **CP֍P** quando for a marca aprovada. Não substituir o símbolo central nem acrescentar ™. Assinatura **JBFS** e perfil **@jairobfs**.
 
-O `--markdown` precisa de **newline real** entre as linhas. `\n` literal quebra (*Markdown must contain exactly one table*).
-
----
-
-## 12 · Mermaid · IDs, descrição, dual-mode e anti-padrões
-
-Complementa o §4. Método: (1) escrever a pergunta visual; (2) extrair nós e exceções; (3) **IDs ASCII** + rótulos em português UTF-8, sem Mathematical Alphanumeric; (4) começar sem estilo; acima de ~15 nós, modularizar; (5) `classDef` = papel cognitivo, fill + stroke + color juntos; (6) `linkStyle` **depois** da topologia, índices 0-based; (7) descrição textual equivalente **obrigatória**.
-
-| Aresta | stroke |
+| Elemento | Hex |
 | --- | --- |
-| Sim / sucesso | `#16A34A` |
-| Urgência | `#DC2626` |
-| Cautela | `#EA580C` |
-| Integração | `#4F46E5` |
-| Default | `#64748B` |
+| C inicial | `#1C3B8E` |
+| Primeiro P | `#B42620` |
+| Símbolo ֍ | `#EEAF3D` |
+| P final | `#529F32` |
 
-Dual-mode e renderer:
+Esses valores **não** constituem paleta universal para as demais notas.
 
-- Fundo do bloco `--bg-color "#F8FAFC #0F172A"` quando o Craft aceitar.
-- Chips **opacos**. Texto escuro em fill claro. WCAG ≥ 4,5:1.
-- HEX de `classDef` **não** acompanha o tema do Craft sozinho.
-- Persistência JSON (`language: mermaid`) ≠ prova visual no app.
-- Se acento quebrar aquele bloco: ASCII no rótulo + português correto na descrição.
+### 31.2 Arquiteturas particulares
 
-> **ANTI-PADRÕES MERMAID** — Torre ilegível; fundo escuro + texto escuro; acento reescrito como letra matemática; `end` colado em `o`/`x`; HTML/callback; `linkStyle` antes de reordenar arestas; losango em nó que não decide; diagrama sem descrição equivalente.
+Restrições de páginas, nomes, drenagem e legados pertencem ao respectivo projeto. Não transportar IDs entre projetos.
+
+### 31.3 Medicina e identidade própria
+
+Notas médicas compartilham rigor editorial sem receber a marca CPOP.
+
+### 31.4 O que é geral
+
+Correção, preservação, uso nativo, leitura em retrato, coerência claro/escuro, português íntegro, acabamento completo e verificação honesta.
 
 ---
 
-## 13 · LaTeX/KaTeX · inline, fallback e limites
+## 32 · Prompt mestre reutilizável
 
-Complementa o §5. **LaTeX** é a linguagem; **KaTeX** é o renderer (subconjunto). Comando válido no TeX completo **não** garante Craft.
+> Destino e objetivo. Trabalhe no documento ou módulo indicado, no espaço correto, e execute integralmente a criação, continuação, revisão ou lapidação solicitada. Identifique a base canónica pelo estado vivo. Não crie versões concorrentes.
+>
+> Contexto e preservação. Leia o trecho e o contexto. Preserve conteúdo válido, exemplos, exceções, imagens, fontes, fórmulas, diagramas, links, hierarquia e avanços aprovados. Corrija erros com fundamento. Zero-loss ≠ manter informação incorreta ≠ autorização para resumir.
+>
+> Arquitetura. Organize entrada, progressão, aprofundamentos e encerramento. Páginas/cards reais para módulos autônomos quando autorizados. Toggles nativos com filhos subordinados. Sem triângulos digitados como toggle.
+>
+> Escrita. Português brasileiro correto, preciso, elegante e didático. Explique relações e mecanismos. Exemplos próximos da exposição; atividades depois da base teórica.
+>
+> Estética. Recursos avançados do Craft com coerência. Diferencie cor de texto, highlight, fundo, card, fórmula e Mermaid. Se houver exemplo aprovado (inclusive associado a `undefined`), preserve-o e investigue antes de normalizar.
+>
+> Tipografia. Unicode e símbolos quando melhorarem títulos e forem compatíveis. Preserve acentos. Assinatura JBFS discreta; @jairobfs com hyperlink quando pertinente.
+>
+> Mobile e temas. iPhone retrato + coerência no desktop. Sem tabelas largas, diagramas minúsculos ou fórmulas extensas. Confira claro e escuro.
+>
+> Mermaid. Tipo pela relação. Prefira TB/TD. Microdiagramas para densos. Losangos para decisões. IDs ASCII; rótulos em português. Valide sintaxe, persistência e renderização nativa.
+>
+> LaTeX. Fórmulas e composição didática. Símbolos e unidades fora. Legível em retrato. Sem LaTeX/KaTeX em tabelas. Diferencie linguagem, inserção, persistência e renderização. Para MCP: `--json` + `rawCode` (ver §34).
+>
+> Mídia e aprendizagem. Imagens no ponto de leitura. Fontes e legendas. Perguntas que retomem o conteúdo, com respostas comentadas.
+>
+> Execução e conclusão. Regiões e lotes recuperáveis. Releia após etapas críticas. Execute ações já autorizadas. Não exclua fora do escopo. Relato conciso do que mudou, do que foi confirmado e dos limites reais.
 
-| Situação | Forma |
+---
+
+## 33 · Referências técnicas e vocabulário de revisão
+
+### 33.1 Documentação oficial
+
+- Craft: cards, estilos, Mermaid, fórmulas
+- Mermaid: sintaxe de flowcharts
+- KaTeX: funções suportadas (sem equivalência automática com Craft)
+- W3C: contraste mínimo
+- MDN: JSON
+
+Consulta: 13/09/2026. Verificar novamente capacidades que possam ter mudado.
+
+### 33.2 Vocabulário
+
+| Termo | Uso correto |
 | --- | --- |
-| Símbolo ou relação curta | Inline `$...$` |
-| Derivação, sistema, fórmula central | Bloco `math_formula` |
-| Algoritmo / ramificação | Mermaid, não LaTeX |
-| Tabela de atributos | Tabela nativa, não `array` gigante |
-| Anatomia / traçado | Imagem, não TikZ |
-
-- **A** — renderizada, se o Craft confirmar.
-- **B** — simplificada, sem mudar a relação.
-- **C** — leitura linear (“pressão = força dividida pela área”).
-- A fórmula **nunca** é a única forma de um conteúdo essencial.
-- Variáveis, unidades, domínio e ressalva ficam **fora** da fórmula.
-- Prefira comandos portáveis: fração, índice, expoente, raiz, limite, `mathrm`, `text`, `aligned`.
-- Evite pacotes, macros pessoais, CSS, HTML, ambientes não testados.
-- Pôster LaTeX largo: não duplicar nem apagar; não é o padrão novo.
-
-Exemplo inline: a taxa de $x^{2}$ é $f'(x)=2x$. Fallback C: a taxa de variação de x² no ponto x é 2x.
+| Canónico | Destino identificado como referência atual |
+| Estado vivo | Conteúdo e estrutura lidos no momento |
+| Zero-loss | Preservação do valor informacional e funcional válido |
+| Antirregressão | Comparação que evita perder avanços |
+| Nativo | Recurso real do aplicativo |
+| Persistido | Recuperado após a escrita |
+| Renderizado | Exibido por um renderizador identificado |
+| Validado em retrato | Verificado no contexto de largura declarado |
+| Alternativa robusta | Menos dependências frágeis, mesmo conteúdo |
+| Concluído | Escopo cumprido e critérios conferidos, com limites explicitados |
 
 ---
 
-## 14 · Imagens
+## 34 · Apêndice MCP operativo (agentes)
 
-- Entram **no ponto de leitura** (depois do caso, antes das alternativas) — não no fim do card.
-- `alt` descritivo, sem entregar gabarito quando a figura for de questão.
-- Uma frase **Como ler:** o que olhar, sem spoiler.
-- Didático ≠ exame real. Não substituir ECG/RX/biópsia por desenho gerativo.
-- Colapsar duplicatas: 1 figura + legenda.
-- Upload persistente (`uploaded: true` + URL `r.craft.do`). Read-back do bloco `image`.
-- Proveniência quando não for original.
-- PNG transparente só quando o recorte exigir. Proporção 4:5 em pranchas mobile quando couber.
+Complementa os capítulos anteriores com falhas já pagas via API/MCP.
 
----
+### 34.1 Newline e GFM
 
-## 15 · Organização do ambiente
+Craft **não** interpreta GFM dentro de `type: text`. Tabela numa linha com barra+n deixa a barra-n visível. `--markdown` precisa de Enter real. Quebra no título da página: `--json` com newline JSON verdadeiro.
 
-- **Nota-mãe canónica por tema/UCT:** escopo, mapa de cobertura, status, rotas de entrada, fontes preservadas, pendências e ligações para filhas. Refatorar in place; nada de V2/V3.
-- **Acervo = camada de preservação:** PDFs, lotes crus e imports permanecem (“não excluir”); só o conteúdo **curado** é incorporado às notas.
-- **Incorporar por tipo:** exposição → SP; revisão → ✓ REVISÃO; recall/questões → Master; síntese/casos → Síntese.
-- **Ciclo INCORPORAR → ELEGER → EXCLUIR:** eleger à exclusão só com 100% nativo; excluir de facto só sem dúvida (lixeira, 30 dias), confirmando backlinks/anexos/versão.
+### 34.2 Mutação e IDs
 
----
+- `rootBlockId` ≠ `documentId`. `documents resolve-link` antes de escrever.
+- Vários blocos: `blocks add --id <page> --json [ {...}, {...} ]`.
+- Remover filho de card: `blocks delete --id <childId>` (`documents delete` **não** tira o filho do card).
+- Batch com `;` só se o conteúdo **não** tiver `;` (LaTeX, Mermaid, tabelas).
+- Read-back sempre. Preview vazio de tabela pode ser artefato.
+- `blocks update --markdown` no primeiro bloco parseado; parágrafos extra nascem como irmãos — **não truncar** núcleos.
 
-## 16 · Operação via IA/MCP no Craft
-
-- **Vários blocos de uma vez:** `blocks add --id <page> --json [ {...}, {...} ]` (um objeto por bloco). Lida bem com aspas, `;` e quebras; prefira ao `--markdown` quando houver caracteres especiais.
-- **Remover sub-página de um card:** `blocks delete --id <childId>`. Atenção: `documents delete` manda o documento à lixeira, mas **não** remove o bloco-filho do card.
-- **Mover nativo entre cards:** `blocks move --id <block> --targetId <page> --position end` — zero-loss e reversível.
-- **Batch com `;`** só quando o conteúdo não contiver `;`.
-- **Read-back sempre.** O `context/preview` às vezes mostra tabela vazia (artefacto) — confirme lendo o bloco.
-- **LaTeX/Mermaid via `--json`:** escapar barra, aspas e quebras; evitar codepoints astrais `\u{...}` (JSON só aceita `\uXXXX`); validar por read-back.
-- **IDs:** `rootBlockId` ≠ `documentId`; resolver o link antes de operar.
-
-> **MANUTENÇÃO** — Origem: Manual para IAs + memória editorial + convenções das notas UCT. Atualize este manual **in place**; tudo é reversível por histórico/lixeira (30 dias). Este documento é genérico e serve para qualquer tema.
-
----
-
-## 17 · Contraste e harmonia
-
-Uma paleta por nota-mãe. Papéis estáveis em toda a rota.
-
-- Texto sobre highlight: escuro em fill claro.
-- Mermaid: fill + stroke + color sempre juntos; nunca texto `#0F172A` em canvas `#0F172A`.
-- Dual-mode de página: `textColor` e `backgroundColor` no formato `#claro #escuro`.
-- Verificar tema claro, escuro e — quando possível — iPhone.
-- Highlight só onde muda a leitura (eixo, decisão, urgência, estado). Sem papagaio cromático.
-- Washi na cor do eixo, não aleatória.
-
----
-
-## 18 · MCP, persistência e read-back
-
-- Ler o bloco vivo (`blocks get`) **antes** de editar.
-- Mutação mínima no bloco canónico.
-- `--markdown` com newline real. `\n` literal quebra tabela e toggle.
-- Depois de `+ Toggle`, filhos como `  - item`.
-- Muitos updates: um `--json` array, ou um bloco por chamada se o lote estourar timeout.
-- `blocks get` de novo. Conferir vizinhos se a hierarquia mudou.
-- Documento na lixeira: restaurar antes de editar. Não editar casca vazia.
-- Não declarar “renderizou no app” sem inspeção visual. A API só prova persistência.
-- `rootBlockId` ≠ `documentId` da URL. Resolver link antes de escrever.
-- Não inventar lookalike de Unicode na hora de digitar. Codepoint explícito ou ficheiro UTF-8.
-
----
-
-## 19 · Zero-loss e governança
-
-1. **Incorporar nativo** na nota-mãe.
-2. **Eleger** à exclusão só com 100% (equivalência sem dúvida).
-3. **Excluir de facto** só quando não restar conteúdo único.
-
-Dica magra na superfície; dump distante no card de aprofundamento. Fontes e originais não se apagam para “limpar a rota”. Handbook, manuais de IA e laboratórios canónicos permanecem. Um manual geral no TUT; labs apontam para ele. **Este documento** é o contrato editorial para IAs que editam qualquer nota do espaço.
-
----
-
-## 20 · Anti-padrões (não fazer)
-
-- V2/V3 da mesma nota.
-- Toggle falso (página-chevron).
-- Questão como subpágina-card.
-- Emoji colorido no lugar de marca de texto.
-- Tofu (Dogra, Hangzhou, Linear B, APL, PUA) como “identidade”.
-- Mathematical bold/italic em título ou Mermaid.
-- Callout em todos os parágrafos.
-- Rainbow de highlight sem papel.
-- LaTeX para fluxograma.
-- Mermaid para anatomia.
-- Imagem sem alt e sem “como ler”.
-- Apagar fonte para caber no portal.
-- `\n` literal, tabela num único parágrafo, filho de toggle sem recuo.
-
----
-
-## 21 · Checklist do agente
-
-- [ ] Baseline do bloco vivo lido.
-- [ ] Meio certo (texto / tabela / Mermaid / LaTeX / imagem / toggle / card).
-- [ ] Português e exceções intactos.
-- [ ] Unicode só do repertório seguro; zero tofu. (Legado UCT `〤` não se “corrige” sem pedido.)
-- [ ] Tabela nativa com cabeçalho e estados coloridos.
-- [ ] Mermaid: IDs ASCII, papéis, `linkStyle` no fim, descrição equivalente.
-- [ ] LaTeX: variáveis fora, fallback textual.
-- [ ] Imagem: ponto de leitura, alt, proveniência.
-- [ ] Contraste claro/escuro pensado.
-- [ ] Read-back JSON depois da mutação.
-- [ ] Nada único foi para a lixeira.
-
----
-
-## 22 · Mapa de documentos no TUT
-
-| Documento | Papel |
-| --- | --- |
-| [Este manual](block://8db4e12c-f306-4551-49c6-9d7e5fbd5c63) | **Contrato de preferências** |
-| [Manual Geral Canónico](block://0360ff09-4827-0f41-8638-f3304dd9cf40) | Porta de entrada IA / LaTeX / KaTeX / Mermaid |
-| [Manual para IAs](block://04025d1f-39e1-2fd3-2134-93280c6ccf06) | Referência especializada e histórica de Mermaid |
-| [Demonstração oficial Mermaid](block://6efc0f65-34b2-031f-0357-a9da49ac5614) | Suíte de exemplos mínimos |
-| [Demonstração LaTeX/KaTeX](block://2b2e76d6-56c0-3eb0-e48a-186828f1b3ff) | Validação de fórmulas no renderer |
-| [Guia de design nativo](block://9513c7ed-8f0b-b9ba-8cca-81bc71693598) | Método de lapidação de página |
-| [Imagens via MCP](block://98d0b5ee-ea01-2e0a-eaee-4270218bbbda) | Upload, IA, alt, proveniência |
-
-Ao atualizar: classificar o achado (canónico, melhorável, fraco, defeituoso, redundante, ausente); menor mudança com ganho demonstrável; persistir; reler; datar.
-
-> **PRÓXIMA REVISÃO** — Uma fórmula inline, um `math_formula`, um flowchart TB, um state, um `xychart-beta` e uma tabela nativa — em claro e escuro. Edição 13/09/2026.
-
----
-
-## 23 · Apêndice MCP · newline e GFM
-
-Craft **não** interpreta GFM dentro de um bloco `type: text`. Colar uma tabela numa linha só, com os dois caracteres barra + n no lugar do Enter, deixa a barra-n **visível** e a tabela morta.
-
-### Padrão correto
-
-1. Localizar o bloco velho (`blocks get` / `search`).
-2. Inserir irmão com markdown de tabela e **Enter real** no payload.
-3. O Craft cria `type: table`.
-4. Só então `blocks delete` do bloco velho.
-5. Read-back JSON: o campo markdown deve ter quebra de linha verdadeira, nunca o texto barra-n.
-
-| Intenção | Como enviar |
-| --- | --- |
-| Quebra no **título** da página | `--json` com newline JSON verdadeiro |
-| Tabela / mermaid / lista no corpo | `--markdown` com Enter real |
-| Marca Unicode frágil no título | `--json` com UTF-8 ou surrogate se o shell corromper |
-
-Não fazer:
-
-- Colar GFM numa linha só com barra-n escapada à mão.
-- Usar U+2028 para forçar tabela em `type: text`.
-- Tratar hits de busca `\| --- \|` em páginas na **lixeira** como dívida viva.
-- Apagar tabela nativa “porque a busca ainda mostra pipe” — a busca indexa lixo.
-
----
-
-## 24 · Apêndice · imagens e ponte MCP
-
-Manuais de processo: [Incorporar via MCP](block://e4a9218b-1f88-f42d-e22c-05c4cf3dab6d) e [Imagens existentes e geradas](block://98d0b5ee-ea01-2e0a-eaee-4270218bbbda).
-
-- Toda imagem tem **alt** verdadeiro (o que se vê, não “imagem1”).
-- Bloco **Como ler** a seguir: o que o olho deve procurar, sem entregar gabarito quando for questão.
-- Imagem no **ponto de leitura**, não no fundo da página.
-- Preferir texto / tabela / Mermaid quando a relação (não a forma) for o ponto.
-- Não dump de dezenas de figuras “para ter”. Cada figura justifica o sítio.
-- Figura gerada por IA segue o mesmo contrato e **não** substitui diagrama relacional.
-
----
-
-## 25 · Apêndice MCP · erros, 502 e lixeira
-
-Identidade e read-back:
-
-- ID estável = `rootBlockId` do `blocks get --format json`.
-- Antes de escrever: `documents resolve-link` no URL / deeplink.
-- Depois de escrever: `blocks get` do bloco tocado. Não confiar só no eco do `add`.
-
-Newline e batch:
-
-- `--markdown` precisa de Enter real. Digitar barra + n deixa barra-n visível.
-- `--json` é o sítio certo para newline JSON no título.
-- Batch com ponto-e-vírgula **parte** se o markdown contiver ponto-e-vírgula (LaTeX, mermaid, tabelas). Um comando por invocação nesses casos.
+### 34.3 Erros, 502 e lixeira
 
 | Sintoma | O que fazer |
 | --- | --- |
-| `CURSOR_INVALID` | reler schema; não repetir o mesmo payload cego |
-| Cloudflare 502 / `retry_after` ~60 s | esperar e repetir o **mesmo** comando |
-| `RATE_LIMIT_ERROR` / block budget | parar o lote; esperar; retomar do último id confirmado |
-| `Cannot modify document in trash` | **parar**. Não é o documento vivo |
+| `CURSOR_INVALID` | Releer schema; não repetir payload cego |
+| Cloudflare 502 / `retry_after` ~60 s | Esperar; repetir o **mesmo** comando |
+| `RATE_LIMIT_ERROR` | Parar o lote; retomar do último id confirmado |
+| `Cannot modify document in trash` | **Parar.** Restaurar/mover; só então escrever |
 
-Não inventar `blocks delete` de IDs fantasma não verificados.
-
----
-
-## 26 · Apêndice · lixeira e falso positivo de busca
-
-1. Incorporar o nativo (tabela, mermaid, fórmula) **ao lado** do bloco velho.
-2. Eleger o nativo só com os dois visíveis e conteúdo único preservado.
-3. Apagar o velho só sem dúvida restante.
-4. **Não restaurar** cópias TEMP / MASTER da lixeira para “limpar busca”.
-5. **Não editar** página na trash.
-6. Busca no documento-pai ainda indexa filhos na trash — falso positivo.
-7. Conteúdo único sem casa vai para Acervo / card de dump, não some.
-
----
-
-## 27 · Apêndice · checklists de mutação
-
-**Antes de gravar um bloco**
-
-- Objeto certo (texto / lista / tabela / mermaid / latex / imagem / callout / toggle / card).
-- Uma ideia. Newlines reais se for tabela ou mermaid.
-- IDs ASCII + `<br/>` se for mermaid. Variáveis explicadas se for LaTeX.
-- Alt + como ler se for imagem. Filhos indentados se for toggle.
-- pt-BR. Sem emoji colorido.
-
-**Antes de apagar**
-
-- Nativo visível ao lado. Conteúdo único já no nativo.
-- Id é `rootBlockId` vivo (não trash). Read-back depois do delete.
-
-**Antes de publicar um diagrama**
-
-- Família validada ou fallback escrito. TB/TD. Todo nó classificado.
-- Contraste ≥ 4,5:1. Descrição textual equivalente. Teste claro / escuro / estreito.
-
-**Anti-padrões**
-
-- Criar “Manual Geral V2” em vez de apontar para `0360ff09` / este documento.
-- GFM de tabela numa linha com barra-n visível.
-- Mermaid LR no telemóvel; barra-n no rótulo; diamante sem decisão.
-- LaTeX como tabela ou anatomia (painel do §5 é exceção).
-- Card para pergunta; toggle para atlas.
-- Emoji colorido no sítio das marcas Unicode.
-- `blocks delete` de id não lido. Editar ou restaurar trash “para a busca ficar limpa”.
-- Batch com ponto-e-vírgula quando o payload tem LaTeX/mermaid.
-- Manual geral fora de ⌕ TUT.
-
----
-
-## 28 · Apêndice · laboratórios e IDs curtos
-
-| ID | Título | Papel |
-| --- | --- | --- |
-| `8db4e12c` | **este** Manual Extenso de Preferências | contrato genérico editorial + MCP |
-| `0360ff09` | Manual Geral Canónico | porta de entrada de integração |
-| `04025d1f` | Manual para IAs | profundidade Mermaid / paletas |
-| `e4a9218b` | Incorporar Imagens, Mermaid e LaTeX via MCP | fluxo MCP de média |
-| `98d0b5ee` | Imagens existentes e geradas por IA | imagens |
-| `9513c7ed` | Guia Prático: Design Nativo | método de design de página |
-| `6652bf74` | Design Nativo — versão corrigida | mesma família |
-| `6efc0f65` | Demonstração oficial Mermaid | exemplos mínimos |
-| `2b2e76d6` | Demonstração LaTeX/KaTeX | validação + checklist |
-| `aafb4ce9` | Lab fórmula longa vs microfórmulas | prática LaTeX |
-| `bc609261` | Lab diagramas/tabelas KaTeX | prática (e o que não fazer com LaTeX) |
-| `00022fae` | Lab arquitectura de software Mermaid | prática Mermaid |
-
-A “memória editorial” **não** é nota autónoma — vive em dumps de arquivo. Preferências canónicas = este documento + Manual para IAs. Se a cópia em `docs/manual-preferencias-craft.md` divergir, **Craft vence**.
-
----
-
-## 29 · Hiperligações específicas
-
-> **CLIQUE = O BLOCO QUE RESPONDE** — Sigla no texto abre a **ficha daquela sigla** (expansão + significado), não o índice A–Z. Termo-chave abre o **portal** do mecanismo. As palavras «índice» / «SIGLAS» / «tabelas A–Z» é que ligam ao catálogo (Cmd/Ctrl+F).
-
-| Clique | Destino |
-| --- | --- |
-| Sigla no texto corrido | Ficha própria `block://` daquela chave |
-| Mecanismo (Stevenson, Light, Winter, Triple Whammy) | Portal conceptual |
-| «SIGLAS» / índice / tabelas A–Z | Card catálogo |
-| Bateria / aprofundamento / eixo | Esse card |
-
-Proibido mandar TFG, ECG ou DPOC para o sumário inteiro. Proibido bookmarklet. `--markdown` que resume um núcleo de 60 s é corrupção — o texto novo é o antigo com a transformação (UUID / ligação), nunca um resumo.
-
----
-
-*Fim da exportação Markdown. Fonte: Craft `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`. Atualize in-place.*
-
-
----
-
-## 30 · Fatals KaTeX e camadas de escape (agentes)
+### 34.4 Fatals KaTeX e camadas de escape
 
 | Fatal | Correção |
 | --- | --- |
@@ -706,7 +896,7 @@ Proibido mandar TFG, ECG ou DPOC para o sumário inteiro. Proibido bookmarklet. 
 | Decimal `1,0` | `1{,}0` |
 | `--markdown` com `\begin` / `\frac` / `\text` | JSON/MCP come `\b` `\f` `\t` — usar `--json` + `rawCode` |
 
-| TeX desejado em `rawCode` | JSON do `--json` | String da tool call |
+| TeX em `rawCode` | JSON do `--json` | String da tool call |
 | --- | --- | --- |
 | `\begin` | `\\begin` | `\\\\begin` |
 | `\frac` | `\\frac` | `\\\\frac` |
@@ -714,12 +904,25 @@ Proibido mandar TFG, ECG ou DPOC para o sumário inteiro. Proibido bookmarklet. 
 | `\\[6pt]` | `\\\\[6pt]` | `\\\\\\\\[6pt]` |
 | `\\` (quebra) | `\\\\` | `\\\\\\\\` |
 
-Read-back de `rawCode` deve mostrar `\begin` e `\\[npt]`. Validar KaTeX `strict: "warn"` e Craft claro/escuro.
+Read-back de `rawCode` deve mostrar `\begin` e `\\[npt]`.
 
-### Prompt-base
+### 34.5 Mapa TUT (IDs curtos)
 
-> Objetivo: [o leitor precisa compreender/fazer X]. Público: [perfil]. Fonte: [referência]. Preserve o português e as exceções. Extraia conceitos, relações, decisões e riscos; escolha entre texto, tabela, LaTeX/KaTeX, Mermaid e imagem. Produza a versão principal, descrição equivalente quando houver visual, checklist e limitações. Não invente fontes nem prometa compatibilidade não testada. Persista in place e releia.
+| ID | Papel |
+| --- | --- |
+| `8db4e12c` | **este** contrato de preferências |
+| `0360ff09` | Manual Geral Canónico |
+| `04025d1f` | Manual para IAs |
+| `6efc0f65` | Demo Mermaid |
+| `2b2e76d6` | Demo LaTeX/KaTeX |
+| `9513c7ed` | Design nativo |
+| `98d0b5ee` | Imagens via MCP |
+| `e4a9218b` | Incorporar via MCP |
 
-*Espelho git de `8db4e12c` + contrato operativo. Próxima revisão no Craft real: fórmula `gathered` com `\\[npt]`, flowchart com `classDef` + `linkStyle` + fundo dual, card sem toggle falso, toggle `◇` com sub-toggle `▸`, em claro e escuro.*
+### 34.6 Hiperligações específicas
 
-*Fim da exportação Markdown. Fonte: Craft `8db4e12c-f306-4551-49c6-9d7e5fbd5c63`. Atualize in-place.*
+Clique = o bloco que **responde**. Sigla no texto → ficha daquela sigla; mecanismo → portal; «SIGLAS»/índice → catálogo. Proibido mandar termo para o sumário inteiro. Proibido bookmarklet. `--markdown` que resume um núcleo de 60 s é corrupção.
+
+---
+
+*Espelho git de `8db4e12c`. Craft vence. Atualize in place. Identificação editorial: preferências de JBFS · @jairobfs. Edição 13/09/2026.*
