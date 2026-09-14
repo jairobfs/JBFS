@@ -1,0 +1,16 @@
+{
+  "name": "SPR Med Simulados",
+  "terminals": [
+    {
+      "name": "static-server",
+      "command": "python3 -m http.server 8000",
+      "description": "Serves the repository root over HTTP so the markmap mind map can be opened at http://localhost:8000/markmap%20(2).html"
+    }
+  ],
+  "ports": [
+    {
+      "name": "static-server",
+      "port": 8000
+    }
+  ]
+}
