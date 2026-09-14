@@ -54,9 +54,11 @@ No home, ler o card **Questões na Semana** (ex.: `142 / Meta: 560`).
 3. Confirmar home do aluno e (se pedido) o card da meta
 4. Conforme o objetivo:
    - **Simulado:** Treinamento → Meus simulados / Simulados ENAMED → título exato
-   - **Meta / treino:** abrir **Trilha Inteligente** (iniciar ou continuar) e outras trilhas disponíveis; usar banco de questões se a trilha esgotar
-5. Em simulado: abrir até Q1 só para confirmar acesso, se o pedido for só “entrar”
-6. Se o pedido for **resolver** / **cumprir meta**, seguir a seção 2
+   - **Meta / treino:** **Trilha Inteligente**, **Professor** (listas enviadas pelo tutor), Meus simulados personalizados, banco/criar simulado, Questões do Dia
+5. Se Trilha Inteligente estiver 100% respondida, priorizar abas **Professor** e listas ainda não finalizadas — elas contam na meta
+6. Em simulado: abrir até Q1 só para confirmar acesso, se o pedido for só “entrar”
+7. Se o pedido for **resolver** / **cumprir meta**, seguir a seção 2
+8. Se o banco/filtros retornarem “sem questões”, alargar filtros (área/ano/banca) ou mudar de fonte; reportar bloqueio ao usuário
 
 ### 2) Resolução científica (análise OBRIGATÓRIA antes de marcar)
 
