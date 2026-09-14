@@ -8,21 +8,30 @@
 ## Caminho típico
 
 1. Login (e-mail institucional + senha)
-2. Menu lateral / área **Treinamento**
-3. **Simulados ENAMED** ou **Meus simulados**
-4. Card do simulado pelo título exato
-5. Status: `Em andamento`, datas início/fim, modo prova
-6. Abrir → interface de questões com:
+2. Home: card **Questões na Semana** (progresso / meta)
+3. Menu lateral:
+   - **Trilha Inteligente** — treino contínuo que conta para a meta
+   - **Treinamento** → **Simulados ENAMED** / **Meus simulados**
+   - Outras trilhas / banco de questões, se visíveis
+4. Simulado: card pelo título; status `Em andamento`; modo prova + timer
+5. Interface de questões:
    - enunciado + alternativas
    - navegador numérico (check verde = respondida)
-   - Anterior / Próxima / Finalizar prova / Tutorial
-   - timer (modo prova)
+   - Anterior / Próxima / **Responder** (trilhas) / Finalizar / Tutorial
 
-## Operação durante a prova
+## Operação
 
-- Selecionar alternativa com clique (confirmar visualmente o estado selecionado)
-- Avançar com **Próxima**
-- Usar o mapa numérico para pular a não respondidas no fim
+### Trilha / banco (meta semanal)
+
+- Selecionar alternativa → clicar **Responder** (sem isso a questão pode não contar)
+- Só então avançar
+- Se a trilha reiniciar em Q1 já respondidas, pular via mapa ou mudar de seção/módulo
+- Iniciar trilhas novas com **Iniciar** quando o usuário pedir volume/meta
+
+### Simulado (modo prova)
+
+- Selecionar alternativa e avançar com **Próxima**
+- Usar o mapa numérico para não respondidas no fim
 - **Finalizar prova** só com autorização explícita do usuário
 
 ## Falhas comuns

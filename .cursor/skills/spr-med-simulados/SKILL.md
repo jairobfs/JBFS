@@ -1,23 +1,25 @@
 ---
 name: spr-med-simulados
 description: >-
-  Acessa, resolve e documenta simulados da plataforma SPR Med (ENAMED e afins)
-  com checagem científica, navegação autenticada no browser e relatório
-  questão/resposta/justificativa. Use quando o usuário pedir para entrar na
-  SPR Med, abrir Treinamento/Meus simulados, resolver simulado ENAMED,
-  marcar alternativas na plataforma, gerar relatório de gabarito comentado,
-  ou publicar o resultado no Craft (MED/Integrado).
+  Acessa a plataforma SPR Med para resolver simulados ENAMED, iniciar/continuar
+  Trilha Inteligente e banco de questões, cumprir meta semanal (Questões na
+  Semana), e gerar relatório questão/resposta/justificativa. Use quando o
+  usuário pedir SPR Med, Treinamento, Meus simulados, trilhas, meta da semana,
+  gabarito comentado, ou publicar no Craft (MED/Integrado).
 ---
 
-# SPR Med — Resolver Simulados
+# SPR Med — Resolver Simulados e Trilhas
 
-Skill operacional para **entrar na plataforma**, **resolver o simulado** com rigor clínico e **entregar relatório** (e opcionalmente subir no Craft).
+Skill operacional para **entrar na plataforma**, **cumprir meta de questões**,
+**iniciar/continuar trilhas**, **resolver simulados** com rigor clínico e
+**entregar relatório** (e opcionalmente subir no Craft).
 
 ## Quando usar
 
 - URL ou menção a `plataforma.sprmed.com.br`
-- Pedidos como: “abra o simulado”, “resolva o ENAMED”, “gabarito comentado”, “justificativa científica”
-- Continuar um simulado em andamento ou gerar relatório após respostas
+- Pedidos como: “abra o simulado”, “resolva o ENAMED”, “gabarito comentado”,
+  “justificativa científica”, “trilha”, “meta da semana”, “Questões na Semana”
+- Continuar simulado/trilha em andamento ou gerar relatório após respostas
 
 ## Não fazer
 
@@ -36,26 +38,43 @@ Skill operacional para **entrar na plataforma**, **resolver o simulado** com rig
 
 ## Fluxo (obrigatório)
 
+### 0) Meta semanal (quando aplicável)
+
+No home, ler o card **Questões na Semana** (ex.: `142 / Meta: 560`).
+
+- Baseline no início da sessão e de novo no fim
+- Priorizar atividades que **incrementam** esse contador: **Trilha Inteligente**, banco/questões de treino, trilhas iniciadas
+- Meta do usuário = cumprir a meta; continuar em lotes até zerar o déficit ou o usuário parar
+- Reportar: respondidas na sessão, total atual, faltam para a meta
+
 ### 1) Acesso
 
 1. Abrir `https://plataforma.sprmed.com.br/spr/student/home` (ou a URL dada)
 2. Login com as credenciais fornecidas pelo usuário
-3. Confirmar home do aluno
-4. Ir para **Treinamento** → **Meus simulados** / **Simulados ENAMED** (conforme menu)
-5. Localizar o simulado pelo título e status (`Em andamento` / disponível)
-6. Abrir até a tela inicial ou Q1 só para confirmar acesso, se o pedido for só “entrar”
-7. Se o pedido for **resolver**, seguir a seção 2
+3. Confirmar home do aluno e (se pedido) o card da meta
+4. Conforme o objetivo:
+   - **Simulado:** Treinamento → Meus simulados / Simulados ENAMED → título exato
+   - **Meta / treino:** abrir **Trilha Inteligente** (iniciar ou continuar) e outras trilhas disponíveis; usar banco de questões se a trilha esgotar
+5. Em simulado: abrir até Q1 só para confirmar acesso, se o pedido for só “entrar”
+6. Se o pedido for **resolver** / **cumprir meta**, seguir a seção 2
 
-### 2) Resolução científica
+### 2) Resolução científica (análise OBRIGATÓRIA antes de marcar)
 
-Para **cada** questão:
+**Proibido** chute, clique por instinto ou “fallback” sem ler o enunciado.
+Preferir menos questões bem analisadas a volume com erro.
 
-1. Ler enunciado completo + alternativas (rolar página; analisar imagens/ECG/RX se houver)
-2. Raciocinar com medicina baseada em evidência e, quando aplicável, **diretrizes brasileiras** (MS, FEBRASGO, SBC, SBPT, etc.) e estilo ENAMED/INEP
-3. Escolher a **melhor** alternativa e **clicar** na UI
-4. Ir para a próxima
-5. Manter log contínuo (ver schema abaixo)
-6. Em dúvida: marcar a mais defensável, confiança `medium`/`low`, e anotar o que falta para certeza
+Para **cada** questão, nesta ordem:
+
+1. **Ler** enunciado completo + todas as alternativas (rolar; abrir imagens/ECG/RX/tabelas)
+2. **Extrair** dados-chave: idade/sexo, tempo de doença, alarmes, comorbidades, exames decisivos
+3. **Definir** o que a questão pede (diagnóstico vs. próximo passo vs. tratamento vs. prevenção)
+4. **Eliminar** alternativas incompatíveis (contraindicação, tempo errado, outra doença)
+5. **Confirmar** a melhor opção com MBE e, quando aplicável, **diretrizes brasileiras** (MS, FEBRASGO, SBC, SBPT, etc.) e estilo ENAMED/INEP
+6. Só então **marcar** na UI → em Trilha/treino clicar **Responder** (obrigatório para contar) → avançar; em modo prova, seguir a UI (marcar → próxima)
+7. Manter log (schema abaixo) — em lotes de meta, log por tema ok; gabarito completo se o usuário pedir
+8. Em dúvida real: opção mais defensável + confiança `medium`/`low` + motivo — **nunca** aleatório
+
+Se o stem estiver ilegível/UI quebrada: não marcar; registrar bloqueio e mudar de questão/seção.
 
 **Heurísticas ENAMED úteis:**
 - Preferir conduta do MS/SUS quando houver conflito com guideline internacional
