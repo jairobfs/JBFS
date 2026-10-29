@@ -13,7 +13,10 @@ module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;
   if(req.method==='PUT'){const id=String(data?.id||'');const current=rows.find(r=>r.id===id);if(!current){send(res,404,{error:'Bloco inexistente no Craft.'});return}
    if(current.revision!==data.revision){send(res,409,{error:'Este bloco foi alterado em outro lugar. Recarregue antes de salvar.',current});return}
    if(p.uid!==current.uid&&rows.some(r=>r.uid===p.uid)){send(res,409,{error:'Identificador já usado em outro bloco.'});return}
-   await updateItem(id,p);send(res,200,{saved:true,source:'Craft'});return;
+   const prev={uid:current.uid,semana:current.week,ordem:current.order,tipo:current.type,titulo:current.title,corpo:current.body,imagem:current.image,alt:current.alt,fonte:current.source,opcoes:current.type==='questao'?JSON.stringify(current.options):'',gabarito:current.answer,justificativa:current.why,ativo:current.active,pontos:current.points};
+   const changes=Object.fromEntries(Object.entries(p).filter(([k,v])=>v!==prev[k]));
+   if(Object.keys(changes).length)await updateItem(id,changes);
+   send(res,200,{saved:true,changed:Object.keys(changes),source:'Craft'});return;
   }
   if(rows.some(r=>r.uid===p.uid)){send(res,409,{error:'Já existe um bloco com este identificador.'});return}
   await createItem({bloco:'S'+p.semana+' · '+p.titulo,properties:p});send(res,201,{saved:true,created:true,source:'Craft'});
