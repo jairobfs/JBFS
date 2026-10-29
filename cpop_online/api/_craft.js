@@ -13,4 +13,4 @@ function itemsOf(data){if(Array.isArray(data))return data;if(Array.isArray(data?
 async function listAttempts(){const c=config();return itemsOf(await request(`/collections/${c.collection}/items?maxDepth=0`));}
 async function saveAttempt(item){const c=config();return request(`/collections/${c.collection}/items`,'POST',{items:[item]});}
 async function ping(){return request('/connection');}
-module.exports={config,listAttempts,saveAttempt,ping};
+module.exports={config,listAttempts,saveAttempt,ping,request,itemsOf};
