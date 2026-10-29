@@ -1,11 +1,11 @@
 'use strict';
 const test=require('node:test');const assert=require('node:assert/strict');
 const content=require('../api/_content');const submit=require('../api/submit');const results=require('../api/results');const health=require('../api/health');
-const ENV={CRAFT_API_BASE:'https://connect.craft.do/link/test-connection/api/v1',CRAFT_COLLECTION_ID:'a129558e-4d81-0531-8b07-acf4c126cc7c',CPOP_CLASS_CODE:'turma-teste-24',CPOP_TEACHER_KEY:'chave-educador-exemplo-123456789'};
+const ENV={CRAFT_API_BASE:'https://connect.craft.do/links/test-connection/api/v1',CRAFT_API_KEY:'pdk_mock-test-key',CRAFT_COLLECTION_ID:'a129558e-4d81-0531-8b07-acf4c126cc7c',CPOP_CLASS_CODE:'turma-teste-24',CPOP_TEACHER_KEY:'chave-educador-exemplo-123456789'};
 const saved=[];
 const originalFetch=global.fetch;
 function fakeFetch(url,options={}){
-  const method=options.method||'GET';
+  const method=options.method||'GET';assert.equal(options.headers?.Authorization,'Bearer pdk_mock-test-key');
   if(url.endsWith('/connection'))return Promise.resolve({ok:true,status:200,text:async()=>JSON.stringify({space:{name:'CP֍P'}})});
   if(url.includes('/collections/')&&method==='GET')return Promise.resolve({ok:true,status:200,text:async()=>JSON.stringify({items:saved})});
   if(url.includes('/collections/')&&method==='POST'){
