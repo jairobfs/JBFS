@@ -2,10 +2,10 @@
 const {send,method,teacher,parseBody}=require('./_http');
 const {FIELDS,loadContent,revision,updateItem,createItem,media}=require('./_lesson');
 function validRecord(raw,editing=false){if(!raw||typeof raw!=='object')return null;const uid=String(raw.uid||'').trim().slice(0,90),week=Number(raw.week),order=Number(raw.order),type=String(raw.type||''),title=String(raw.title||'').trim().slice(0,220),body=String(raw.body||'').slice(0,16000),image=String(raw.image||'').trim(),alt=String(raw.alt||'').slice(0,500),source=String(raw.source||'').slice(0,500),options=raw.options;
- if(!/^[A-Za-z0-9_-]{4,90}$/.test(uid)||![24,25,26].includes(week)||!Number.isFinite(order)||order<0||order>9999||!['slide','questao'].includes(type)||!title||!body||image&&!media(image)||!Array.isArray(options)||options.length>6||options.some(s=>typeof s!=='string'||!s.trim()||s.length>600))return null;
+ if(!/^[A-Za-z0-9_-]{4,90}$/.test(uid)||![24,25,26].includes(week)||!Number.isFinite(order)||order<0||order>9999||!['slide','questao','cartao'].includes(type)||!title||!body||image&&!media(image)||!Array.isArray(options)||options.length>6||options.some(s=>typeof s!=='string'||!s.trim()||s.length>600))return null;
  const answer=Number(raw.answer)||0,why=String(raw.why||'').slice(0,1800);
  if(type==='questao'&&(options.length<2||answer<1||answer>options.length||!why))return null;
- return {uid,semana:week,ordem:Math.round(order),tipo:type,titulo:title,corpo:body,imagem:image,alt,fonte:source,opcoes:type==='questao'?JSON.stringify(options):'',gabarito:type==='questao'?answer:0,justificativa:type==='questao'?why:'',ativo:raw.active!==false,pontos:type==='questao'?100:0};
+ return {uid,semana:week,ordem:Math.round(order),tipo:type,titulo:title,corpo:body,imagem:image,alt,fonte:source,opcoes:type==='questao'?JSON.stringify(options):'',gabarito:type==='questao'?answer:0,justificativa:type==='questao'||type==='cartao'?why:'',ativo:raw.active!==false,pontos:type==='questao'?100:0};
 }
 module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;if(!teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
  try{const rows=await loadContent();if(req.method==='GET'){send(res,200,{source:'Craft',items:rows});return;}
