@@ -2,7 +2,7 @@ const {classAccess}=require('./_http');
 'use strict';
 const {send,method,parseBody,str,eq}=require('./_http');
 const {listAttempts}=require('./_craft');
-module.exports=async(req,res)=>{if(!method(req,res,['POST']))return;
+module.exports=async(req,res)=>{if(req.query?.mode==='notebook')return require('./_notebook')(req,res);if(!method(req,res,['POST']))return;
  const b=parseBody(req);const studentId=str(b?.studentId,90),joinCode=str(b?.joinCode,80);
  if(!await classAccess(joinCode)||studentId.length<12){send(res,403,{error:'Identificação da turma inválida.'});return}
  try{const all=await listAttempts();const attempts=all.filter(i=>i.properties?.alunoid===studentId).map(i=>{const p=i.properties||{};let answers=[];try{answers=JSON.parse(p.respostasjson||'[]');if(!Array.isArray(answers))answers=[]}catch{}return {id:i.id||'',week:Number(p.semana),activityId:String(p.jogo||''),points:Number(p.pontos)||0,maximum:Number(p.maximo)||0,elapsedSeconds:Number(p.duracaoseg)||0,attempt:Number(p.numerotentativa)||1,at:String(p.quandoiso||''),answers:answers.map(a=>({id:a.id,value:a.value,correct:a.correct,evidence:String(a.evidence||'').slice(0,900)}))}}).sort((a,b)=>b.at.localeCompare(a.at));

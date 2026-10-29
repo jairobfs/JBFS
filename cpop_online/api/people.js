@@ -4,7 +4,7 @@ const {request,itemsOf}=require('./_craft');
 const {send,method,teacher,parseBody,eq}=require('./_http');
 const COLLECTION='c7cf9221-23c4-deae-0324-43ebee1bb7d4';
 const revision=rows=>require('node:crypto').createHash('sha256').update(JSON.stringify(rows)).digest('hex').slice(0,16);
-module.exports=async(req,res)=>{
+module.exports=async(req,res)=>{if(req.query?.mode==='settings')return require('./_settings')(req,res);
  if(!method(req,res,['GET','POST','PUT']))return;
  const admin=await teacher(req),data=parseBody(req);
  if(!admin&&(req.method!=='POST'||!await classAccess(data?.joinCode||''))){send(res,403,{error:'Informe o código da turma para consultar os nomes.'});return;}
