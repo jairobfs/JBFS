@@ -91,3 +91,5 @@
 .test-toggle{display:flex;align-items:center;gap:7px;flex-direction:row!important;font-size:.77rem!important;color:var(--muted)}.test-toggle input{width:17px;height:17px;accent-color:var(--blue)}
 
 @media(max-width:650px){.topbar{padding:12px 14px;gap:8px;flex-wrap:wrap}.brand{font-size:1rem;gap:7px;min-width:0}.brand-mark{width:30px;height:30px;font-size:1rem;border-radius:9px}.brand small,.brand-divider{display:none}.top-actions{margin-left:auto;gap:9px;min-width:0;flex-wrap:wrap;justify-content:flex-end}.header-nav{font-size:.7rem}.connection-badge{font-size:0;padding:6px;width:22px;justify-content:center}.connection-badge .signal{width:7px;height:7px}.icon-btn{width:32px;height:32px}.footer{gap:8px;padding:16px;font-size:.67rem}.top-actions .chip{font-size:.67rem;padding:7px}}
+
+.editor-filters{display:grid;gap:8px;padding:0 2px 12px}.editor-filters input,.editor-filters select{width:100%;min-width:0;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg2);color:var(--ink);font-size:.79rem}.editor-row-num{font-variant-numeric:tabular-nums}
