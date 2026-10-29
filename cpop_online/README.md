@@ -49,6 +49,8 @@ Cada etapa da sala de aula oferece anotação livre e marcação para revisão. 
 
 Selecionar uma alternativa agora atualiza a etapa sem reconstruir a tela, preservando a posição, o foco e a área de texto; em desafios da semana 26, o progresso das portas e o bloqueio de navegação são recalculados. Há atalhos de resposta A–D no desktop quando o foco não está em um campo de edição.
 
+Em telas de até 960 px, o mapa de etapas é recolhível e fica fechado ao entrar. Até 760 px, uma barra de navegação fixa na base do celular oferece voltar/avançar, indica a etapa corrente e respeita as margens seguras do iPhone. A barra se oculta durante a digitação para não obstruir campos de resposta; o conteúdo completo e o índice desktop são preservados.
+
 ## Variáveis no Vercel
 
 - `CRAFT_API_BASE` — endereço privado da conexão Craft.
