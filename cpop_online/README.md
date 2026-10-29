@@ -17,12 +17,13 @@ Plataforma online para as semanas 24–26, com interface mobile-first, correçã
 
 | Variável | Função |
 | --- | --- |
-| `CRAFT_API_BASE` | URL privada da conexão oficial `https://connect.craft.do/link/<id>/api/v1` |
+| `CRAFT_API_BASE` | URL privada da conexão oficial `https://connect.craft.do/links/<id>/api/v1` |
+| `CRAFT_API_KEY` | Chave privada gerada no Craft; enviada somente em `Authorization: Bearer` pelo backend |
 | `CRAFT_COLLECTION_ID` | `a129558e-4d81-0531-8b07-acf4c126cc7c` |
 | `CPOP_CLASS_CODE` | Código compartilhado exclusivamente com a turma (mínimo de 6 caracteres) |
 | `CPOP_TEACHER_KEY` | Chave longa e exclusiva do educador (mínimo de 16 caracteres) |
 
-As duas últimas variáveis devem ser geradas aleatoriamente. Não devem entrar no GitHub nem no HTML. A URL da conexão também é uma credencial e deve ficar apenas no ambiente do servidor.
+As duas últimas variáveis devem ser geradas aleatoriamente. Não devem entrar no GitHub nem no HTML. A URL da conexão e a chave API devem ficar apenas no ambiente do servidor. Escolha o modo de acesso **API Key**, com permissão de leitura e escrita restrita ao documento dos jogos.
 
 ## Coleção no Craft
 
