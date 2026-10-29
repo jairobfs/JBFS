@@ -139,3 +139,10 @@
 .board-drop-hint{display:block;font-size:.65rem;line-height:1.4;color:var(--muted);padding:12px 5px 5px}
 @media(max-width:1100px){.editor-structure.board-mode{grid-template-columns:1fr}.editor-structure.board-mode .editor-sidebar{position:static;max-height:none}.editor-structure.board-mode .editor-list{max-height:none}}
 @media(max-width:650px){.editor-kanban{grid-template-columns:1fr}.editor-board-column{padding:11px}.editor-board-card{padding:12px}.board-controls button{width:42px;height:42px}.editor-board-column h3{font-size:1rem}}
+
+
+/* CP֍P · Avaliação espaçada dos cartões */
+.review-rating{margin:18px 0 2px;display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:12px 15px}
+.review-rating span{flex:1;min-width:150px;font-size:.85rem;font-weight:750;color:var(--muted)}
+.review-rating button{min-height:44px;min-width:124px}
+@media(max-width:600px){.review-rating{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.review-rating span{grid-column:1/-1}.review-rating button{min-width:0;width:100%}}
