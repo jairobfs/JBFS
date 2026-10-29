@@ -6,8 +6,9 @@ Uma aplicação canônica para toda a aula: apresentação, teoria, tirinhas/car
 
 | Rota | Função |
 | --- | --- |
-| `/` | Acesso, identidade do estudante e jogos das semanas |
-| `/aula.html` | Sequência teórica intercalada com questões e cartões; aluno pode seguir a apresentação do professor |
+| `/` | Entrada principal: abre a sala de aula completa (`/aula.html`) |
+| `/jogos.html` | Jogos independentes das semanas, preservados |
+| `/aula.html` | Aula integral: teoria, projeção, imagens, questões, cartões, caderno pessoal e acompanhamento opcional do professor; prévia livre sem envio de respostas |
 | `/estudar.html` | Meu progresso no Craft, cartões, biblioteca de materiais, justificativas e temporizador |
 | `/professor.html` | Tentativas, diagnósticos, desempenho e exportação CSV (reservado) |
 | `/editor.html` | Criar e editar slides, questões, imagens, gabaritos e cartões na mesma coleção do Craft (reservado) |
@@ -41,6 +42,12 @@ Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartõ
 9. A semana 26 tem seis portas; a interface exige resposta e justificativa antes de avançar no percurso autônomo. Uma liderança ao vivo do professor pode posicionar a turma em outra etapa. O código de saída só é emitido pelo servidor quando as seis respostas estão corretas.
 
 **Importante:** não há promessa de propagação instantânea em tempo real por websocket. O acompanhamento é por consultas periódicas, e a troca de conteúdo durante uma tentativa pode exigir atualização para preservar a correção.
+
+### Caderno particular durante a aula
+
+Cada etapa da sala de aula oferece anotação livre e marcação para revisão. O botão **Caderno** reúne os registros por semana, permite voltar a uma etapa e exporta um arquivo Markdown. Esses apontamentos pertencem ao navegador/dispositivo do estudante: **não são enviados ao Craft**, não sincronizam entre aparelhos e podem desaparecer se o navegador apagar os dados locais. A coleta de respostas avaliativas continua sendo feita exclusivamente pelo backend no Craft quando há identificação e envio confirmado.
+
+Selecionar uma alternativa agora atualiza a etapa sem reconstruir a tela, preservando a posição, o foco e a área de texto; em desafios da semana 26, o progresso das portas e o bloqueio de navegação são recalculados. Há atalhos de resposta A–D no desktop quando o foco não está em um campo de edição.
 
 ## Variáveis no Vercel
 
