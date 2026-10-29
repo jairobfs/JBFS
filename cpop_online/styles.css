@@ -383,3 +383,10 @@
  .editor-quicklinks{flex-direction:column}
  .editor-quicklink{justify-content:center}
 }
+
+/* Seleção da chamada amigável ao toque, inclusive no Safari para iPhone */
+.profile-name{position:relative}
+.roster-options{position:absolute;inset:auto 0 auto 0;top:calc(100% - 2px);z-index:80;max-height:245px;overflow:auto;overscroll-behavior:contain;padding:6px;border-radius:13px;background:var(--panel);border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line));box-shadow:0 18px 42px rgba(0,0,0,.2)}
+.roster-options[hidden]{display:none!important}
+.roster-options button{display:block;width:100%;min-height:45px;padding:12px 13px;text-align:left;background:transparent;border:0;border-radius:9px;color:var(--ink);font-size:.82rem;font-weight:710;line-height:1.35;white-space:normal}
+.roster-options button:hover,.roster-options button:focus-visible{background:color-mix(in srgb,var(--blue) 12%,var(--panel));outline:2px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:-2px}
