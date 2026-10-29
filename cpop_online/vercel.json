@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "framework": null,
+  "regions": ["gru1"],
+  "functions": {
+    "api/catalog.js": {"maxDuration": 30},
+    "api/health.js": {"maxDuration": 30},
+    "api/submit.js": {"maxDuration": 30},
+    "api/results.js": {"maxDuration": 30}
+  }
+}
