@@ -390,3 +390,43 @@
 .roster-options[hidden]{display:none!important}
 .roster-options button{display:block;width:100%;min-height:45px;padding:12px 13px;text-align:left;background:transparent;border:0;border-radius:9px;color:var(--ink);font-size:.82rem;font-weight:710;line-height:1.35;white-space:normal}
 .roster-options button:hover,.roster-options button:focus-visible{background:color-mix(in srgb,var(--blue) 12%,var(--panel));outline:2px solid color-mix(in srgb,var(--blue) 50%,transparent);outline-offset:-2px}
+
+
+/* Caderno individual: identidade editorial e acessibilidade móvel. */
+.notebook-craft-tools{display:block;padding:clamp(18px,3vw,26px);border-radius:20px;border-color:color-mix(in srgb,var(--jade) 35%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--jade) 8%,var(--panel)),color-mix(in srgb,var(--blue) 5%,var(--panel)));margin:22px 0}
+.notebook-craft-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px}
+.notebook-craft-heading h3{font-size:1.22rem;letter-spacing:-.035em;margin:7px 0 5px}
+.notebook-craft-heading>svg{height:27px;width:27px;color:var(--jade);flex:none}
+.notebook-craft-heading #personalSyncState{font-size:.76rem;font-weight:730;color:var(--jade)}
+.notebook-craft-tools>p{margin:0 0 16px;max-width:62ch;line-height:1.65;font-size:.82rem;color:var(--muted)}
+.notebook-cloud-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:17px 0}
+.notebook-cloud-actions>.primary{grid-column:1/-1}
+.notebook-craft-tools button,.notebook-craft-tools a{min-width:0;min-height:48px;line-height:1.35;padding:12px 14px}
+.notebook-craft-tools .primary{background:var(--jade);color:var(--bg);border-color:transparent}
+#personalConnect{margin-top:19px;padding-top:18px;border-top:1px solid var(--line)}
+#personalConnect .personal-onboarding h3{font-size:1.24rem;margin:8px 0}
+#personalConnect .personal-onboarding>p{font-size:.82rem;line-height:1.7;margin-bottom:15px}
+.personal-steps{display:grid;gap:10px;margin:18px 0 22px}
+.personal-steps>div{display:grid;grid-template-columns:39px minmax(0,1fr);gap:12px;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.personal-steps b{width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:color-mix(in srgb,var(--jade) 18%,var(--panel));color:var(--jade);font-size:.8rem}
+.personal-steps strong{display:block;margin:1px 0 5px;font-size:.83rem}
+.personal-steps small{display:block;font-size:.76rem;line-height:1.55;color:var(--muted)}
+.personal-steps a{display:inline-flex;width:auto;margin:10px 5px 0 0;padding:8px 10px;min-height:37px;font-size:.73rem}
+#personalCraftForm{display:grid;gap:13px}
+#personalCraftForm .field{min-width:0}
+#personalCraftForm .field input,#personalCraftForm .field select{min-width:0;width:100%;font-size:16px}
+#personalCraftForm .profile-alias{padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel)}
+#personalCraftForm .profile-alias button{margin-top:12px}
+#personalCraftForm #personalStatus{font-size:.79rem;color:var(--jade);line-height:1.6;overflow-wrap:anywhere}
+#personalCraftForm button[disabled]{opacity:.55;cursor:wait}
+.notebook-craft-tools .notebook-craft-link:not([hidden]){border-color:var(--jade);background:color-mix(in srgb,var(--jade) 11%,var(--panel))}
+#personalNoteLink[hidden]{display:none!important}
+@media(max-width:560px){.notebook-craft-tools{padding:17px}.notebook-cloud-actions{grid-template-columns:1fr}.notebook-cloud-actions>.primary{grid-column:auto}.notebook-sheet{max-height:94dvh;max-height:94svh}.notebook-head h2{font-size:clamp(1.65rem,7vw,2.15rem)}.personal-steps>div{padding:12px}.notebook-craft-tools button,.notebook-craft-tools a{width:100%}}
+
+.teacher-access-explainer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.teacher-access-explainer>div{display:grid;gap:7px;border:1px solid var(--line);background:var(--panel2);border-radius:14px;padding:17px}
+.teacher-access-explainer strong{font-size:.9rem;color:var(--ink)}
+.teacher-access-explainer span{font-size:.8rem;line-height:1.6;color:var(--muted)}
+.teacher-search{flex:1;min-width:min(240px,100%)}
+.teacher-search input{width:100%;min-height:45px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font-size:16px}
+@media(max-width:670px){.teacher-access-explainer{grid-template-columns:1fr}.teacher-search{width:100%}.teacher-tabs{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;padding:7px 0 13px;-webkit-overflow-scrolling:touch}.teacher-tabs button{flex:0 0 auto;scroll-snap-align:start;min-height:45px;padding:12px}.teacher-search input{min-width:0;width:100%}}

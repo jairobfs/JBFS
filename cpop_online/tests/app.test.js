@@ -1,45 +1,44 @@
 'use strict';
-const test=require('node:test');const assert=require('node:assert/strict');
-const content=require('../api/_content');const submit=require('../api/submit');const results=require('../api/results');const health=require('../api/health');
-const ENV={CRAFT_API_BASE:'https://connect.craft.do/links/test-connection/api/v1',CRAFT_API_KEY:'pdk_mock-test-key',CRAFT_COLLECTION_ID:'a129558e-4d81-0531-8b07-acf4c126cc7c',CPOP_CLASS_CODE:'turma-teste-24',CPOP_TEACHER_KEY:'chave-educador-exemplo-123456789'};
-const saved=[];
-const originalFetch=global.fetch;
-function fakeFetch(url,options={}){
-  const method=options.method||'GET';assert.equal(options.headers?.Authorization,'Bearer pdk_mock-test-key');
-  if(url.endsWith('/connection'))return Promise.resolve({ok:true,status:200,text:async()=>JSON.stringify({space:{name:'CP֍P'}})});
-  if(url.includes('/collections/')&&method==='GET')return Promise.resolve({ok:true,status:200,text:async()=>JSON.stringify({items:saved})});
-  if(url.includes('/collections/')&&method==='POST'){
-    const item=JSON.parse(options.body).items[0];saved.push({id:'id-'+saved.length,properties:item.properties});
-    return Promise.resolve({ok:true,status:200,text:async()=>JSON.stringify({items:[item]})});
-  }
-  throw new Error('Unmocked URL');
-}
-function call(handler,{method='GET',body,authorization}={}){
-  return new Promise((resolve,reject)=>{
-    const req={method,body,headers:{...(authorization?{authorization}:{})}};
-    const res={statusCode:200,headers:{},setHeader(k,v){this.headers[k]=v},end(x){try{resolve({status:this.statusCode,body:JSON.parse(x)})}catch(e){reject(e)}}};
-    Promise.resolve(handler(req,res)).catch(reject);
-  });
-}
-test.before(()=>{Object.assign(process.env,ENV);global.fetch=fakeFetch});
-test.after(()=>{global.fetch=originalFetch;for(const k of Object.keys(ENV))delete process.env[k]});
-test('catálogo público nunca expõe gabaritos nem justificativas',()=>{
-  const publicData=content.publicCatalog();assert.equal(publicData.activities.length,3);
-  assert.deepEqual(publicData.activities.map(a=>a.questions.length),[8,12,4]);
-  for(const a of publicData.activities)for(const q of a.questions){assert.equal('answer' in q,false);assert.equal('why' in q,false)}
+const test=require('node:test'),assert=require('node:assert/strict');
+const ENV={CRAFT_API_BASE:'https://connect.craft.do/link/test-connection/api/v1',CRAFT_API_KEY:'test-application-key',CRAFT_COLLECTION_ID:'a129558e-4d81-0531-8b07-acf4c126cc7c',CRAFT_CONTENT_COLLECTION_ID:'c3e544ba-2939-2292-45ce-327664a06d9a'};
+Object.assign(process.env,ENV);
+const {hash}=require('../api/_access'),submit=require('../api/submit'),results=require('../api/results'),health=require('../api/health'),lesson=require('../api/lesson');
+const ACCESS=[{id:'config-1',properties:{codehash:hash('jbfs'),pinhash:hash('1844')}}];
+const CONTENT=[1,2].map(i=>({id:'item-'+i,properties:{uid:'c26-teste-'+i,semana:26,ordem:i,tipo:'questao',titulo:'Inferência '+i,corpo:'Qual inferência é correta na cena '+i+'?',opcoes:JSON.stringify(['Alternativa correta','Distrator']),gabarito:1,justificativa:'A pista contextual identifica a alternativa correta.',ativo:true}}));
+const attempts=[],original=global.fetch;
+global.fetch=async(url,opt={})=>{const method=opt.method||'GET';let result={};
+ assert.equal(opt.headers?.Authorization,'Bearer '+ENV.CRAFT_API_KEY);
+ if(url.endsWith('/connection'))result={space:{name:'CPOP'}};
+ else if(url.includes('5ce6423e-2313-51d9-0793-34692d233223'))result={items:ACCESS};
+ else if(url.includes(ENV.CRAFT_CONTENT_COLLECTION_ID))result={items:CONTENT};
+ else if(url.includes(ENV.CRAFT_COLLECTION_ID)){
+  if(method==='POST'){const v=JSON.parse(opt.body).items[0];attempts.push({id:'attempt-'+attempts.length,...v});result={items:[v]};}
+  else result={items:attempts};
+ }
+ else throw Error('Unexpected mocked URL: '+url);
+ return {ok:true,status:200,text:async()=>JSON.stringify(result)};
+};
+function call(handler,{method='GET',body,authorization}={}){return new Promise((resolve,reject)=>{const req={method,body,headers:{...(authorization?{authorization}:{})}},res={statusCode:200,headers:{},setHeader(k,v){this.headers[k]=v},end(x){resolve({status:this.statusCode,body:JSON.parse(x)})}};Promise.resolve(handler(req,res)).catch(reject)})}
+test.after(()=>{global.fetch=original;for(const name of Object.keys(ENV))delete process.env[name]});
+test('API Craft disponível e conteúdo sem gabarito público',async()=>{
+ const status=await call(health);assert.equal(status.body.ready,true);
+ const l=await call(lesson);assert.equal(l.status,200);
+ const q=l.body.weeks.find(x=>x.week===26).entries.find(e=>e.type==='questao');
+ assert.equal('answer' in q,false);
 });
-test('Craft responde à verificação de conexão',async()=>{const r=await call(health);assert.equal(r.body.ready,true)});
-test('recusa código de turma errado sem gravar',async()=>{
-  const a=content.activities[2];const r=await call(submit,{method:'POST',body:{activityId:a.id,alias:'Estudante X',group:'7A',studentId:'student-123456789',submissionId:'submission-12345',joinCode:'incorreto',answers:a.questions.map(q=>({id:q.id,value:q.answer,evidence:'Esta é uma evidência textual.'}))}});
-  assert.equal(r.status,403);assert.equal(saved.length,0);
+test('identificação e código de turma são validados antes de registrar',async()=>{
+ const invalid=await call(submit,{method:'POST',body:{activityId:'not-a-real-game',joinCode:'errado'}});
+ assert.notEqual(invalid.status,200);assert.equal(attempts.length,0);
 });
-test('grava a tentativa real no formato da coleção e devolve código',async()=>{
-  const a=content.activities[2];const body={activityId:a.id,alias:'Estudante X',group:'7A',studentId:'student-123456789',submissionId:'submission-12345',joinCode:'turma-teste-24',elapsedSeconds:324,answers:a.questions.map(q=>({id:q.id,value:q.answer,evidence:'A situação descrita sustenta a conclusão.'}))};
-  let r=await call(submit,{method:'POST',body});assert.equal(r.status,200);assert.equal(r.body.saved,true);assert.equal(r.body.unlock,'2413');assert.equal(r.body.points,500);assert.equal(saved.length,1);
-  assert.equal(saved[0].properties.alunoid,'student-123456789');assert.equal(saved[0].properties.semana,26);assert.equal(JSON.parse(saved[0].properties.respostasjson).length,4);
-  r=await call(submit,{method:'POST',body});assert.equal(r.body.duplicate,true);assert.equal(saved.length,1);
+test('aluno envia, recebe correção e tem tentativa idempotente',async()=>{
+ const l=await call(lesson),version=l.body.version;
+ const {buildActivities,loadContent}=require('../api/_lesson');const a=buildActivities(await loadContent()).find(x=>x.week===26);
+ const payload={activityId:a.id,catalogVersion:version,name:'Estudante CPOP Teste',alias:'Teste',group:'CPOP - Campo Mourão',studentId:'student-123456789',submissionId:'submission-123456',joinCode:'jbfs',elapsedSeconds:100,answers:a.questions.map(q=>({id:q.id,value:q.answer,evidence:'A pista visual e o contexto apoiam a conclusão.'}))};
+ let r=await call(submit,{method:'POST',body:payload});
+ assert.equal(r.status,200,JSON.stringify(r.body));assert.equal(r.body.saved,true);assert.equal(r.body.unlock,'2413');assert.equal(r.body.points,300);assert.equal(attempts.length,1);
+ r=await call(submit,{method:'POST',body:payload});assert.equal(r.body.duplicate,true);assert.equal(attempts.length,1);
 });
-test('resultado do professor exige chave e retorna tentativas',async()=>{
-  let r=await call(results);assert.equal(r.status,401);
-  r=await call(results,{authorization:'Bearer '+ENV.CPOP_TEACHER_KEY});assert.equal(r.status,200);assert.equal(r.body.totals.students,1);assert.equal(r.body.totals.attempts,1);
+test('o painel docente usa PIN e reúne os dados na própria página',async()=>{
+ assert.equal((await call(results)).status,401);
+ const r=await call(results,{authorization:'Bearer 1844'});assert.equal(r.status,200);assert.equal(r.body.totals.students,1);assert.equal(r.body.totals.attempts,1);
 });

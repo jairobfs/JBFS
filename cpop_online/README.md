@@ -14,7 +14,7 @@ Uma aplicação canônica para toda a aula: apresentação, teoria, tirinhas/car
 | `/editor.html` | Criar e editar slides, questões, imagens, gabaritos e cartões na mesma coleção do Craft (reservado) |
 | `/apresentar.html` | Controlar a etapa transmitida à turma e revelar gabaritos apenas no painel docente (reservado) |
 
-Produção: https://cpop-linguagens-jairobfs7-1343s-projects.vercel.app/
+Produção canônica: https://cpop-linguagens.vercel.app/aula.html
 
 ## Fonte de verdade: quatro coleções Craft
 
@@ -45,7 +45,16 @@ Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartõ
 
 ### Caderno particular durante a aula
 
-Cada etapa da sala de aula oferece anotação livre e marcação para revisão. O botão **Caderno** reúne os registros por semana, permite voltar a uma etapa e exporta um arquivo Markdown. Esses apontamentos pertencem ao navegador/dispositivo do estudante: **não são enviados ao Craft**, não sincronizam entre aparelhos e podem desaparecer se o navegador apagar os dados locais. A coleta de respostas avaliativas continua sendo feita exclusivamente pelo backend no Craft quando há identificação e envio confirmado.
+Cada etapa tem um campo de notas e marcação para revisão, com salvamento local imediato. O painel **Caderno** oferece copiar Markdown, exportar `.md`, conectar uma nota do Craft e sincronização nos dois sentidos:
+
+1. O estudante identifica-se com **nome completo**, seleciona a turma fixa **CPOP - Campo Mourão** e usa o código de participação (atualmente `jbfs`); pode escrever o nome ou selecioná-lo da lista de chamada.
+2. Sem conexão Craft, as notas permanecem apenas no dispositivo.
+3. Na área **Configurar meu Craft**, a pessoa entra/cria conta gratuitamente em `docs.craft.do`, autoriza uma conexão API de leitura/escrita em **Imagine** e cola a URL fornecida pelo Craft. Sua senha de login **nunca** é solicitada pelo CPOP.
+4. O botão **Criar meu caderno no Craft** cria uma nota pessoal com nome e apresentação editorial. Em uma conexão que não permita criar documentos, pode escolher uma nota existente. O vínculo fica em cookie cifrado HttpOnly, separado por dispositivo e aluno.
+5. Novas edições feitas pela aula são gravadas no Craft após um breve intervalo e confirmação de releitura; **Enviar notas já escritas** envia os registros locais anteriores. **Trazer edições do Craft** recupera textos alterados no Craft com confirmação quando haveria substituição de conteúdo local. Ambos permanecem editáveis.
+6. A nota pessoal é privada e não aparece no painel docente. As respostas avaliativas são gravadas separadamente na coleção institucional.
+
+**Limite conhecido:** ainda não há botão de OAuth integrado no aplicativo CPOP. A conexão individual usa a URL de API autorizada pelo próprio usuário; o fluxo OAuth oficial do Craft requer um adaptador específico e deve ser implementado e testado separadamente antes de ser anunciado como funcional. O armazenamento local não substitui backup e pode ser perdido caso o navegador apague dados.
 
 Selecionar uma alternativa agora atualiza a etapa sem reconstruir a tela, preservando a posição, o foco e a área de texto; em desafios da semana 26, o progresso das portas e o bloqueio de navegação são recalculados. Há atalhos de resposta A–D no desktop quando o foco não está em um campo de edição.
 
@@ -59,8 +68,7 @@ Em telas de até 960 px, o mapa de etapas é recolhível e fica fechado ao entra
 - `CRAFT_CONTENT_COLLECTION_ID` — coleção de conteúdos.
 - `CRAFT_LIVE_COLLECTION_ID` — estado da projeção.
 - `CRAFT_REVIEW_COLLECTION_ID` — avaliações espaçadas dos cartões.
-- `CPOP_CLASS_CODE` — código distribuído à turma.
-- `CPOP_TEACHER_KEY` — credencial docente para edição, leitura de respostas e projeção.
+- Código da turma e PIN do educador são hashes scrypt com sal na coleção de configurações de acesso do Craft, alteráveis no painel do professor. Não há senhas individuais para estudantes.
 
 Nenhuma dessas credenciais privadas deve entrar no GitHub, no HTML público ou em capturas de tela. O estudante não precisa ter uma conta Craft; a coleção docente recebe dados pseudonimizados por identificador aleatório do dispositivo. Esse identificador e o código da turma não equivalem a autenticação forte.
 
