@@ -312,3 +312,74 @@
  .mobile-dock-progress strong{font-size:.73rem}
 }
 @media(prefers-reduced-motion:reduce){.lecture-outline-toggle>svg:last-child{transition:none}}
+
+
+/* CP֍P · Identificação pessoal e estúdio com largura adaptativa */
+.profile-box,.class-profile{
+ display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.7fr) minmax(170px,.95fr) minmax(140px,.75fr);
+ align-items:start;gap:15px 18px;padding:clamp(19px,3vw,29px);
+ border:1px solid color-mix(in srgb,var(--blue) 18%,var(--line));
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 98%,var(--blue)),var(--panel));
+ box-shadow:0 14px 50px rgba(8,23,35,.08)
+}
+.profile-box .profile-intro,.class-profile .profile-intro{align-self:center;min-width:0}
+.profile-box .profile-intro h2,.class-profile .profile-intro h3{font-size:clamp(1.16rem,2vw,1.45rem);letter-spacing:-.035em}
+.profile-box .field,.class-profile .field{min-width:0;margin:0}
+.profile-box .field input,.profile-box .field select,.class-profile .field input,.class-profile .field select{
+ display:block;width:100%;min-width:0;min-height:48px;margin-top:6px;padding:11px 13px;
+ border:1px solid var(--line);border-radius:12px;background:var(--bg2);color:var(--ink);
+ outline:none;font:inherit;font-size:.9rem;transition:border-color .15s,box-shadow .15s
+}
+.profile-box .field input:focus,.profile-box .field select:focus,.class-profile .field input:focus,.class-profile .field select:focus{
+ border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 15%,transparent)
+}
+.profile-box .profile-name,.class-profile .profile-name{min-width:0}
+.roster-hint{display:block;margin-top:7px;font-size:.72rem;line-height:1.5;color:var(--muted)}
+.profile-alias{
+ grid-column:2/4;min-width:0;border:1px solid var(--line);border-radius:12px;
+ padding:11px 13px;background:color-mix(in srgb,var(--bg2) 75%,transparent)
+}
+.profile-alias summary{cursor:pointer;list-style:none;font-size:.78rem;font-weight:750;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.profile-alias summary::-webkit-details-marker{display:none}
+.profile-alias summary span{font-size:.67rem;font-weight:600;opacity:.72}
+.profile-alias[open]{padding-bottom:15px}
+.profile-alias .field{margin-top:12px}
+.profile-box>button,.class-profile>.profile-submit{grid-column:4/5;align-self:end;min-height:48px;white-space:nowrap}
+.editor-quicklinks{display:flex;gap:9px;flex-wrap:wrap;padding:4px 0 18px}
+.editor-quicklink{
+ display:inline-flex;align-items:center;min-height:38px;padding:9px 12px;border:1px solid var(--line);
+ border-radius:11px;background:var(--panel3);color:var(--ink);font-weight:750;font-size:.77rem;
+ text-decoration:none;transition:border-color .15s,transform .15s
+}
+.editor-quicklink:hover{border-color:var(--blue);transform:translateY(-1px)}
+.notebook-craft-tools{
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ gap:8px;padding:14px;border:1px solid var(--line);border-radius:15px;
+ background:color-mix(in srgb,var(--blue) 5%,var(--panel))
+}
+.notebook-craft-tools p{grid-column:1/-1;font-size:.75rem;line-height:1.6;color:var(--muted);margin:0}
+.notebook-craft-tools a,.notebook-craft-tools button{
+ min-height:43px;display:flex;align-items:center;justify-content:center;gap:8px;
+ border:1px solid var(--line);border-radius:11px;color:var(--ink);
+ background:var(--bg2);font-size:.78rem;font-weight:760;padding:10px;text-decoration:none
+}
+.notebook-craft-tools button{border-color:color-mix(in srgb,var(--jade) 50%,var(--line));background:color-mix(in srgb,var(--jade) 12%,var(--panel))}
+.notebook-craft-tools a:focus-visible,.notebook-craft-tools button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#copyNotebookStatus{grid-column:1/-1;margin:0;font-size:.73rem}
+@media(max-width:1200px){
+ .profile-box,.class-profile{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:start}
+ .profile-box .profile-intro,.class-profile .profile-intro{grid-column:1/-1}
+ .profile-alias{grid-column:1/2}
+ .profile-box>button,.class-profile>.profile-submit{grid-column:2/3;align-self:end}
+}
+@media(max-width:670px){
+ .profile-box,.class-profile{display:flex;flex-direction:column;gap:15px;padding:19px 17px;border-radius:20px}
+ .profile-box>*:not(.profile-intro),.class-profile>*:not(.profile-intro){width:100%}
+ .profile-box .profile-intro,.class-profile .profile-intro{width:100%}
+ .profile-box .field label,.class-profile .field label{font-size:.77rem}
+ .profile-box>button,.class-profile>.profile-submit{margin-top:3px;min-height:52px}
+ .notebook-craft-tools{grid-template-columns:minmax(0,1fr)}
+ .notebook-craft-tools a,.notebook-craft-tools button{width:100%}
+ .editor-quicklinks{flex-direction:column}
+ .editor-quicklink{justify-content:center}
+}
