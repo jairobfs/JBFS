@@ -25,7 +25,7 @@ Documento contêiner: CP֍P · Linguagens · Plataforma de jogos S24–S26, no e
 | Tentativas S24–S26 | `a129558e-4d81-0531-8b07-acf4c126cc7c` | Respostas, justificativas, duração, XP, idempotência, data e versão |
 | Sessão ao vivo | `5f9f66f0-8a45-ca8f-8e66-8d7dd96b1828` | Semana e UID da etapa projetada; estado de transmissão |
 
-Em 29/10/2026, o conteúdo contém 63 etapas, incluindo 30 questões e 14 cartões. Seis questões utilizam imagens preservadas em `https://r.craft.do/`, com metadados de crédito.
+Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartões. Sete questões têm imagens (seis do acervo original em `https://r.craft.do/` e uma imagem autoral da semana 24); o slide inicial da semana 24 também tem um infográfico SVG original hospedado no repositório GitHub, com crédito.
 
 ### Sincronização de edições
 
@@ -62,7 +62,7 @@ Paleta resgatada do Manual/Atlas Cromático real:
 ## Verificações realizadas
 
 - API pública de aula e catálogo respondendo HTTP 200 e lendo diretamente o Craft.
-- Conteúdo e imagens: 24/25/26, 63 etapas; 30 questões, seis URLs reais de imagens.
+- Conteúdo e imagens: 24/25/26, 64 etapas; 31 questões, seis URLs de imagens originais do acervo Craft e duas ilustrações SVG autorais servidas pelo GitHub.
 - Editor docente autenticado: GET 200; edição por PUT e leitura de volta; restauração do valor original.
 - Criação de slide pelo POST do editor: HTTP 201; item visto no Craft.
 - Sessão ao vivo: PUT 200, GET de leitura confirmou novo UID, posição original restaurada.
