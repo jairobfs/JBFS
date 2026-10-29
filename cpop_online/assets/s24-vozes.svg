@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">Mosaico da diversidade cultural e linguística brasileira</title><desc id="desc">Quatro painéis conectados: línguas originárias, culturas afro-brasileiras, variedades do português e direito à voz.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101B39"/><stop offset="1" stop-color="#07101E"/></linearGradient><linearGradient id="gold" x1="0" x2="1"><stop stop-color="#F5C96B"/><stop offset="1" stop-color="#EEAF3D"/></linearGradient></defs>
+<rect width="1280" height="720" rx="32" fill="url(#bg)"/>
+<path d="M64 50h1152" stroke="#324260" stroke-width="2"/><rect x="64" y="47" width="288" height="6" rx="3" fill="#1C3B8E"/><rect x="352" y="47" width="288" height="6" rx="3" fill="#B42620"/><rect x="640" y="47" width="288" height="6" rx="3" fill="#EEAF3D"/><rect x="928" y="47" width="288" height="6" rx="3" fill="#529F32"/>
+<text x="75" y="119" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="700" letter-spacing="4" fill="#B3C6E8">CP֍P · LINGUAGENS</text>
+<text x="74" y="188" font-family="Inter,Arial,sans-serif" font-size="59" font-weight="800" fill="#F3F4F6">O Brasil fala em muitas vozes.</text>
+<text x="76" y="228" font-family="Inter,Arial,sans-serif" font-size="23" fill="#B7C6DB">Histórias, línguas e experiências coexistem — nenhuma substitui a outra.</text>
+<g stroke-width="2" fill="none" stroke="#516785"><path d="M612 415H573"/><path d="M612 415H662"/><path d="M640 394V365"/><circle cx="639" cy="415" r="22" stroke="#EEAF3D"/></g>
+<g font-family="Inter,Arial,sans-serif">
+<rect x="74" y="276" width="530" height="174" rx="24" fill="#1B2D51" stroke="#4D6EAC" stroke-width="2"/>
+<rect x="94" y="299" width="72" height="72" rx="20" fill="#283F72"/><path d="M111 346q17-26 37 0M119 333h26M129 322h7" fill="none" stroke="#9CB8F4" stroke-width="5" stroke-linecap="round"/>
+<text x="186" y="335" font-size="29" font-weight="800" fill="#D3E1FF">Línguas originárias</text><text x="186" y="374" font-size="22" fill="#AEC3E5">Guarani · Kaingang · Tikuna</text><text x="186" y="405" font-size="18" fill="#9FB3D5">Pluralidade linguística viva</text>
+<rect x="676" y="276" width="530" height="174" rx="24" fill="#3A1E2A" stroke="#AA4D53" stroke-width="2"/>
+<rect x="696" y="299" width="72" height="72" rx="20" fill="#5B2A37"/><path d="M714 320v32m13-32v32m13-32v32M711 332h32" fill="none" stroke="#FFA8A0" stroke-width="4" stroke-linecap="round"/>
+<text x="786" y="335" font-size="28" font-weight="800" fill="#FFDBD7">Culturas afro-brasileiras</text><text x="786" y="374" font-size="22" fill="#F5B8B3">Literatura · oralidade · arte</text><text x="786" y="405" font-size="18" fill="#E1A5A5">Criação e memória no presente</text>
+<rect x="74" y="474" width="530" height="174" rx="24" fill="#382E16" stroke="#BD9242" stroke-width="2"/>
+<rect x="94" y="497" width="72" height="72" rx="20" fill="#5B4720"/><path d="M110 517h42v28h-26l-12 12v-12h-4z" fill="none" stroke="#F5D38B" stroke-width="4" stroke-linejoin="round"/>
+<text x="186" y="534" font-size="28" font-weight="800" fill="#FFF0C8">Variedades do português</text><text x="186" y="573" font-size="22" fill="#F5D596">Sotaques · registros · trajetórias</text><text x="186" y="604" font-size="18" fill="#DEC38E">Diferença não é deficiência</text>
+<rect x="676" y="474" width="530" height="174" rx="24" fill="#1C3629" stroke="#50985F" stroke-width="2"/>
+<rect x="696" y="497" width="72" height="72" rx="20" fill="#2B5039"/><path d="M712 533l14 14 27-30" fill="none" stroke="#A3E3A6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="786" y="534" font-size="29" font-weight="800" fill="#D9F6DD">Direito à voz</text><text x="786" y="573" font-size="22" fill="#B5E6BE">Respeito · representação · acesso</text><text x="786" y="604" font-size="18" fill="#A6D0AE">Falar diferente não reduz direitos</text>
+</g></svg>
