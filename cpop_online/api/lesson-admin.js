@@ -19,5 +19,6 @@ module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;
    send(res,200,{saved:true,changed:Object.keys(changes),source:'Craft'});return;
   }
   if(rows.some(r=>r.uid===p.uid)){send(res,409,{error:'Já existe um bloco com este identificador.'});return}
-  await createItem({bloco:'S'+p.semana+' · '+p.titulo,properties:p});send(res,201,{saved:true,created:true,source:'Craft'});
+  const createdProperties={...p};if(!createdProperties.imagem)delete createdProperties.imagem;
+  await createItem({bloco:'S'+p.semana+' · '+p.titulo,properties:createdProperties});send(res,201,{saved:true,created:true,source:'Craft'});
  }catch(e){console.error('Lesson edit',e.code||e.message,e.status||'');send(res,503,{error:'Não foi possível sincronizar esta edição com o Craft.'})}};
