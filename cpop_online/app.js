@@ -11,7 +11,7 @@
   function loadJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
   function save(key,x){localStorage.setItem(key,JSON.stringify(x))}
   function toast(s){notice.textContent=s;notice.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>notice.hidden=true,4300)}
-  function theme(){const current=localStorage.getItem('cpop.theme')||'dark';document.documentElement.dataset.theme=current}
+  function theme(){const current=localStorage.getItem('cpop.theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.dataset.theme=current;document.querySelector('meta[name="theme-color"]')?.setAttribute('content',current==='light'?'#FBF8F1':'#070A11')}
   theme();$('#themeToggle').addEventListener('click',()=>{const value=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=value;localStorage.setItem('cpop.theme',value)});
   async function init(){
     root.innerHTML='<div class="skeleton"></div>';
