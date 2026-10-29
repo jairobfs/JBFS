@@ -15,7 +15,7 @@ Uma aplicação canônica para toda a aula: apresentação, teoria, tirinhas/car
 
 Produção: https://cpop-linguagens-jairobfs7-1343s-projects.vercel.app/
 
-## Fonte de verdade: três coleções Craft
+## Fonte de verdade: quatro coleções Craft
 
 Documento contêiner: CP֍P · Linguagens · Plataforma de jogos S24–S26, no espaço CP֍P. Uma conexão privada de leitura/escrita foi limitada a esse documento.
 
@@ -24,6 +24,7 @@ Documento contêiner: CP֍P · Linguagens · Plataforma de jogos S24–S26, no e
 | Conteúdo editável S24–S26 | `c3e544ba-2939-2292-45ce-327664a06d9a` | Slides, cartões e questões; ordem, corpo, imagem, alternativas, gabarito, justificativa |
 | Tentativas S24–S26 | `a129558e-4d81-0531-8b07-acf4c126cc7c` | Respostas, justificativas, duração, XP, idempotência, data e versão |
 | Sessão ao vivo | `5f9f66f0-8a45-ca8f-8e66-8d7dd96b1828` | Semana e UID da etapa projetada; estado de transmissão |
+| Revisões conceituais | `ebb3c96e-55e6-9228-9523-7acbd154bc4a` | Autopercepção por cartão, repetição, intervalo e próxima data de revisão |
 
 Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartões. Sete questões têm imagens (seis do acervo original em `https://r.craft.do/` e uma imagem autoral da semana 24); o slide inicial da semana 24 também tem um infográfico SVG original hospedado no repositório GitHub, com crédito.
 
@@ -35,6 +36,9 @@ Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartõ
 4. Um POST do Estúdio adiciona novo bloco à coleção, imediatamente disponível no próximo GET.
 5. As respostas do estudante só são exibidas como entregues após confirmação de gravação na coleção de tentativas.
 6. O modo de apresentação guarda a posição no Craft; alunos que optarem por seguir o professor consultam a posição a cada ~8 segundos.
+7. O quadro editorial organiza publicados e rascunhos e permite alterar ordem e estado, gravando as mudanças no Craft.
+8. A biblioteca de cartões registra `Lembrei`/`Preciso rever` em uma coleção separada. O algoritmo simples de intervalos é 1, 3, 7, 14, 30 e 60 dias; **não é FSRS**.
+9. A semana 26 tem seis portas; a interface exige resposta e justificativa antes de avançar no percurso autônomo. Uma liderança ao vivo do professor pode posicionar a turma em outra etapa. O código de saída só é emitido pelo servidor quando as seis respostas estão corretas.
 
 **Importante:** não há promessa de propagação instantânea em tempo real por websocket. O acompanhamento é por consultas periódicas, e a troca de conteúdo durante uma tentativa pode exigir atualização para preservar a correção.
 
@@ -45,6 +49,7 @@ Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartõ
 - `CRAFT_COLLECTION_ID` — coleção de tentativas.
 - `CRAFT_CONTENT_COLLECTION_ID` — coleção de conteúdos.
 - `CRAFT_LIVE_COLLECTION_ID` — estado da projeção.
+- `CRAFT_REVIEW_COLLECTION_ID` — avaliações espaçadas dos cartões.
 - `CPOP_CLASS_CODE` — código distribuído à turma.
 - `CPOP_TEACHER_KEY` — credencial docente para edição, leitura de respostas e projeção.
 
@@ -68,7 +73,9 @@ Paleta resgatada do Manual/Atlas Cromático real:
 - Sessão ao vivo: PUT 200, GET de leitura confirmou novo UID, posição original restaurada.
 - Progresso individual: consulta autenticada à turma retornou tentativas existentes no Craft.
 - Acesso sem credencial docente recebe HTTP 401; progresso sem código de turma recebe HTTP 403.
+- Código de revisão de cartões e análise docente verificado sintaticamente; rota pública `/api/review` rejeita código de turma inválido com HTTP 403. A escrita de uma avaliação real ainda exige um teste de ponta a ponta com participante autorizado.
 - Arquivos JS foram verificados sintaticamente, mas esta entrega não substitui uma revisão visual manual nos principais dispositivos.
+- Implantações Vercel podem ficar atrasadas por limite diário de uso; distinguir o código do repositório da versão atualmente respondendo no domínio.
 
 ## Integridade pedagógica
 
