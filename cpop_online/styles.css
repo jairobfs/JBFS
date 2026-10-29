@@ -156,3 +156,13 @@
 .escape-final strong{display:block;font-size:clamp(1.8rem,5vw,3.4rem);font-weight:850;letter-spacing:-.055em;margin:13px 0 6px;color:var(--ink)}
 .escape-final.open strong{font-variant-numeric:tabular-nums;letter-spacing:.15em;color:var(--green)}
 .escape-final p{max-width:630px;line-height:1.5;color:var(--muted)}
+
+
+/* CP֍P · Diagnóstico formativo de revisão */
+.review-class-panel{margin-top:18px}
+.review-class-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0 24px}
+.review-class-metrics>div{border:1px solid var(--line);border-radius:12px;background:var(--bg2);padding:16px;min-width:0}
+.review-class-metrics strong{display:block;font-size:clamp(1.45rem,3vw,2.1rem);letter-spacing:-.04em;color:var(--blue);font-variant-numeric:tabular-nums}
+.review-class-metrics span{display:block;margin-top:7px;color:var(--muted);font-size:.75rem;line-height:1.35}
+.teacher-recall-list h3{font-size:.95rem;margin:0 0 13px}
+@media(max-width:600px){.review-class-metrics{grid-template-columns:1fr 1fr}.review-class-metrics>div:first-child{grid-column:1/-1}}
