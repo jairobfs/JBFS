@@ -1,5 +1,5 @@
 (()=>{
-'use strict';
+'use strict';if(new URLSearchParams(location.search).get('embed')==='1'){document.querySelector('.topbar')?.remove();document.querySelector('.footer')?.remove();}
 const root=document.querySelector('#presenterRoot'),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let token=sessionStorage.getItem('cpop.teacher.token')||'',lesson=null,admin=[],week=24,index=0,live=false,busy=false,reveal=false;
 const rich=x=>String(x||'').split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<span class="soft-break"></span>')+'</p>').join('');

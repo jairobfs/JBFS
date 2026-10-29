@@ -7,7 +7,7 @@ function validRecord(raw,editing=false){if(!raw||typeof raw!=='object')return nu
  if(type==='questao'&&(options.length<2||answer<1||answer>options.length||!why))return null;
  return {uid,semana:week,ordem:Math.round(order),tipo:type,titulo:title,corpo:body,imagem:image,alt,fonte:source,opcoes:type==='questao'?JSON.stringify(options):'',gabarito:type==='questao'?answer:0,justificativa:type==='questao'||type==='cartao'?why:'',ativo:raw.active!==false,pontos:type==='questao'?100:0};
 }
-module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;if(!teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
+module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
  try{const rows=await loadContent();if(req.method==='GET'){send(res,200,{source:'Craft',items:rows});return;}
   const data=parseBody(req);const p=validRecord(data?.item);if(!p){send(res,422,{error:'Campos inválidos. Revise título, texto, alternativas e gabarito.'});return;}
   if(req.method==='PUT'){const id=String(data?.id||'');const current=rows.find(r=>r.id===id);if(!current){send(res,404,{error:'Bloco inexistente no Craft.'});return}
@@ -22,3 +22,4 @@ module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;
   const createdProperties={...p};if(!createdProperties.imagem)delete createdProperties.imagem;
   await createItem({bloco:'S'+p.semana+' · '+p.titulo,properties:createdProperties});send(res,201,{saved:true,created:true,source:'Craft'});
  }catch(e){console.error('Lesson edit',e.code||e.message,e.status||'');send(res,503,{error:'Não foi possível sincronizar esta edição com o Craft.'})}};
+

@@ -1,3 +1,4 @@
+const {classAccess}=require('./_http');
 'use strict';
 const crypto=require('node:crypto');
 const {send,method,str,eq,parseBody}=require('./_http');
@@ -9,7 +10,7 @@ function clean(row){const p=row.properties||{};return {id:String(row.id||''),car
 module.exports=async(req,res)=>{
  if(!method(req,res,['POST']))return;
  const body=parseBody(req),studentId=str(body?.studentId,90),joinCode=str(body?.joinCode,80),action=str(body?.action,20);
- if(!process.env.CPOP_CLASS_CODE||!eq(joinCode,process.env.CPOP_CLASS_CODE)||studentId.length<12){send(res,403,{error:'Identificação da turma inválida.'});return;}
+ if(!await classAccess(joinCode)||studentId.length<12){send(res,403,{error:'Identificação da turma inválida.'});return;}
  if(!['list','rate'].includes(action)){send(res,422,{error:'Ação de revisão inválida.'});return;}
  try{
   const rows=await allReviews(),personal=rows.filter(r=>r.properties?.alunoid===studentId).map(clean).sort((a,b)=>b.at.localeCompare(a.at));

@@ -1,3 +1,4 @@
+const {classAccess}=require('./_http');
 'use strict';
 const {request,itemsOf}=require('./_craft');
 const {send,method,teacher,parseBody,eq}=require('./_http');
@@ -5,8 +6,8 @@ const COLLECTION='c7cf9221-23c4-deae-0324-43ebee1bb7d4';
 const revision=rows=>require('node:crypto').createHash('sha256').update(JSON.stringify(rows)).digest('hex').slice(0,16);
 module.exports=async(req,res)=>{
  if(!method(req,res,['GET','POST','PUT']))return;
- const admin=teacher(req),data=parseBody(req);
- if(!admin&&(req.method!=='POST'||!process.env.CPOP_CLASS_CODE||!eq(data?.joinCode||'',process.env.CPOP_CLASS_CODE))){send(res,403,{error:'Informe o código da turma para consultar os nomes.'});return;}
+ const admin=await teacher(req),data=parseBody(req);
+ if(!admin&&(req.method!=='POST'||!await classAccess(data?.joinCode||''))){send(res,403,{error:'Informe o código da turma para consultar os nomes.'});return;}
  try{
  const rows=itemsOf(await request('/collections/'+COLLECTION+'/items?maxDepth=0')).map(x=>({id:x.id,name:String(x.nome||x.title||''),active:x.properties?.ativo!==false}));
  if(req.method==='PUT'){

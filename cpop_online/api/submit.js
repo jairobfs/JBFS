@@ -1,3 +1,4 @@
+const {classAccess}=require('./_http');
 'use strict';
 const crypto=require('node:crypto');
 const {loadContent,buildActivities,fingerprint}=require('./_lesson');const {send,method,str,eq,parseBody}=require('./_http');
@@ -9,8 +10,7 @@ module.exports=async(req,res)=>{
  if(data.catalogVersion&&data.catalogVersion!==version){send(res,409,{error:'O educador atualizou as questões. Recarregue a aula para responder à versão atual.'});return;}
  const activity=activities.find(a=>a.id===data.activityId);const name=str(data.name,120).replace(/\s+/g,' '),alias=str(data.alias,40),group=str(data.group,40),studentId=str(data.studentId,90),submissionId=str(data.submissionId,90),joinCode=str(data.joinCode,80);
  if(!activity||name.length<4||group!=='CPOP - Campo Mourão'||studentId.length<12||submissionId.length<12||!Array.isArray(data.answers)){send(res,422,{error:'Identificação ou atividade inválida.'});return;}
- const configuredCode=process.env.CPOP_CLASS_CODE;if(!configuredCode||configuredCode.length<4){send(res,503,{error:'Código da turma ainda não configurado.'});return;}
- if(!eq(configuredCode,joinCode)){send(res,403,{error:'Código de acesso da turma incorreto.'});return;}
+ if(!await classAccess(joinCode)){send(res,403,{error:'Código de acesso da turma incorreto.'});return;}
  if(data.answers.length!==activity.questions.length||data.answers.some(a=>typeof a?.id!=='string'||!Number.isInteger(a?.value)||a.value<1||a.value>6||typeof a.evidence!=='string'||a.evidence.length>900)){send(res,422,{error:'Respostas incompletas ou inválidas.'});return;}
  const byId=new Map(data.answers.map(a=>[a.id,a]));if(byId.size!==activity.questions.length||activity.questions.some(q=>!byId.has(q.id))){send(res,422,{error:'Há questões ausentes ou repetidas.'});return;}
  if(activity.questions.some(q=>{const a=byId.get(q.id);return a.value>q.options.length||(q.evidence&&str(a.evidence,900).length<8)})){send(res,422,{error:'Responda a todas as questões e justifique as inferências.'});return;}
