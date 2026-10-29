@@ -5,7 +5,7 @@ const {listAttempts,saveAttempt}=require('./_craft');
 module.exports=async(req,res)=>{
  if(!method(req,res,['POST']))return;
  const data=parseBody(req);if(!data||typeof data!=='object'||data.website){send(res,422,{error:'Envio inválido.'});return;}
- let activities,version;try{const rows=await loadContent();activities=buildActivities(rows);version='craft-'+fingerprint(rows)}catch(e){console.error('Submission content',e.code||e.message);send(res,503,{error:'A avaliação está temporariamente indisponível no Craft.'});return;}
+ let activities,version;try{const rows=await loadContent();activities=buildActivities(rows);version='craft-'+fingerprint(rows.filter(r=>r.type==='questao'&&r.active))}catch(e){console.error('Submission content',e.code||e.message);send(res,503,{error:'A avaliação está temporariamente indisponível no Craft.'});return;}
  if(data.catalogVersion&&data.catalogVersion!==version){send(res,409,{error:'O educador atualizou as questões. Recarregue a aula para responder à versão atual.'});return;}
  const activity=activities.find(a=>a.id===data.activityId);const alias=str(data.alias,40),group=str(data.group,40),studentId=str(data.studentId,90),submissionId=str(data.submissionId,90),joinCode=str(data.joinCode,80);
  if(!activity||alias.length<2||studentId.length<12||submissionId.length<12||group.length<1||!Array.isArray(data.answers)){send(res,422,{error:'Identificação ou atividade inválida.'});return;}
