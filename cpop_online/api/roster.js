@@ -12,10 +12,19 @@ module.exports=async(req,res)=>{
  if(query.length<2){send(res,200,{names:[]});return;}
  try{
   const result=await request('/blocks?id='+ROSTER_BLOCK+'&maxDepth=0');
-  const rows=Array.isArray(result.data)?result.data:Array.isArray(result.blocks)?result.blocks:Array.isArray(result.items)?result.items:[];
-  const row=rows[0]||((result.data&&!Array.isArray(result.data))?result.data:{});
-  const markdown=String(row.markdown||row.text?.value||'');
-  const names=markdown.split(/\r?\n|\\n/).map(s=>s.trim()).filter(s=>s.startsWith('- ')).map(s=>s.slice(2).trim()).filter(Boolean);
+  function findList(value,level=0){
+   if(level>7||value==null)return '';
+   if(typeof value==='string')return value.includes('Lista de presença')?value:'';
+   if(Array.isArray(value)){for(const v of value){const found=findList(v,level+1);if(found)return found;}return '';}
+   if(typeof value==='object'){
+    for(const key of ['markdown','content','text','value','data','blocks','items','result']){
+     if(Object.prototype.hasOwnProperty.call(value,key)){const found=findList(value[key],level+1);if(found)return found;}
+    }
+   }return '';
+  }
+  const markdown=findList(result);
+  const names=markdown.replace(/\\n/g,'\n').split(/\r?\n/).map(s=>s.trim()).filter(s=>s.startsWith('- ')).map(s=>s.slice(2).trim()).filter(Boolean);
+  console.info('CPOP roster integrity',names.length);
   send(res,200,{names:names.filter(name=>normalize(name).includes(normalize(query))).slice(0,8)});
  }catch(e){console.error('Roster lookup',e.code||e.message);send(res,503,{error:'Lista de presença temporariamente indisponível.'});}
 };
