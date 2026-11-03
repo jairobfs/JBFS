@@ -30,7 +30,9 @@ jobs:
           node-version: '22'
       - name: Instalar ferramentas de build
         run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Testes de regressão
-        run: npm test
+      - name: Preparar arquivos públicos
+        run: npm run build:cloudflare
+      - name: Regressão Cloudflare, Craft, mini-simulado e cadernos
+        run: node --test tests/app.test.js tests/canon.test.js tests/cloudflare.test.js tests/content-format.test.js tests/editor-authoring.test.js tests/identity.test.js tests/media-routing.test.js tests/minisimulado.test.js tests/notebook.test.js tests/public-cache.test.js
       - name: Verificar bundle Cloudflare sem credenciais
         run: npx wrangler deploy --dry-run
