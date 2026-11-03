@@ -66,8 +66,8 @@
   }
   window.addEventListener('message', event => {
     if (event.origin !== location.origin) return;
-    if (studentNav && event.data?.type === 'cpop:embed-height') {
-      const frame = [...document.querySelectorAll('.student-portal-frame')].find(f => f.contentWindow === event.source);
+    if (event.data?.type === 'cpop:embed-height') {
+      const frame = [...document.querySelectorAll('.student-portal-frame, .teacher-frame')].find(f => f.contentWindow === event.source);
       const height = Number(event.data.height);
       if (!frame || !Number.isFinite(height) || height < 180 || height > 18000) return;
       const next = Math.ceil(height + 2);
