@@ -54,6 +54,19 @@ function fieldsOf(raw){
  }
  return out;
 }
+function textFields(fields){
+ const oneLine=x=>safe(x).replace(/\s*\n\s*/g,' ');
+ return fields.map((f,index)=>[
+  '## '+(index+1)+'. '+oneLine(f.label),
+  'ID: '+f.id,
+  'Tipo: '+f.kind,
+  'Obrigatória: '+(f.required?'sim':'não'),
+  f.hint?'Contexto: '+oneLine(f.hint):'',
+  ...f.options.map((opt,i)=>String.fromCharCode(65+i)+') '+oneLine(opt)),
+  f.kind==='radio'&&f.correct?'Gabarito: '+String.fromCharCode(64+f.correct):'',
+  f.explanation?'Explicação: '+oneLine(f.explanation):''
+ ].filter(Boolean).join('\n')).join('\n\n');
+}
 function normalize(row){
  const p=row.properties||{};
  if(p.tipo!=='formulario')return null;
@@ -128,6 +141,16 @@ module.exports=async(req,res)=>{
     out.progress=rows.map(r=>{const form=forms.find(f=>f.uid===r.formId);return {formId:r.formId,answers:r.answers,updated:r.updated,final:r.final,review:form?feedback(form,r.answers):null};});
    }
    send(res,200,out);return;
+  }
+  if(body.action==='simplify'){
+   if(!await teacher(req)){send(res,401,{error:'Acesso docente necessário.'});return;}
+   const old=forms.find(f=>f.id===body.id);
+   if(!old){send(res,404,{error:'Formulário não encontrado.'});return;}
+   if(old.revision!==body.revision){send(res,409,{error:'O conteúdo foi modificado no Craft. Atualize antes de converter.'});return;}
+   const plain=textFields(old.fields);
+   if(!fieldsOf(plain)){send(res,422,{error:'O texto da atividade não pôde ser convertido sem perda de dados.'});return;}
+   await request('/collections/'+CONTENT+'/items','PUT',{itemsToUpdate:[{id:old.id,properties:{opcoes:plain}}]});
+   send(res,200,{saved:true,format:'texto',source:'Craft'});return;
   }
   if(body.action==='save'){
    if(!await teacher(req)){send(res,401,{error:'Acesso docente necessário.'});return;}
