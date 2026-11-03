@@ -4,6 +4,7 @@ const APP=document.getElementById('app'), TOAST=document.getElementById('toast')
 const MODE=new URLSearchParams(location.search).get('modo')||'aluno';
 const ID='mini-linguagens-2026-11', API='/api/lesson?mini=1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const formatStem=s=>esc(String(s??'').replace(/\\n/g,'\n').replace(/\\\*/g,'*')).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
 const stored=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k))??fallback}catch{return fallback}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 const $=(s,base=document)=>base.querySelector(s);
@@ -29,7 +30,7 @@ function req(method,body,teacher=false){
  return fetchJSON(API,{method,headers:{'Content-Type':'application/json',...(teacher?{Authorization:'Bearer '+teacherToken}:{})},body:JSON.stringify(body)});
 }
 function renderQuestion(q,number,selected=0,showCorrect=false,correct=0){
- return '<div class="qid">QUESTÃO '+String(number).padStart(2,'0')+' · '+esc(q.title)+'</div><div class="stem">'+esc(q.body)+'</div>'+
+ return '<div class="qid">QUESTÃO '+String(number).padStart(2,'0')+' · '+esc(q.title)+'</div><div class="stem">'+formatStem(q.body)+'</div>'+
   (q.image?'<figure><img src="'+esc(q.image)+'" loading="lazy" alt="'+esc(q.alt||q.title)+'"><figcaption>'+esc(q.source||'Acervo CPOP')+'</figcaption></figure>':'')+
   '<div class="choices">'+q.options.map((o,i)=>'<div class="choice '+(selected===i+1?'checked':'')+'" '+(showCorrect&&correct===i+1?'style="border-color:var(--green)"':'')+'><span class="letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o)+'</span></div>').join('')+'</div>'+
   '<p class="micro">Fonte: '+esc(q.source||'Banco canônico do CPOP')+'</p>';
@@ -73,7 +74,7 @@ function renderStudent(){
  '<p class="micro">Verde: alternativa selecionada. Amarelo: resposta apenas por comentário. Comentários podem acompanhar qualquer alternativa.</p><label class="row micro"><input type="checkbox" id="followTeacher" '+(follow?'checked':'')+'> Seguir projeção do professor</label><p id="syncStatus" class="status">'+esc(statusText)+'</p>'+
  (finalized?'<div class="note">Sua entrega está registrada no Craft. A devolutiva textual do professor pode ser consultada posteriormente nesta página.</div>':'<button id="finish" class="primary" '+(completedNum!==15?'disabled':'')+'>Finalizar e enviar</button>')+'</aside>'+
  '<section class="card question-card"><div class="row space"><span class="chip">Questão '+(position+1)+' de 15</span><span class="chip">'+(a.choice?'Alternativa '+String.fromCharCode(64+a.choice):a.comment.length>=8?'Comentário registrado':'Não respondida')+'</span></div><div class="line"></div>'+
- '<div class="qid">'+esc(q.title)+'</div><div class="stem">'+esc(q.body)+'</div>'+
+ '<div class="qid">'+esc(q.title)+'</div><div class="stem">'+formatStem(q.body)+'</div>'+
  (q.image?'<figure><img src="'+esc(q.image)+'" alt="'+esc(q.alt||q.title)+'"><figcaption>'+esc(q.source)+'</figcaption></figure>':'')+
  '<fieldset class="choices" style="border:0;padding:0"><legend class="eyebrow" style="margin-bottom:8px">Selecione uma alternativa (opcional se comentar)</legend>'+
  q.options.map((o,i)=>'<label class="choice '+(a.choice===i+1?'checked':'')+'"><input type="radio" name="choice" value="'+(i+1)+'" '+(a.choice===i+1?'checked':'')+' '+(finalized?'disabled':'')+'><span class="letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o)+'</span></label>').join('')+'</fieldset>'+
@@ -91,7 +92,7 @@ function renderStudent(){
    a.choice=Number(i.value);markDirty();renderStudent();
   });
   $('#comment').oninput=e=>{
-   a.comment=e.target.value;markDirty();const s=$('#syncStatus');if(s)s.textContent=statusText;
+   a.comment=e.target.value;markDirty();const s=$('#syncStatus');if(s)s.textContent=statusText;const finish=$('#finish');if(finish)finish.disabled=completed()!==15;const progress=$('.progressbar span');if(progress)progress.style.width=Math.round(completed()/15*100)+'%';
   };
   $('#comment').onblur=()=>{const c=$('#syncStatus');if(c)c.textContent=statusText};
   $('#finish').onclick=finish;
