@@ -14,6 +14,7 @@ const richBody=x=>{const y=esc(String(x||'').replace(/\\([*_])/g,'$1'));return y
 let bank=null,profile=null,answers=[],position=0,finalized=false,dirty=false,saveTimer=null,saveQueue=Promise.resolve(),statusText='',
     teacherToken=sessionStorage.getItem('cpop.teacher.token')||'',tData=null,tPosition=0,follow=stored('cpop.mini.follow',false),snapshot='';
 const teacherView={mode:'all',query:''};
+let clockBase=null;
 const dark=stored('cpop.mini.dark',null);
 document.documentElement.dataset.theme=dark===null?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):(dark?'dark':'light');
 $('#toggleTheme').onclick=()=>{const yes=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=yes?'dark':'light';write('cpop.mini.dark',yes)};
@@ -290,6 +291,38 @@ function applyTeacherFilters(){
  const count=$('#teacherFilterCount');if(count)count.textContent=visible+' de '+(tData?.records.length||0)+' participantes';
  $('[data-teacher-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.teacherFilter===teacherView.mode)));
  const empty=$('#teacherNoMatches');if(empty)empty.hidden=visible!==0;
+}
+
+
+function showClock(seconds){
+ const value=Math.max(0,Math.ceil(seconds));
+ return String(Math.floor(value/60)).padStart(2,'0')+':'+String(value%60).padStart(2,'0');
+}
+function clockSync(clock){
+ if(!clock)return;
+ const duration=Number(clock.duration)||120;
+ let remainingMs=Math.max(0,(Number(clock.remaining)||0)*1000);
+ if(clock.running&&clock.deadline&&clock.serverTime){
+  remainingMs=Math.max(0,Date.parse(clock.deadline)-Date.parse(clock.serverTime));
+ }
+ clockBase={duration,remainingMs,receivedAt:performance.now(),running:clock.running===true};
+ clockTick();
+}
+function clockTick(){
+ if(!clockBase)return;
+ const ms=Math.max(0,clockBase.remainingMs-(clockBase.running?performance.now()-clockBase.receivedAt:0));
+ const seconds=Math.ceil(ms/1000);
+ for(const id of ['teacherClock','projectionClock']){
+  const node=document.getElementById(id);
+  if(node){node.textContent=showClock(seconds);node.classList.toggle('elapsed',seconds===0);node.setAttribute('aria-label',seconds===0?'Tempo encerrado':'Tempo restante: '+showClock(seconds));}
+ }
+ const status=document.getElementById('teacherTimerStatus');
+ if(status)status.textContent=seconds===0?'Tempo encerrado':clockBase.running?'Cronômetro em andamento':'Cronômetro pausado';
+}
+function snapshotKey(obj){
+ const copy=JSON.parse(JSON.stringify(obj));
+ if(copy.stage?.clock){delete copy.stage.clock.serverTime;delete copy.stage.clock.remaining;}
+ return JSON.stringify(copy);
 }
 
 function renderTeacher(){
