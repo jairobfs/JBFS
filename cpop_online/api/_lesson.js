@@ -2,6 +2,7 @@
 const crypto=require('node:crypto');
 const {request,itemsOf}=require('./_craft');
 const {activities:legacy}=require('./_content');
+const {canonicalInfo}=require('./_canon');
 const COLLECTION=process.env.CRAFT_CONTENT_COLLECTION_ID;
 const FIELDS=['uid','semana','ordem','tipo','titulo','corpo','imagem','alt','fonte','opcoes','gabarito','justificativa','ativo','pontos'];
 function requireCollection(){if(!COLLECTION||!(/^[0-9a-f-]{36}$/i.test(COLLECTION)))throw new Error('Coleção pedagógica não configurada.');return COLLECTION;}
@@ -11,6 +12,7 @@ function parseOptions(x){try{const a=JSON.parse(x);return Array.isArray(a)&&a.le
 function normalize(row){const p=row.properties||{};const x={id:row.id||'',revision:revision(p),uid:String(p.uid||'').slice(0,100),week:Number(p.semana),order:Number(p.ordem)||0,type:String(p.tipo||''),title:String(p.titulo||row.bloco||''),body:String(p.corpo||''),image:media(p.imagem||''),alt:String(p.alt||''),source:String(p.fonte||''),options:parseOptions(p.opcoes),answer:Number(p.gabarito)||0,why:String(p.justificativa||''),active:p.ativo!==false,points:Number(p.pontos)||0};
  if(![24,25,26].includes(x.week)||!x.uid||!['slide','questao','cartao'].includes(x.type))return null;
  if(x.type==='questao'&&(x.options.length<2||x.answer<1||x.answer>x.options.length))return null;
+ if(x.type==='questao'){const info=canonicalInfo(x);x.canonicalId=info.id;x.canonicalIssues=info.issues;}
  return x;}
 async function loadContent(){const raw=await request('/collections/'+requireCollection()+'/items?maxDepth=0');return itemsOf(raw).map(normalize).filter(Boolean).sort((a,b)=>a.week-b.week||a.order-b.order||a.uid.localeCompare(b.uid,'pt-BR'));}
 function fingerprint(rows){return crypto.createHash('sha256').update(rows.map(r=>r.id+':'+r.revision).join('|')).digest('hex').slice(0,12);}
