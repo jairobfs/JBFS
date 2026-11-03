@@ -76,3 +76,16 @@ button.primary,.btn.primary{background:var(--blue);border-color:var(--blue);colo
 .mini-media-warning[hidden]{display:none}
 .mini-media-warning button{flex-shrink:0;min-height:40px}
 @media(max-width:740px){.mini-media-warning{align-items:stretch}.mini-media-warning button{width:100%}}
+
+/* Cronômetro da correção coletiva; relógio decorre de estado persistido no Craft. */
+.timer-controls{display:flex;align-items:center;gap:18px;justify-content:space-between;flex-wrap:wrap;padding:18px 0;border-top:1px solid var(--line);margin-top:18px}
+.timer-display{display:block;font-family:Outfit,"DM Sans",system-ui,sans-serif;font-size:clamp(2.4rem,4vw,4.25rem);font-variant-numeric:tabular-nums;font-weight:800;letter-spacing:-.045em;line-height:1.12;color:var(--blue)}
+.timer-display.elapsed{color:var(--red)}
+.timer-settings{display:grid;gap:10px;min-width:min(100%,300px)}
+.timer-settings select{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:11px;padding:10px;min-height:44px;font:inherit}
+.timer-settings .row button{flex:1;white-space:nowrap}
+.projection-timer{display:grid;gap:2px;min-width:135px;justify-items:end;border:1px solid var(--line);padding:10px 18px;border-radius:15px;background:var(--panel)}
+.projection-timer .timer-display{font-size:clamp(2rem,3.9vw,4.8rem)}
+.projection-timer .micro{font-size:10px;font-weight:800;letter-spacing:.13em}
+@media(max-width:740px){.timer-controls{align-items:stretch}.timer-settings{width:100%}.projection-timer{justify-items:start;margin-top:14px}.projection-timer .timer-display{font-size:2.6rem}}
+@media(prefers-reduced-motion:reduce){.timer-display{transition:none}}
