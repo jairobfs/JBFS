@@ -2,7 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 
-const IDS=['canon-vest-02','canon-vest-01','canon-vest-11','canon-vest-04','canon-vest-06','canon-vest-29','canon-vest-23','canon-vest-03','canon-q296','canon-q251','canon-q252','canon-q260','canon-q264','canon-q265','canon-q255','recent-20261029-variacao','recent-20261029-meta','recent-20261029-trem','recent-20261029-arte','recent-20261029-embora','recent-20261029-pretugues','recent-20261029-guarani','recent-20261029-slam'];
+const IDS=['canon-vest-02','canon-vest-01','canon-vest-11','canon-vest-04','canon-vest-06','canon-vest-29','canon-vest-23','canon-vest-03','canon-q296','canon-q251','canon-q252','canon-q260','canon-q264','canon-q265','canon-q255','recent-20261029-variacao','recent-20261029-meta','recent-20261029-trem','recent-20261029-arte','recent-20261029-embora','recent-20261029-pretugues','recent-20261029-guarani','recent-20261029-slam','inc-20261103-q24-registro','inc-20261103-q24-linguas','inc-20261103-q25-filtro','inc-20261103-q25-dengue','inc-20261103-q25-crise','inc-20261103-q26-pressuposto','inc-20261103-q26-grafico'];
 const collections={
  content:'c3e544ba-2939-2292-45ce-327664a06d9a',
  answers:'675a73a0-b3c2-6a26-4613-0cc6dac7a844',
