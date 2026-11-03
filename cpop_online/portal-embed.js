@@ -17,6 +17,42 @@
   }
   if (!embedded) return;
   document.documentElement.classList.add('cpop-embedded');
+  // Keep embedded student modules in the same document scroll flow.
+  function startHeightSync() {
+    const body = document.body;
+    if (!body || parent === window) return;
+    let scheduled = false;
+    let reported = 0;
+    const report = () => {
+      scheduled = false;
+      const height = Math.ceil(Math.max(
+        document.documentElement.scrollHeight,
+        body.scrollHeight,
+        body.getBoundingClientRect().height
+      ));
+      if (Math.abs(height - reported) < 3) return;
+      reported = height;
+      parent.postMessage({type:'cpop:embed-height', height}, location.origin);
+    };
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(report);
+    };
+    if ('ResizeObserver' in window) {
+      const resize = new ResizeObserver(schedule);
+      resize.observe(body);
+      const main = document.querySelector('main');
+      if (main) resize.observe(main);
+    }
+    const changes = new MutationObserver(schedule);
+    changes.observe(body, {childList:true, subtree:true, characterData:true});
+    window.addEventListener('load', schedule);
+    window.addEventListener('resize', schedule);
+    schedule();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeightSync, {once:true});
+  else startHeightSync();
   document.addEventListener('click', e => {
     const anchor = e.target.closest('a[href]');
     if (!anchor || anchor.target === '_blank' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
