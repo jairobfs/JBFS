@@ -27,7 +27,17 @@ Documento contêiner: CP֍P · Linguagens · Plataforma de jogos S24–S26, no e
 | Sessão ao vivo | `5f9f66f0-8a45-ca8f-8e66-8d7dd96b1828` | Semana e UID da etapa projetada; estado de transmissão |
 | Revisões conceituais | `ebb3c96e-55e6-9228-9523-7acbd154bc4a` | Autopercepção por cartão, repetição, intervalo e próxima data de revisão |
 
-Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartões. Sete questões têm imagens (seis do acervo original em `https://r.craft.do/` e uma imagem autoral da semana 24); o slide inicial da semana 24 também tem um infográfico SVG original hospedado no repositório GitHub, com crédito.
+Em 03/11/2026, a coleção contém **91 itens**: **20 questões canônicas ativas**, **26 segmentos teóricos**, **14 cartões conceituais** e **31 questões didáticas preservadas como rascunhos**. Das 20 questões ativas, 12 têm imagens vinculadas. O infográfico SVG do slide inicial da semana 24 permanece hospedado no GitHub.
+
+### Proveniência canônica Q001–Q301 (03/11/2026)
+
+O Exame Canônico existente em @CPOP continua sendo a fonte normativa (301 itens). A coleção da sala mantém uma **seleção derivada de 20 questões**, identificadas por Q e com IDs de participação estáveis: 10 itens VEST e 10 SAEB II/VEST resgatados. Semana 24: 3 questões; semana 25: 7; semana 26: 10.
+
+O backend `api/_canon.js` interpreta `canon-q###` e `canon-vest-##`, identifica o código Q na coluna `fonte` e audita vínculos ausentes, contraditórios ou duplicados. O GET autenticado de `/api/lesson-admin` fornece `canonAudit`, exibido no Estúdio em um quadro recolhível. O PUT/POST impede perda ou duplicação do código canônico, mas continua permitindo editar o texto e a estrutura de cada questão; não altera IDs já presentes nas tentativas.
+
+**Auditoria de conteúdo realizada:** alternativas de 20/20 questões comparadas à Edição On-line do Exame (redação e ordem correspondentes); gabaritos de 11/11 questões VEST conferidos no Resolvedor Docente. Esta verificação parcial não equivale a uma auditoria integral de imagens, comandos, enunciados e seis superfícies.
+
+**Limite arquitetural:** a conexão de produção da Vercel alcança a coleção da sala. As alterações do Estúdio ↔ coleção da sala são bidirecionais; a propagação automática Exame Canônico ↔ coleção derivada **não está habilitada**. Sincronizar esse documento de origem exige acesso autorizado à API correspondente, leitura de versões, diff por Q, escolha de tratamento de conflitos e read-back. O quadro `canonAudit` é um controle de integridade do mapeamento, não uma alegação de sincronização de conteúdo.
 
 ### Sincronização de edições
 
@@ -39,7 +49,7 @@ Em 29/10/2026, o conteúdo contém 64 etapas, incluindo 31 questões e 14 cartõ
 6. O modo de apresentação guarda a posição no Craft; alunos que optarem por seguir o professor consultam a posição a cada ~8 segundos.
 7. O quadro editorial organiza publicados e rascunhos e permite alterar ordem e estado, gravando as mudanças no Craft.
 8. A biblioteca de cartões registra `Lembrei`/`Preciso rever` em uma coleção separada. O algoritmo simples de intervalos é 1, 3, 7, 14, 30 e 60 dias; **não é FSRS**.
-9. A semana 26 tem seis portas; a interface exige resposta e justificativa antes de avançar no percurso autônomo. Uma liderança ao vivo do professor pode posicionar a turma em outra etapa. O código de saída só é emitido pelo servidor quando as seis respostas estão corretas.
+9. A semana 26 tem **dez portas** no percurso vigente, derivadas das dez questões canônicas ativas; a interface exige resposta e justificativa antes de avançar no percurso autônomo. Uma liderança ao vivo do professor pode posicionar a turma em outra etapa. O código de saída só é emitido pelo servidor quando todas as respostas estiverem corretas.
 
 **Importante:** não há promessa de propagação instantânea em tempo real por websocket. O acompanhamento é por consultas periódicas, e a troca de conteúdo durante uma tentativa pode exigir atualização para preservar a correção.
 
