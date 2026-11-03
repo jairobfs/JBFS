@@ -34,6 +34,8 @@ jobs:
         run: npm run build:cloudflare
       - name: Regressão Cloudflare, Craft, mini-simulado e cadernos
         run: node --test tests/app.test.js tests/canon.test.js tests/cloudflare.test.js tests/content-format.test.js tests/editor-authoring.test.js tests/identity.test.js tests/media-routing.test.js tests/minisimulado.test.js tests/notebook.test.js tests/public-cache.test.js
+      - name: Verificar suíte completa, inclusive edição e cache do Craft
+        run: npm test
       - name: Verificar bundle Cloudflare sem credenciais
         run: npx wrangler deploy --dry-run
       - name: Executar Worker real localmente sem segredos Craft
