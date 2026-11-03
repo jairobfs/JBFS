@@ -37,6 +37,35 @@ function renderQuestion(q,number,selected=0,showCorrect=false,correct=0){
   '<div class="choices">'+q.options.map((o,i)=>'<div class="choice '+(selected===i+1?'checked':'')+'" '+(showCorrect&&correct===i+1?'style="border-color:var(--green)"':'')+'><span class="letter">'+String.fromCharCode(65+i)+'</span><span>'+esc(o)+'</span></div>').join('')+'</div>'+
   '<p class="micro">Fonte: '+esc(q.source||'Banco canônico do CPOP')+'</p>';
 }
+function recoverQuestionImage(img){
+ if(img.dataset.cpopMirror==='1')return false;
+ let original;try{original=new URL(img.currentSrc||img.src,location.origin)}catch{return false;}
+ const hosted=original.origin===location.origin||(/^cpop-linguagens(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(original.hostname));
+ if(!hosted||!/^\/assets\/(?:canon\/)?[A-Za-z0-9._-]+\.(?:png|jpe?g|webp|svg)$/i.test(original.pathname))return false;
+ img.dataset.cpopMirror='1';
+ img.dataset.cpopPrimary=img.dataset.cpopPrimary||img.getAttribute('src')||original.pathname;
+ img.src='https://raw.githubusercontent.com/jairobfs/JBFS/main/cpop_online'+original.pathname;
+ return true;
+}
+document.addEventListener('error',event=>{
+ const img=event.target;if(!(img instanceof HTMLImageElement)||!APP.contains(img))return;
+ const figure=img.closest('figure');if(!figure)return;
+ if(recoverQuestionImage(img))return;
+ img.style.display='none';
+ let notice=figure.querySelector('.mini-media-warning');
+ if(!notice){
+  notice=document.createElement('div');notice.className='mini-media-warning';notice.setAttribute('role','status');
+  const label=document.createElement('span');label.textContent='A imagem desta questão não carregou. O enunciado e as alternativas permanecem disponíveis.';
+  const retry=document.createElement('button');retry.type='button';retry.className='secondary';retry.textContent='Tentar imagem novamente';
+  retry.addEventListener('click',()=>{notice.hidden=true;img.style.display='';img.dataset.cpopMirror='';const src=(img.dataset.cpopPrimary||img.getAttribute('src')).split('?')[0];img.src=src+'?retry='+Date.now();});
+  notice.append(label,retry);figure.append(notice);
+ }
+ notice.hidden=false;
+},true);
+document.addEventListener('load',event=>{
+ const img=event.target;if(!(img instanceof HTMLImageElement)||!APP.contains(img))return;
+ img.style.display='';const warning=img.closest('figure')?.querySelector('.mini-media-warning');if(warning)warning.hidden=true;
+},true);
 function saveLocal(){if(!profile)return;write('cpop.mini.draft.'+profile.studentId,{answers,dirty:true,updated:Date.now()});}
 function byId(id){let a=answers.find(x=>x.id===id);if(!a){a={id,choice:0,comment:''};answers.push(a);}return a;}
 function completed(){return bank.questions.filter(q=>{let a=byId(q.id);return a.choice>0||a.comment.trim().length>=8}).length;}
