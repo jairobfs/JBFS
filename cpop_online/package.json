@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "description": "Trilhas gamificadas de Linguagens com persistência no Craft",
-  "scripts": {"test":"node --test tests/*.test.js"},
-  "engines": {"node": ">=20"}
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build:cloudflare": "node scripts/build-cloudflare.js",
+    "check:cloudflare": "npm run build:cloudflare && wrangler deploy --dry-run",
+    "dev:cloudflare": "npm run build:cloudflare && wrangler dev",
+    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
 }
