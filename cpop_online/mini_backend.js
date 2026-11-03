@@ -23,7 +23,7 @@ async function getStage(){
 }
 function safeParse(raw,fallback){try{const p=JSON.parse(raw||'');return p&&typeof p==='object'?p:fallback}catch{return fallback}}
 function normalizeAnswers(raw,qs){
- const by=new Map();if(!Array.isArray(raw)||raw.length>30)return null;
+ const by=new Map();if(!Array.isArray(raw)||raw.length>qs.length)return null;
  for(const v of raw){if(!v||typeof v.id!=='string'||by.has(v.id))return null;by.set(v.id,v);}
  if([...by.keys()].some(id=>!qs.some(q=>q.uid===id)))return null;
  return qs.map(q=>{
@@ -42,13 +42,15 @@ function scoreOf(answers,qs){
  return {correct,answered,commentsOnly,total:qs.length,missing:qs.length-answered-commentsOnly};
 }
 function rowPublic(row,qs){
- const p=row.properties||{},answers=safeParse(p.respostas,[]);
+ const p=row.properties||{},raw=safeParse(p.respostas,[]);
+ const byId=new Map((Array.isArray(raw)?raw:[]).filter(x=>x&&typeof x.id==='string').map(x=>[x.id,x]));
+ const answers=qs.map(q=>{const a=byId.get(q.uid)||{};return {id:q.uid,choice:Number.isInteger(a.choice)&&a.choice>=1&&a.choice<=q.options.length?a.choice:0,comment:typeof a.comment==='string'?a.comment.slice(0,750):''};});
  const scored=scoreOf(answers,qs);
- return {id:row.id,studentId:String(p.alunoid||''),name:String(p.nome||''),group:p.turma||'',answers,final:p.finalizado===true,updated:p.atualizacao||'',feedback:safeParse(p.devolutivas,{}),...scored};
+ return {id:row.id,studentId:String(p.alunoid||''),name:String(p.nome||''),group:p.turma||'',answers,final:p.finalizado===true,updated:p.atualizacao||'',savedVersion:String(p.versao||''),feedback:safeParse(p.devolutivas,{}),...scored};
 }
 function studentOutput(row,qs){
  const d=rowPublic(row,qs);
- return {saved:true,answers:d.answers,final:d.final,updated:d.updated,feedback:d.feedback,correct:d.final?d.correct:null,answered:d.answered,commentsOnly:d.commentsOnly};
+ return {saved:true,answers:d.answers,final:d.final,updated:d.updated,savedVersion:d.savedVersion,feedback:d.feedback,correct:d.final?d.correct:null,answered:d.answered,commentsOnly:d.commentsOnly};
 }
 function query(req){const u=new URL(req.url||'/', 'https://cpop.local');return {mode:String(req.query?.mode||u.searchParams.get('mode')||'student'),studentId:String(req.query?.studentId||u.searchParams.get('studentId')||''),code:String(req.query?.code||u.searchParams.get('code')||'')};}
 function distrib(q,rows,idx){
