@@ -397,20 +397,21 @@ async function teacherPoll(){
  if(MODE!=='professor'||!tData||document.hidden||document.activeElement?.tagName==='TEXTAREA')return;
  try{
   const j=await fetchJSON(API+'&mode=teacher',{headers:{Authorization:'Bearer '+teacherToken}});
-  const before=JSON.stringify({rows:tData.records,stage:tData.stage}),after=JSON.stringify({rows:j.records,stage:j.stage});
+  const before=snapshotKey({rows:tData.records,stage:tData.stage}),after=snapshotKey({rows:j.records,stage:j.stage});
   if(before!==after){tData=j;renderTeacher();}
  }catch{}
 }
 async function projectionLoad(){
  try{
   const j=await fetchJSON(API+'&mode=projection');
-  const hash=JSON.stringify(j);
+  const hash=snapshotKey(j);
   if(hash!==snapshot){snapshot=hash;renderProjection(j);}
  }catch(e){if(!snapshot)fail(e,projectionLoad)}
 }
 function renderProjection(j){
  const q=j.question,s=j.stage,d=j.distribution;
- APP.innerHTML='<div class="projection-shell"><div class="intro"><div><div class="eyebrow">CP֍P · LINGUAGENS · PROJEÇÃO</div><h1>Revisão final · questão '+s.number+'/'+j.total+'</h1></div><div class="row"><span class="badge-big">'+(s.active?'EM APRESENTAÇÃO':'TRANSMISSÃO PAUSADA')+'</span><span class="chip">'+d.started+' participantes</span></div></div>'+
+ clockSync(s.clock);
+ APP.innerHTML='<div class="projection-shell"><div class="intro"><div><div class="eyebrow">CP֍P · LINGUAGENS · PROJEÇÃO</div><h1>Revisão final · questão '+s.number+'/'+j.total+'</h1></div><div class="row"><span class="badge-big">'+(s.active?'EM APRESENTAÇÃO':'TRANSMISSÃO PAUSADA')+'</span><span class="chip">'+d.started+' participantes</span><div class="projection-timer"><span class="micro">TEMPO RESTANTE</span><output id="projectionClock" class="timer-display" aria-live="off">--:--</output></div></div></div>'+
  '<div class="projection-main"><article class="card question-card">'+renderQuestion(q,s.number,s.reveal?s.answer:0,s.reveal,s.answer)+(s.reveal?'<div class="note"><h3>Gabarito · '+String.fromCharCode(64+j.answer)+'</h3><p>'+esc(j.why)+'</p></div>':'')+(s.active&&j.projectedComment?'<section class="projected-comment"><div class="eyebrow">RESPOSTA DISCURSIVA · SELEÇÃO DOCENTE</div><blockquote>'+esc(j.projectedComment)+'</blockquote><p>Comentário exibido sem identificação do participante.</p></section>':'')+'</article>'+
  '<aside class="card stack"><div class="eyebrow">PAINEL DE SALA</div><h2>'+d.submitted+' entregas finalizadas</h2><p class="muted">'+d.started+' participantes iniciaram a atividade no Craft.</p><div class="line"></div>'+
  (s.reveal?'<h3>Respostas agregadas</h3><div class="distribution">'+q.options.map((o,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(d.counts[i]/Math.max(1,d.counts.reduce((a,b)=>a+b,0))*100)+'%"></span></div><span>'+d.counts[i]+'</span></div>').join('')+'</div>':'<p class="muted">As escolhas da turma permanecem ocultas até a revelação do gabarito.</p>')+
@@ -429,4 +430,5 @@ if(MODE==='professor'){loadTeacher();}
 else if(MODE==='projecao'){projectionLoad();setInterval(projectionLoad,5000);}
 else{if(!beginWithSharedProfile())profileForm();setInterval(liveStudent,8000);setInterval(refreshFeedback,15000);}
 if(MODE==='professor')setInterval(teacherPoll,8000);
+setInterval(clockTick,250);
 })();
