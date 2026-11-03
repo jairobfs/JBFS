@@ -29,4 +29,4 @@ function publicActivities(rows){return buildActivities(rows).map(({id,week,type,
 function publicLesson(rows){return {version:'craft-'+fingerprint(rows),source:'Craft',weeks:[24,25,26].map(week=>({week,title:legacy.find(a=>a.week===week)?.title||'',entries:rows.filter(r=>r.week===week&&r.active).map(({uid,week,order,type,title,body,image,alt,source,options,why,points})=>({uid,week,order,type,title,body,image:publishedMedia(image),alt,source,options:type==='questao'?options:[],example:type==='cartao'?why:'',points}))}))};}
 async function updateItem(id,props){return request('/collections/'+requireCollection()+'/items','PUT',{itemsToUpdate:[{id,properties:props}]});}
 async function createItem(item){return request('/collections/'+requireCollection()+'/items','POST',{items:[item]});}
-module.exports={FIELDS,loadContent,buildActivities,publicActivities,publicLesson,fingerprint,updateItem,createItem,revision,media,parseOptions,requireCollection};
+module.exports={FIELDS,loadContent,buildActivities,publicActivities,publicLesson,publishedMedia,fingerprint,updateItem,createItem,revision,media,parseOptions,requireCollection};
