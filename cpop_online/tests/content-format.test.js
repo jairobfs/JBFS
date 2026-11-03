@@ -16,7 +16,7 @@ test('mostra citação do estímulo sem transformar em marcação perigosa',()=>
 });
 test('escapa HTML e atributos enviados pela fonte antes de criar realce',()=>{
  const html=render('<img src=x onerror=alert(1)> **<script>alert(1)</script>**');
- assert.doesNotMatch(html,/<img|<script|onerror=/i);
+ assert.doesNotMatch(html,/<img\b|<script\b/i);
  assert.match(html,/&lt;img/);
  assert.match(html,/<strong>&lt;script&gt;alert\(1\)&lt;\/script&gt;<\/strong>/);
 });
