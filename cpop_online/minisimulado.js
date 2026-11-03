@@ -332,6 +332,7 @@ function renderTeacher(){
  '<div class="line"></div><div class="teacher-grid"><section class="teacher-rows"><div class="card"><div class="row space"><div><div class="eyebrow">TRANSMISSÃO · QUESTÃO '+(tPosition+1)+'/'+tData.questions.length+'</div><h2>'+esc(q.title)+'</h2></div><span class="chip '+(stage.active?'good':'')+'">'+(stage.active?'Ao vivo · questão '+stage.number:'Projeção pausada')+'</span></div>'+
  '<div class="numbers">'+tData.questions.map((x,i)=>'<button class="number '+(i===tPosition?'selected':'')+'" data-teacher-jump="'+i+'">'+(i+1)+'</button>').join('')+'</div><div class="line"></div>'+
  '<div class="row"><button class="primary" id="projectQuestion">Projetar esta questão</button><button id="liveToggle">'+(stage.active?'Pausar':'Iniciar transmissão')+'</button><button id="revealToggle">'+(stage.reveal?'Ocultar gabarito':'Revelar gabarito')+'</button><button id="hideProjectedComment" '+(!stage.projectedComment?'disabled':'')+'>Ocultar comentário projetado</button></div>'+(stage.projectedComment?'<div class="projected-status"><strong>Comentário no telão:</strong> '+esc(stage.projectedComment)+'</div>':'')+'<p class="micro">A projeção consulta o estado no Craft periodicamente. Alterar esta questão não apaga as respostas dos alunos.</p>'+
+ '<div class="timer-controls"><div><div class="eyebrow">CRONÔMETRO · QUESTÃO</div><output id="teacherClock" class="timer-display">--:--</output><p class="micro" id="teacherTimerStatus">Sincronizando…</p></div><div class="timer-settings"><label class="field" for="teacherTimerDuration">Duração por questão<select id="teacherTimerDuration">'+[30,60,90,120,180,300,600,900].map(n=>'<option value="'+n+'" '+(stage.clock?.duration===n?'selected':'')+'>'+showClock(n)+'</option>').join('')+'</select></label><div class="row"><button id="teacherTimerStart" class="primary">'+(stage.clock?.running?'Em andamento':'Iniciar / retomar')+'</button><button id="teacherTimerPause" '+(!stage.clock?.running?'disabled':'')+'>Pausar</button><button id="teacherTimerReset">Reiniciar</button></div></div><p class="micro">Tempo orientativo e sincronizado pelo Craft. Não finaliza respostas automaticamente.</p></div>'+
  '<div class="note"><strong>Gabarito docente:</strong> '+String.fromCharCode(64+q.answer)+' · '+esc(q.why)+'</div></div>'+
  '<div class="card"><h3>Distribuição de respostas · questão '+(tPosition+1)+'</h3><div class="distribution">'+c.choices.map((n,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(n/Math.max(c.total,1)*100)+'%"></span></div><span>'+n+'</span></div>').join('')+'</div><p class="micro">'+c.correct+' acertos em '+c.total+' alternativas registradas. Comentários sem alternativa requerem avaliação humana; nenhuma pontuação TRI é estimada.</p></div>'+
  '<div class="card"><h3>Projeção nesta mesma tela</h3><iframe class="presenter-frame" title="Projeção sincronizada" src="/minisimulado.html?modo=projecao&embed=1"></iframe></div></section>'+
@@ -344,7 +345,12 @@ function renderTeacher(){
   (a.comment?'<p>'+esc(a.comment)+'</p><details class="comment-moderation"><summary>Selecionar para projeção anônima</summary><label class="field">Texto a projetar (revise e remova nomes ou informações privadas)<textarea data-project-text="'+esc(row.id)+'" maxlength="700" placeholder="Trecho para discussão coletiva">'+esc(a.comment.slice(0,700))+'</textarea></label><button data-project-submit="'+esc(row.id)+'">Projetar texto revisado</button><p class="micro">Exibição pública apenas após confirmação docente. O nome do aluno não é enviado ao telão.</p></details>':'<p class="micro">Nenhum comentário registrado.</p>')+
   '<label class="field">Devolutiva ao estudante<textarea data-feedback="'+esc(row.id)+'" maxlength="1200" placeholder="Escreva uma devolutiva individual para esta questão…">'+esc(row.feedback?.[q.id]||'')+'</textarea></label><button data-save-feedback="'+esc(row.id)+'">Salvar devolutiva no Craft</button></article>';
  }).join(''):'<p class="muted">Ainda não há respostas sincronizadas.</p>')+'<p id="teacherNoMatches" class="muted" hidden>Nenhum registro corresponde aos filtros.</p></div></section></div>';
+ clockSync(stage.clock);
  $('#reloadTeacher').onclick=loadTeacher;
+ $('#teacherTimerDuration').onchange=e=>timerAction('set',Number(e.target.value));
+ $('#teacherTimerStart').onclick=()=>timerAction('start');
+ $('#teacherTimerPause').onclick=()=>timerAction('pause');
+ $('#teacherTimerReset').onclick=()=>timerAction('reset');
  $('#downloadTeacherCSV').onclick=exportTeacherCSV;
  $('#teacherSearch').oninput=e=>{teacherView.query=e.target.value;applyTeacherFilters()};
  $('[data-teacher-filter]').forEach(btn=>btn.onclick=()=>{teacherView.mode=btn.dataset.teacherFilter;applyTeacherFilters()});
@@ -375,6 +381,14 @@ function renderTeacher(){
    try{await req('POST',{action:'feedback',rowId,questionId:q.id,comment:box.value},true);toast('Devolutiva sincronizada no Craft.');await loadTeacher();}
    catch(e){toast(e.message);btn.disabled=false;}
  });
+}
+async function timerAction(op,seconds){
+ const button=op==='start'?$('#teacherTimerStart'):op==='pause'?$('#teacherTimerPause'):op==='reset'?$('#teacherTimerReset'):$('#teacherTimerDuration');
+ if(button)button.disabled=true;
+ try{
+  const result=await req('POST',{action:'timer',op,...(seconds?{seconds}:{})},true);
+  tData.stage=result.stage;renderTeacher();toast('Cronômetro sincronizado no Craft.');
+ }catch(e){toast(e.message);if(button)button.disabled=false}
 }
 async function setStage(data){
  try{const j=await req('PUT',data,true);tData.stage=j.stage;renderTeacher();toast('Projeção sincronizada no Craft.')}catch(e){toast(e.message)}
