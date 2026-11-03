@@ -16,7 +16,18 @@ function publishedMedia(url){
  if(u.hostname==='raw.githubusercontent.com'&&/^\/jairobfs\/JBFS\/main\/cpop_online\/assets\/[A-Za-z0-9_./-]+$/.test(u.pathname)&&!u.pathname.includes('..'))return u.pathname.replace('/jairobfs/JBFS/main/cpop_online','');
  return src;
 }
-function parseOptions(x){try{const a=JSON.parse(x);return Array.isArray(a)&&a.length>=2&&a.length<=6&&a.every(v=>typeof v==='string'&&v.length<=600)?a:[]}catch{return []}}
+function parseOptions(x){
+ const raw=String(x||'').trim();
+ if(!raw)return [];
+ try{
+  const a=JSON.parse(raw);
+  return Array.isArray(a)&&a.length>=2&&a.length<=6&&a.every(v=>typeof v==='string'&&v.trim()&&v.length<=600)?a:[];
+ }catch{}
+ const lines=raw.split(/\r?\n/).map(v=>v.trim()).filter(Boolean).filter(v=>!/^alternativas?\s*:?$/i.test(v));
+ if(lines.length<2||lines.length>6)return [];
+ const cleaned=lines.map(v=>v.replace(/^(?:[A-Fa-f]|[1-6])[).:\-]\s+|^[-•]\s+/,'').trim());
+ return cleaned.every(v=>v&&v.length<=600)&&new Set(cleaned).size===cleaned.length?cleaned:[];
+}
 function normalize(row){const p=row.properties||{};const x={id:row.id||'',revision:revision(p),uid:String(p.uid||'').slice(0,100),week:Number(p.semana),order:Number(p.ordem)||0,type:String(p.tipo||''),title:String(p.titulo||row.bloco||''),body:String(p.corpo||''),image:media(p.imagem||''),alt:String(p.alt||''),source:String(p.fonte||''),options:parseOptions(p.opcoes),answer:Number(p.gabarito)||0,why:String(p.justificativa||''),active:p.ativo!==false,points:Number(p.pontos)||0,module:String(p.modulo||'').slice(0,120),tags:String(p.etiquetas||'').slice(0,500),difficulty:String(p.dificuldade||'').slice(0,30),palette:String(p.paleta||'').slice(0,35),duration:Number(p.duracao)||0,objective:String(p.objetivo||'').slice(0,800)};
  if(![24,25,26].includes(x.week)||!x.uid||!['slide','questao','cartao'].includes(x.type))return null;
  if(x.type==='questao'&&x.active&&(x.options.length<2||x.answer<1||x.answer>x.options.length||!x.why||!x.body))return null;
