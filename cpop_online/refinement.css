@@ -206,3 +206,35 @@ body{background:var(--bg)!important;color:var(--ink)}
  color:var(--gold);background:color-mix(in srgb,var(--gold) 15%,transparent)
 }
 .media-audit-mirror>small:last-child{color:var(--gold)}
+
+/* Tipografia pedagógica: blocos do Craft interpretados sem HTML arbitrário. */
+.slide-copy,.question-stem{overflow-wrap:anywhere;hyphens:auto}
+.slide-copy>p,.question-stem>p{margin:0 0 1.15em}
+.slide-copy>h3,.slide-copy>h4,.slide-copy>h5,.question-stem>h3,.question-stem>h4,.question-stem>h5{
+ color:var(--ink);font-size:clamp(1.15rem,1.5vw,1.42rem);font-weight:800;
+ line-height:1.3;letter-spacing:-.025em;margin:1.6em 0 .65em
+}
+.slide-copy>h3:first-child,.question-stem>h3:first-child{margin-top:0}
+.slide-copy ul,.slide-copy ol,.question-stem ul,.question-stem ol{
+ margin:0 0 1.35em;padding-inline-start:1.6em;max-width:67ch
+}
+.slide-copy li,.question-stem li{margin:.46em 0;line-height:1.65;padding-inline-start:.18em}
+.slide-copy li::marker,.question-stem li::marker{color:var(--blue);font-weight:700}
+.slide-copy blockquote,.question-stem blockquote{
+ margin:1.5em 0;padding:clamp(14px,2vw,25px) clamp(18px,2.7vw,31px);
+ color:var(--ink);background:var(--panel2);border:1px solid var(--line);
+ border-inline-start:4px solid var(--blue);border-radius:0 12px 12px 0;
+ font-style:normal;font-size:1.02em;line-height:1.78;max-width:72ch
+}
+.slide-copy blockquote p,.question-stem blockquote p{margin:0}
+.slide-copy code,.question-stem code{
+ font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+ font-size:.87em;padding:.13em .33em;border-radius:5px;color:var(--ink);
+ background:var(--panel3);white-space:normal;overflow-wrap:anywhere
+}
+.slide-copy em,.question-stem em{font-style:italic}
+.slide-copy strong,.question-stem strong{color:var(--ink);font-weight:750}
+@media(max-width:640px){
+ .slide-copy blockquote,.question-stem blockquote{padding:13px 16px;margin:1.2em 0;border-radius:0 9px 9px 0}
+ .slide-copy ul,.slide-copy ol,.question-stem ul,.question-stem ol{padding-inline-start:1.45em}
+}
