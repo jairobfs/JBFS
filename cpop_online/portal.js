@@ -8,6 +8,20 @@
     jogos: '/jogos.html?embed=1',
     mini: '/minisimulado.html?modo=aluno&embed=1'
   };
+  const frameProfiles = new WeakMap();
+  function profileFingerprint() {
+    try {
+      const p = JSON.parse(localStorage.getItem('cpop.profile') || 'null');
+      return p ? [p.studentId || '', p.name || '', p.joinCode || ''].join('|') : '';
+    } catch { return ''; }
+  }
+  function ensureStudentFrame(frame) {
+    const fingerprint = profileFingerprint();
+    if (!frame.getAttribute('src') || frameProfiles.get(frame) !== fingerprint) {
+      frameProfiles.set(frame, fingerprint);
+      frame.src = frame.dataset.src;
+    }
+  }
   function studentSelect(view, updateHistory = true) {
     if (!studentNav || !allowed.has(view)) return;
     studentNav.querySelectorAll('[data-student-view]').forEach(button => {
@@ -21,7 +35,7 @@
       panel.hidden = !on;
       if (on) {
         const frame = panel.querySelector('iframe');
-        if (frame && !frame.getAttribute('src')) frame.src = frame.dataset.src;
+        if (frame) ensureStudentFrame(frame);
       }
     });
     if (updateHistory) {
