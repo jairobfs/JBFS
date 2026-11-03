@@ -1,5 +1,5 @@
 'use strict';
-const {loadContent,fingerprint}=require('./api/_lesson');
+const {loadContent,fingerprint,publishedMedia}=require('./api/_lesson');
 const {request,itemsOf}=require('./api/_craft');
 const {send,method,parseBody,teacher,classAccess,str}=require('./api/_http');
 const RESPONSES='675a73a0-b3c2-6a26-4613-0cc6dac7a844';
@@ -7,7 +7,7 @@ const PRESENTATION='117e4c16-84fb-040f-3300-2952f55ebf55';
 const ACTIVITY='mini-linguagens-2026-11';
 const IDS=['canon-vest-02','canon-vest-01','canon-vest-11','canon-vest-04','canon-vest-06','canon-vest-29','canon-vest-23','canon-vest-03','canon-q296','canon-q251','canon-q252','canon-q260','canon-q264','canon-q265','canon-q255','recent-20261029-variacao','recent-20261029-meta','recent-20261029-trem','recent-20261029-arte','recent-20261029-embora','recent-20261029-pretugues','recent-20261029-guarani','recent-20261029-slam'];
 
-function qPublic(q,i){return {id:q.uid,number:i+1,title:q.title,body:q.body,image:q.image,alt:q.alt,source:q.source,options:q.options};}
+function qPublic(q,i){return {id:q.uid,number:i+1,title:q.title,body:q.body,image:publishedMedia(q.image),alt:q.alt,source:q.source,options:q.options};}
 async function bank(){
  const all=await loadContent(),questions=IDS.map(id=>all.find(x=>x.uid===id&&x.active&&x.type==='questao'));
  if(questions.some(x=>!x))throw Error('Há questões da seleção que não estão publicadas no Craft.');
