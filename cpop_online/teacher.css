@@ -6,3 +6,10 @@
 .teacher-tabs button[aria-pressed="true"] { border-color: var(--glass-border); color: var(--ink); }
 .teacher-frame { border-color: var(--glass-border); border-radius: 22px; background: var(--glass-panel); }
 @media(max-width:720px) { .teacher-tabs { display:flex; flex-wrap:nowrap; top:71px; } .teacher-frame { border-radius:17px; } }
+
+/* Estúdio docente: criação em um toque sem abandonar resultados. */
+.studio-launchpad{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1px solid color-mix(in srgb,#80B2A8 42%,transparent);border-radius:18px;padding:18px 20px;margin:18px 0;background:linear-gradient(110deg,color-mix(in srgb,#244A48 9%,var(--glass-panel,#fff) 91%),color-mix(in srgb,#E3B86F 8%,var(--glass-panel,#fff) 92%))}
+.studio-launchpad>div:first-child{display:grid;gap:4px}.studio-launchpad strong{font-size:1rem;font-weight:800}.studio-launchpad small{font-size:.83rem;opacity:.78}
+.studio-launchpad-actions{display:flex;flex-wrap:wrap;gap:8px}.studio-launchpad-actions button{min-height:44px;padding:10px 15px;border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:12px;background:var(--glass-panel,var(--panel));color:inherit;cursor:pointer;font-weight:800}
+.studio-launchpad-actions button:first-child{background:#244A48;color:#fff;border-color:#244A48}
+@media(max-width:700px){.studio-launchpad{padding:14px}.studio-launchpad-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.studio-launchpad-actions button{padding:9px 5px;font-size:.85rem}.teacher-frame{height:85dvh;min-height:680px}}
