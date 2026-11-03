@@ -23,6 +23,7 @@ const content=IDS.map((uid,i)=>({
  corpo:'Enunciado de teste '+(i+1),opcoes:JSON.stringify(['Opção A','Opção B','Opção C','Opção D','Opção E']),
  gabarito:i%5+1,justificativa:'Justificativa técnica '+i,ativo:true,pontos:100}
 }));
+content[0].properties.imagem='https://cpop-linguagens.vercel.app/assets/canon/canon-vest-02.jpg';
 const stage={id:'stage-one',properties:{atividade:'mini-linguagens-2026-11',questao:1,ativo:false,revelar:false,atualizado:'2026-11-03T00:00:00Z'}};
 const rows=[],auth={id:'config-one',properties:{pinhash:hash('1844'),codehash:hash('jbfs')}};
 const originalFetch=global.fetch;
@@ -55,6 +56,7 @@ test('mini-simulado Craft: aluno, texto livre, docente, projeção e devolutiva'
  let r=await call('GET','/api/lesson?mini=1&mode=student');
  assert.equal(r.status,200);
  assert.equal(r.body.questions.length,IDS.length);
+ assert.equal(r.body.questions[0].image,'/assets/canon/canon-vest-02.jpg');
  assert.ok(r.body.questions.every(q=>!('answer' in q)&&!('why' in q)));
  const version=r.body.version;
  r=await call('GET','/api/lesson?mini=1&mode=teacher');
