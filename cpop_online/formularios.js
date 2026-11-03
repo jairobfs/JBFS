@@ -18,7 +18,7 @@ async function api(method,body,mode,studentId){
  const headers={'Content-Type':'application/json'};
  if(teacher)headers.Authorization='Bearer '+token;
  if(!teacher&&profile?.joinCode)headers['x-class-code']=profile.joinCode;
- const response=await fetch('/api/forms'+(params.size?'?'+params:''),{method,headers,cache:'no-store',body:body?JSON.stringify(body):undefined});
+ const response=await fetch('/api/lesson?feature=forms'+(params.size?'&'+params:''),{method,headers,cache:'no-store',body:body?JSON.stringify(body):undefined});
  const result=await response.json();if(!response.ok)throw Object.assign(new Error(result.error||'Não foi possível consultar o Craft.'),{status:response.status});return result;
 }
 async function load(){
