@@ -6,9 +6,19 @@
     const paths={arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',back:'<path d="m14 18-6-6 6-6"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',game:'<path d="M6 12h4m-2-2v4m7-1h.01M18 11h.01"/><path d="M6 7h12c2 0 3 2 4 8s-2 6-4 4l-3-2H9l-3 2c-2 2-5 2-4-4S4 7 6 7Z"/>',lock:'<rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',check:'<path d="m5 12 4 4L19 6"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'};
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]||paths.arrow}</svg>`;
   };
-  document.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement)||!image.matches('[data-cpop-img]'))return;const holder=image.closest('[data-cpop-media]');if(!holder)return;image.hidden=true;holder.classList.add('media-unavailable');const hint=holder.querySelector('.class-media-error');if(hint)hint.hidden=false;},true);
+  function alternateOriginalImage(el){
+ const source=new URL(el.currentSrc||el.src,location.origin);
+ if(el.dataset.cpopMirror==='1')return false;
+ const hosted=source.origin===location.origin||(source.hostname.startsWith('cpop-linguagens')&&source.hostname.endsWith('.vercel.app'));
+ if(!hosted||!/^\/assets\/(?:canon\/)?[a-zA-Z0-9._-]+\.(?:png|jpe?g|webp|svg)$/i.test(source.pathname))return false;
+ el.dataset.cpopMirror='1';
+ el.dataset.cpopPrimary=el.dataset.cpopPrimary||el.getAttribute('src');
+ el.src='https://raw.githubusercontent.com/jairobfs/JBFS/main/cpop_online'+source.pathname;
+ return true;
+}
+document.addEventListener('error',event=>{const image=event.target;if(!(image instanceof HTMLImageElement)||!image.matches('[data-cpop-img]'))return;const holder=image.closest('[data-cpop-media]');if(!holder)return;if(alternateOriginalImage(image))return;image.hidden=true;holder.classList.add('media-unavailable');const hint=holder.querySelector('.class-media-error');if(hint)hint.hidden=false;},true);
   document.addEventListener('load',event=>{const image=event.target;if(!(image instanceof HTMLImageElement)||!image.matches('[data-cpop-img]'))return;const holder=image.closest('[data-cpop-media]');if(!holder)return;image.hidden=false;holder.classList.remove('media-unavailable');const hint=holder.querySelector('.class-media-error');if(hint)hint.hidden=true;},true);
-  document.addEventListener('click',event=>{const b=event.target.closest('[data-retry-img]');if(!b)return;const figure=b.closest('[data-cpop-media]'),image=figure?.querySelector('[data-cpop-img]');if(!image)return;figure.classList.remove('media-unavailable');figure.querySelector('.class-media-error').hidden=true;image.hidden=false;image.src=image.src.split('?')[0]+'?retry='+Date.now();});
+  document.addEventListener('click',event=>{const b=event.target.closest('[data-retry-img]');if(!b)return;const figure=b.closest('[data-cpop-media]'),image=figure?.querySelector('[data-cpop-img]');if(!image)return;figure.classList.remove('media-unavailable');figure.querySelector('.class-media-error').hidden=true;image.hidden=false;image.dataset.cpopMirror='';image.src=(image.dataset.cpopPrimary||image.getAttribute('src')).split('?')[0]+'?retry='+Date.now();});
   const root=$('#root'),badge=$('#connectionBadge'),notice=$('#notice');
   let catalog=null,profile=loadJSON('cpop.profile',null),active=null,index=0,answers={},started=Date.now(),submissionId=null,latestResult=null,lock=false;
   function loadJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
