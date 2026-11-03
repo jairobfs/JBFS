@@ -269,7 +269,7 @@ function renderTeacher(){
  '<div class="stats"><div class="stat"><strong>'+records.length+'</strong><span>Participantes iniciados</span></div><div class="stat"><strong>'+submitted.length+'</strong><span>Entregas finalizadas</span></div><div class="stat"><strong>'+c.total+'</strong><span>Alternativas na questão</span></div><div class="stat"><strong>'+c.comments+'</strong><span>Comentários na questão</span></div></div>'+
  '<div class="line"></div><div class="teacher-grid"><section class="teacher-rows"><div class="card"><div class="row space"><div><div class="eyebrow">TRANSMISSÃO · QUESTÃO '+(tPosition+1)+'/'+tData.questions.length+'</div><h2>'+esc(q.title)+'</h2></div><span class="chip '+(stage.active?'good':'')+'">'+(stage.active?'Ao vivo · questão '+stage.number:'Projeção pausada')+'</span></div>'+
  '<div class="numbers">'+tData.questions.map((x,i)=>'<button class="number '+(i===tPosition?'selected':'')+'" data-teacher-jump="'+i+'">'+(i+1)+'</button>').join('')+'</div><div class="line"></div>'+
- '<div class="row"><button class="primary" id="projectQuestion">Projetar esta questão</button><button id="liveToggle">'+(stage.active?'Pausar':'Iniciar transmissão')+'</button><button id="revealToggle">'+(stage.reveal?'Ocultar gabarito':'Revelar gabarito')+'</button></div><p class="micro">A projeção consulta o estado no Craft periodicamente. Alterar esta questão não apaga as respostas dos alunos.</p>'+
+ '<div class="row"><button class="primary" id="projectQuestion">Projetar esta questão</button><button id="liveToggle">'+(stage.active?'Pausar':'Iniciar transmissão')+'</button><button id="revealToggle">'+(stage.reveal?'Ocultar gabarito':'Revelar gabarito')+'</button><button id="hideProjectedComment" '+(!stage.projectedComment?'disabled':'')+'>Ocultar comentário projetado</button></div>'+(stage.projectedComment?'<div class="projected-status"><strong>Comentário no telão:</strong> '+esc(stage.projectedComment)+'</div>':'')+'<p class="micro">A projeção consulta o estado no Craft periodicamente. Alterar esta questão não apaga as respostas dos alunos.</p>'+
  '<div class="note"><strong>Gabarito docente:</strong> '+String.fromCharCode(64+q.answer)+' · '+esc(q.why)+'</div></div>'+
  '<div class="card"><h3>Distribuição de respostas · questão '+(tPosition+1)+'</h3><div class="distribution">'+c.choices.map((n,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(n/Math.max(c.total,1)*100)+'%"></span></div><span>'+n+'</span></div>').join('')+'</div><p class="micro">'+c.correct+' acertos em '+c.total+' alternativas registradas. Comentários sem alternativa requerem avaliação humana; nenhuma pontuação TRI é estimada.</p></div>'+
  '<div class="card"><h3>Projeção nesta mesma tela</h3><iframe class="presenter-frame" title="Projeção sincronizada" src="/minisimulado.html?modo=projecao&embed=1"></iframe></div></section>'+
@@ -279,7 +279,7 @@ function renderTeacher(){
   const a=row.answers[tPosition]||{choice:0,comment:''},mark=a.choice?(a.choice===q.answer?'Correta':'Incorreta'):'Sem alternativa';
   return '<article class="student-card" data-student-name="'+esc(String(row.name||'').toLocaleLowerCase('pt-BR'))+'" data-has-comment="'+(a.comment?'yes':'no')+'" data-needs-feedback="'+(a.comment&&!row.feedback?.[q.id]?'yes':'no')+'"><div class="row space"><strong>'+esc(row.name)+'</strong><span class="chip '+(row.final?'good':'')+'">'+(row.final?'Enviado':'Rascunho')+'</span></div>'+
   '<div class="micro">'+(a.choice?'Alternativa '+String.fromCharCode(64+a.choice)+' · '+mark:'Somente comentário / não respondida')+'</div>'+
-  (a.comment?'<p>'+esc(a.comment)+'</p>':'<p class="micro">Nenhum comentário registrado.</p>')+
+  (a.comment?'<p>'+esc(a.comment)+'</p><details class="comment-moderation"><summary>Selecionar para projeção anônima</summary><label class="field">Texto a projetar (revise e remova nomes ou informações privadas)<textarea data-project-text="'+esc(row.id)+'" maxlength="700" placeholder="Trecho para discussão coletiva">'+esc(a.comment.slice(0,700))+'</textarea></label><button data-project-submit="'+esc(row.id)+'">Projetar texto revisado</button><p class="micro">Exibição pública apenas após confirmação docente. O nome do aluno não é enviado ao telão.</p></details>':'<p class="micro">Nenhum comentário registrado.</p>')+
   '<label class="field">Devolutiva ao estudante<textarea data-feedback="'+esc(row.id)+'" maxlength="1200" placeholder="Escreva uma devolutiva individual para esta questão…">'+esc(row.feedback?.[q.id]||'')+'</textarea></label><button data-save-feedback="'+esc(row.id)+'">Salvar devolutiva no Craft</button></article>';
  }).join(''):'<p class="muted">Ainda não há respostas sincronizadas.</p>')+'<p id="teacherNoMatches" class="muted" hidden>Nenhum registro corresponde aos filtros.</p></div></section></div>';
  $('#reloadTeacher').onclick=loadTeacher;
@@ -291,7 +291,24 @@ function renderTeacher(){
  $('#projectQuestion').onclick=()=>setStage({number:tPosition+1,active:true,reveal:false});
  $('#liveToggle').onclick=()=>setStage({number:stage.number,active:!stage.active,reveal:stage.reveal});
  $('#revealToggle').onclick=()=>setStage({number:stage.number,active:stage.active,reveal:!stage.reveal});
- $$('[data-save-feedback]').forEach(btn=>btn.onclick=async()=>{
+ $('#hideProjectedComment').onclick=async()=>{
+  try{
+   const r=await req('POST',{action:'project-comment',show:false},true);
+   tData.stage=r.stage;renderTeacher();toast('Comentário ocultado no telão.');
+  }catch(e){toast(e.message)}
+ };
+ $('[data-project-submit]').forEach(btn=>btn.onclick=async()=>{
+  const rowId=btn.dataset.projectSubmit,box=$('[data-project-text="'+rowId+'"]');
+  const value=box?.value.trim()||'';
+  if(value.length<8||value.length>700){toast('Revise o texto: utilize entre 8 e 700 caracteres.');return}
+  if(!window.confirm('Projetar este comentário publicamente? Confirme que retirou nomes e informações pessoais do texto.'))return;
+  btn.disabled=true;
+  try{
+   const r=await req('POST',{action:'project-comment',show:true,rowId,questionId:q.id,text:value},true);
+   tData.stage=r.stage;tPosition=r.stage.number-1;renderTeacher();toast('Comentário selecionado e exibido sem identificação no telão.');
+  }catch(e){toast(e.message);btn.disabled=false}
+ });
+ $('[data-save-feedback]').forEach(btn=>btn.onclick=async()=>{
    const rowId=btn.dataset.saveFeedback,box=$('[data-feedback="'+rowId+'"]');btn.disabled=true;
    try{await req('POST',{action:'feedback',rowId,questionId:q.id,comment:box.value},true);toast('Devolutiva sincronizada no Craft.');await loadTeacher();}
    catch(e){toast(e.message);btn.disabled=false;}
@@ -318,10 +335,10 @@ async function projectionLoad(){
 function renderProjection(j){
  const q=j.question,s=j.stage,d=j.distribution;
  APP.innerHTML='<div class="projection-shell"><div class="intro"><div><div class="eyebrow">CP֍P · LINGUAGENS · PROJEÇÃO</div><h1>Revisão final · questão '+s.number+'/'+j.total+'</h1></div><div class="row"><span class="badge-big">'+(s.active?'EM APRESENTAÇÃO':'TRANSMISSÃO PAUSADA')+'</span><span class="chip">'+d.started+' participantes</span></div></div>'+
- '<div class="projection-main"><article class="card question-card">'+renderQuestion(q,s.number,s.reveal?s.answer:0,s.reveal,s.answer)+(s.reveal?'<div class="note"><h3>Gabarito · '+String.fromCharCode(64+j.answer)+'</h3><p>'+esc(j.why)+'</p></div>':'')+'</article>'+
+ '<div class="projection-main"><article class="card question-card">'+renderQuestion(q,s.number,s.reveal?s.answer:0,s.reveal,s.answer)+(s.reveal?'<div class="note"><h3>Gabarito · '+String.fromCharCode(64+j.answer)+'</h3><p>'+esc(j.why)+'</p></div>':'')+(s.active&&j.projectedComment?'<section class="projected-comment"><div class="eyebrow">RESPOSTA DISCURSIVA · SELEÇÃO DOCENTE</div><blockquote>'+esc(j.projectedComment)+'</blockquote><p>Comentário exibido sem identificação do participante.</p></section>':'')+'</article>'+
  '<aside class="card stack"><div class="eyebrow">PAINEL DE SALA</div><h2>'+d.submitted+' entregas finalizadas</h2><p class="muted">'+d.started+' participantes iniciaram a atividade no Craft.</p><div class="line"></div>'+
  (s.reveal?'<h3>Respostas agregadas</h3><div class="distribution">'+q.options.map((o,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(d.counts[i]/Math.max(1,d.counts.reduce((a,b)=>a+b,0))*100)+'%"></span></div><span>'+d.counts[i]+'</span></div>').join('')+'</div>':'<p class="muted">As escolhas da turma permanecem ocultas até a revelação do gabarito.</p>')+
- '<div class="note"><strong>'+d.comments+' comentários</strong><p class="micro">As respostas discursivas são exibidas individualmente apenas no painel do educador.</p></div></aside></div></div>';
+ '<div class="note"><strong>'+d.comments+' comentários</strong><p class="micro">O professor pode selecionar um comentário para projeção sem identificar o participante.</p></div></aside></div></div>';
 }
 function beginWithSharedProfile(){
  const shared=sharedProfile();
