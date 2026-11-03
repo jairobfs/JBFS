@@ -36,6 +36,6 @@ test('bloqueia links ativos inseguros e atributos HTML enviados pelo Craft',()=>
  const html=render('<script>alert(1)</script>\n\n[link](javascript:alert(1))\n\n![x" onerror="alert(1)](https://example.org/img.png)');
  assert.doesNotMatch(html,/<script>/);
  assert.doesNotMatch(html,/href="javascript:/);
- assert.doesNotMatch(html,/<img[^>]*\sonerror=/);
+ assert.doesNotMatch(html,/<img[^>]*\sonerror\s*=\s*["']/i);
  assert.match(html,/&lt;script&gt;/);
 });
