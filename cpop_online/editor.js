@@ -37,19 +37,30 @@ function canonAuditMarkup(){
  return '<details class="editor-canon-audit"><summary>'+summary+'<span class="canon-audit-chevron" aria-hidden="true">▾</span></summary><div class="canon-audit-body">'+stats+flags+'<div class="canon-audit-list" aria-label="Questões com proveniência canônica">'+lines+'</div><p class="canon-audit-note">Esta auditoria verifica os vínculos e duplicatas da seleção; não indica sincronização automática com o documento original.</p></div></details>';
 }
 
+
 function mediaAuditMarkup(){
- const list=mediaAudit?.results||[],bad=list.filter(x=>!x.ok),n=records.filter(r=>r.active&&r.image).length;
- const label=mediaAudit?.busy?'Verificando imagens…':mediaAudit?list.length+' figuras verificadas · '+bad.length+' falhas':n+' figuras na aula';
- return '<details class="editor-media-audit" '+(mediaAudit?'open':'')+'><summary><span><small>ACERVO VISUAL · INTEGRIDADE</small><strong>'+esc(label)+'</strong></span><span aria-hidden="true">▾</span></summary><div class="media-audit-body"><p>Este teste abre as imagens no navegador atual. Não altera os arquivos ou a coleção Craft.</p>'+(mediaAudit?.busy?'<p role="status">Carregando figuras…</p>':mediaAudit?'<div class="media-audit-list">'+list.map(x=>'<button type="button" class="media-audit-row '+(x.ok?'media-audit-ok':'media-audit-fail')+'" data-media-uid="'+esc(x.uid)+'"><span class="media-audit-mark">'+(x.ok?'✓':'!')+'</span><span><strong>'+esc(x.title)+'</strong><small>'+esc(x.uid)+' · S'+x.week+' · '+(x.ok?x.width+'×'+x.height:x.reason)+'</small></span><small>'+(x.ok?'Carregou':'Corrigir')+'</small></button>').join('')+'</div>':'<p>Selecione <strong>Verificar imagens</strong> para detectar arquivos indisponíveis.</p>')+'</div></details>';
+ const list=mediaAudit?.results||[],bad=list.filter(x=>!x.ok),mirrored=list.filter(x=>x.ok&&x.via==='Espelho');
+ const n=records.filter(r=>r.active&&r.image).length;
+ const label=mediaAudit?.busy?'Verificando imagens…':mediaAudit?list.length+' verificadas · '+mirrored.length+' recuperadas · '+bad.length+' falhas':n+' figuras na aula';
+ return '<details class="editor-media-audit" '+(mediaAudit?'open':'')+'><summary><span><small>ACERVO VISUAL · INTEGRIDADE</small><strong>'+esc(label)+'</strong></span><span aria-hidden="true">▾</span></summary><div class="media-audit-body"><p>Teste de carregamento real neste navegador. O status “Recuperada” indica que o arquivo local falhou, mas a cópia original do GitHub funcionou.</p>'+(mediaAudit?.busy?'<p role="status">Carregando figuras…</p>':mediaAudit?'<div class="media-audit-list">'+list.map(x=>'<button type="button" class="media-audit-row '+(!x.ok?'media-audit-fail':x.via==='Espelho'?'media-audit-mirror':'media-audit-ok')+'" data-media-uid="'+esc(x.uid)+'"><span class="media-audit-mark">'+(x.ok?'✓':'!')+'</span><span><strong>'+esc(x.title)+'</strong><small>'+esc(x.uid)+' · S'+x.week+' · '+(x.ok?x.width+'×'+x.height:x.reason)+'</small></span><small>'+(!x.ok?'Corrigir':x.via==='Espelho'?'Recuperada':'Carregou')+'</small></button>').join('')+'</div>':'<p>Selecione <strong>Verificar imagens</strong> para testar a disponibilidade.</p>')+'</div></details>';
 }
 function imageHealth(url){
  return new Promise(resolve=>{
-  const img=new Image();let done=false;
-  const finish=(ok,reason='')=>{if(done)return;done=true;clearTimeout(t);img.onload=img.onerror=null;resolve({ok,width:ok?img.naturalWidth:0,height:ok?img.naturalHeight:0,reason});};
-  const t=setTimeout(()=>finish(false,'Tempo limite'),12000);
-  img.onload=()=>finish(img.naturalWidth>0&&img.naturalHeight>0,'Arquivo inválido');
-  img.onerror=()=>finish(false,'Arquivo inacessível');
-  img.src=imagePreviewUrl(url);
+  const img=new Image(),src=imagePreviewUrl(url);let done=false,mirror=false;
+  const finish=(ok,reason='')=>{if(done)return;done=true;clearTimeout(t);img.onload=img.onerror=null;resolve({ok,width:ok?img.naturalWidth:0,height:ok?img.naturalHeight:0,reason,via:mirror?'Espelho':'Principal'});};
+  const t=setTimeout(()=>finish(false,'Tempo limite'),14000);
+  img.onload=()=>finish(img.naturalWidth>0&&img.naturalHeight>0,img.naturalWidth>0?'':'Arquivo inválido');
+  img.onerror=()=>{
+    if(!mirror){
+      const current=new URL(src,location.origin);
+      const host=current.origin===location.origin||(current.hostname.startsWith('cpop-linguagens')&&current.hostname.endsWith('.vercel.app'));
+      if(host&&/^\/assets\/(?:canon\/)?[A-Za-z0-9._-]+\.(?:png|jpe?g|webp|svg)$/i.test(current.pathname)){
+        mirror=true;img.src='https://raw.githubusercontent.com/jairobfs/JBFS/main/cpop_online'+current.pathname;return;
+      }
+    }
+    finish(false,'Arquivo indisponível no site e na cópia original');
+  };
+  img.src=src;
  });
 }
 async function runMediaAudit(){
@@ -62,8 +73,8 @@ async function runMediaAudit(){
     const source=imagePreviewUrl(row.image);if(!grouped.has(source))grouped.set(source,[]);grouped.get(source).push(row);
   }
   const checked=await Promise.all([...grouped].map(async ([url,rows])=>({...await imageHealth(url),rows})));
-  const results=checked.flatMap(x=>x.rows.map(row=>({uid:row.uid,title:row.title,week:row.week,ok:x.ok,width:x.width,height:x.height,reason:x.reason})));
-  results.sort((a,b)=>Number(a.ok)-Number(b.ok)||a.week-b.week);
+  const results=checked.flatMap(x=>x.rows.map(row=>({uid:row.uid,title:row.title,week:row.week,ok:x.ok,width:x.width,height:x.height,reason:x.reason,via:x.via})));
+  results.sort((a,b)=>Number(a.ok)-Number(b.ok)||(a.via==='Espelho'? -1:0)-(b.via==='Espelho'? -1:0)||a.week-b.week);
   mediaAudit={busy:false,results};toast(results.some(x=>!x.ok)?'Imagens com problema identificadas.':'Todas as figuras publicadas carregaram neste navegador.');
  }catch(e){mediaAudit={busy:false,results:[]};toast('Falha na verificação de figuras.');}
  finally{mediaAuditBusy=false;render();}
