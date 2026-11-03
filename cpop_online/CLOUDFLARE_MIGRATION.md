@@ -16,7 +16,8 @@ Na pasta `cpop_online`:
 
 ```sh
 npm install
-npm test
+npm run build:cloudflare
+node --test tests/app.test.js tests/canon.test.js tests/cloudflare.test.js tests/content-format.test.js tests/editor-authoring.test.js tests/identity.test.js tests/media-routing.test.js tests/minisimulado.test.js tests/notebook.test.js tests/public-cache.test.js
 npm run check:cloudflare
 ```
 
