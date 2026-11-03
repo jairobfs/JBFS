@@ -90,6 +90,82 @@ async function runMediaAudit(){
  }catch(e){mediaAudit={busy:false,results:[]};toast('Falha na verificação de figuras.');}
  finally{mediaAuditBusy=false;render();}
 }
+
+function enhanceComposer(){
+ const heading=root.querySelector('.editor-heading');
+ if(heading){
+  const rail=document.createElement('div');rail.className='studio-quick-create';
+  rail.innerHTML='<div><span class="eyebrow">AUTORIA RÁPIDA</span><p>Escolha o que deseja criar. O Craft recebe o original editável.</p></div><div class="studio-quick-actions"><button type="button" data-new-kind="questao">+ Nova questão</button><button type="button" data-new-kind="slide">+ Material ou slide</button><button type="button" data-new-kind="cartao">+ Cartão conceitual</button></div>';
+  heading.insertAdjacentElement('afterend',rail);
+  rail.querySelectorAll('[data-new-kind]').forEach(button=>button.addEventListener('click',()=>startCreate(button.dataset.newKind)));
+ }
+ const form=root.querySelector('#editForm');if(!form)return;
+ const base=vals(creating?null:current());
+ const o={...base};try{Object.assign(o,JSON.parse(sessionStorage.getItem('cpop.draft.'+base.uid))||{})}catch{}
+ const body=form.elements.namedItem('body');
+ const paletteOptions=[['pinheiro','Verde-pinho'],['jade','Jade'],['terracota','Terracota'],['ocre','Ocre'],['malva','Malva'],['porcelana','Porcelana'],['grafite','Grafite']];
+ const difficultyOptions=[['facil','Básico'],['medio','Intermediário'],['dificil','Avançado']];
+ const metadata=document.createElement('details');metadata.className='studio-personalization';
+ metadata.innerHTML='<summary><strong>Personalizar material e objetivos</strong><span>Módulo, etiquetas, nível, paleta e tempo</span></summary>'+
+ '<div class="studio-settings"><label class="field">Módulo ou assunto<input name="module" maxlength="120" placeholder="Ex.: Interpretação e inferência" value="'+esc(o.module||'')+'"></label>'+
+ '<label class="field">Etiquetas (separe por vírgulas)<input name="tags" maxlength="500" placeholder="Ex.: ENEM, gêneros textuais, multimodalidade" value="'+esc(o.tags||'')+'"></label>'+
+ '<label class="field">Objetivo pedagógico<textarea name="objective" rows="3" maxlength="800" placeholder="O que o estudante deverá compreender?">'+esc(o.objective||'')+'</textarea></label>'+
+ '<div class="editor-field-grid"><label class="field">Complexidade<select name="difficulty">'+difficultyOptions.map(([value,label])=>'<option value="'+value+'" '+((o.difficulty||'medio')===value?'selected':'')+'>'+label+'</option>').join('')+'</select></label>'+
+ '<label class="field">Cor semântica<select name="palette">'+paletteOptions.map(([value,label])=>'<option value="'+value+'" '+((o.palette||'pinheiro')===value?'selected':'')+'>'+label+'</option>').join('')+'</select></label></div>'+
+ '<label class="field">Tempo pedagógico estimado · minutos<input name="duration" type="number" min="0" max="240" value="'+(Number.isFinite(Number(o.duration))?Number(o.duration):3)+'"></label></div>';
+ const textLabel=body.closest('label');textLabel.insertAdjacentElement('afterend',metadata);
+ const technical=document.createElement('details');technical.className='studio-advanced';
+ technical.innerHTML='<summary>Configurações avançadas <small>Identificador, semana, tipo e posição</small></summary><div class="studio-technical-body"></div>';
+ form.insertBefore(technical,form.firstElementChild);
+ const grids=[...form.querySelectorAll(':scope > .editor-field-grid')];
+ for(const grid of grids.slice(0,2))technical.querySelector('.studio-technical-body').appendChild(grid);
+ const typeField=form.elements.namedItem('type'),typeButtons=document.createElement('div');
+ typeButtons.className='studio-type-switch';
+ typeButtons.innerHTML=[['questao','Questão'],['slide','Material / slide'],['cartao','Cartão']].map(([value,label])=>'<button type="button" data-compose-type="'+value+'" aria-pressed="'+String(typeField.value===value)+'">'+label+'</button>').join('');
+ form.insertBefore(typeButtons,form.firstElementChild);
+ typeButtons.querySelectorAll('[data-compose-type]').forEach(button=>button.onclick=()=>{
+  typeField.value=button.dataset.composeType;
+  typeField.dispatchEvent(new Event('change',{bubbles:true}));
+  typeButtons.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+  const cardPrompt=form.querySelector('#studioCardPrompt');if(cardPrompt)cardPrompt.hidden=typeField.value!=='cartao';
+  document.querySelector('#editForm [name="title"]')?.focus();
+ });
+ const options=form.elements.namedItem('options'),answer=form.elements.namedItem('answer'),qFields=form.querySelector('#questionFields');
+ const defaultChoices=options.value.split('\n'),choiceCount=Math.max(5,Math.min(6,defaultChoices.length));
+ const choicePanel=document.createElement('div');choicePanel.className='studio-choice-editor';
+ choicePanel.innerHTML='<div class="studio-choice-heading"><strong>Alternativas</strong><small>Marque o círculo da resposta correta</small></div><div class="studio-choice-rows"></div>'+
+ '<button type="button" id="addStudioChoice" class="secondary">Adicionar alternativa</button>';
+ qFields.prepend(choicePanel);
+ const rowContainer=choicePanel.querySelector('.studio-choice-rows');
+ const addRow=(value='',i)=>{const idx=i??rowContainer.children.length;
+  const row=document.createElement('label');row.className='studio-choice-row';
+  row.innerHTML='<span>'+String.fromCharCode(65+idx)+'</span><input aria-label="Alternativa '+String.fromCharCode(65+idx)+'" type="text" maxlength="600" placeholder="Escreva a alternativa '+String.fromCharCode(65+idx)+'" value="'+esc(value)+'"><input aria-label="Alternativa correta: '+String.fromCharCode(65+idx)+'" type="radio" name="studioCorrect" value="'+(idx+1)+'" '+(Number(answer.value)===idx+1?'checked':'')+'>';
+  rowContainer.appendChild(row);
+ };
+ for(let i=0;i<choiceCount;i++)addRow(defaultChoices[i]||'',i);
+ options.closest('label').hidden=true;answer.closest('label').hidden=true;
+ function syncChoices(){
+  const choices=[...rowContainer.querySelectorAll('input[type="text"]')].map(n=>n.value);
+  options.value=choices.join('\n');
+  answer.value=rowContainer.querySelector('input[type="radio"]:checked')?.value||'1';
+  form.dispatchEvent(new Event('input',{bubbles:true}));
+ }
+ rowContainer.addEventListener('input',syncChoices);
+ rowContainer.addEventListener('change',syncChoices);
+ choicePanel.querySelector('#addStudioChoice').onclick=()=>{if(rowContainer.children.length>=6)return;addRow('',rowContainer.children.length);syncChoices();if(rowContainer.children.length>=6)choicePanel.querySelector('#addStudioChoice').hidden=true;};
+ const why=form.elements.namedItem('why'),cardPrompt=document.createElement('label');
+ cardPrompt.className='field';cardPrompt.id='studioCardPrompt';cardPrompt.hidden=typeField.value!=='cartao';
+ cardPrompt.innerHTML='Complemento ou explicação do cartão<textarea rows="4" maxlength="1800" placeholder="Explique o conceito com linguagem clara.">'+esc(why.value)+'</textarea>';
+ metadata.insertAdjacentElement('afterend',cardPrompt);
+ cardPrompt.querySelector('textarea').oninput=e=>{why.value=e.target.value;form.dispatchEvent(new Event('input',{bubbles:true}))};
+ const publish=form.elements.namedItem('active').closest('label');
+ publish.classList.add('studio-publish');
+ publish.insertAdjacentHTML('afterend','<p class="studio-publish-note">Desmarcado: salva como rascunho no Craft, sem aparecer na aula. Publique quando estiver pronto.</p>');
+ if(creating)technical.open=false;
+ form.querySelector('#saveContent').textContent=creating?'Salvar novo conteúdo no Craft':'Salvar alterações no Craft';
+ form.querySelector('#previewEdit').textContent='Visualizar antes de publicar';
+}
+
 function render(){const left=records.filter(r=>r.week===filter&&(kind==='all'||kind==='draft'&&!r.active||kind===r.type)&&(!query||((r.title+' '+r.uid+' '+r.body).toLocaleLowerCase('pt-BR')).includes(query.toLocaleLowerCase('pt-BR'))));root.innerHTML='<div class="editor-heading"><div><div class="eyebrow">CP֍P · Estúdio de aula</div><h1>Estúdio docente</h1><p>Organize slides, atividades e imagens. As edições salvas vão para o Craft; conteúdos retirados da aula permanecem disponíveis como rascunhos.</p></div><div class="editor-heading-actions"><button class="secondary" id="people">Participantes</button><button class="secondary" id="reload">'+ 'Recarregar Craft</button><button class="secondary" id="checkMedia">Verificar imagens</button><button class="primary" id="create">Novo bloco</button></div></div>'+canonAuditMarkup()+mediaAuditMarkup()+'<div class="editor-structure '+(viewMode==='board'?'board-mode':'')+'"><aside class="editor-sidebar"><div class="editor-tabs">'+[24,25,26].map(w=>'<button data-filter="'+w+'" class="'+(w===filter?'active':'')+'">S'+w+'</button>').join('')+'</div><div class="editor-filters"><select id="kindFilter" aria-label="Filtrar conteúdo"><option value="all" '+(kind==='all'?'selected':'')+'>Todos os blocos</option><option value="slide" '+(kind==='slide'?'selected':'')+'>Slides</option><option value="questao" '+(kind==='questao'?'selected':'')+'>Questões</option><option value="cartao" '+(kind==='cartao'?'selected':'')+'>Cartões</option><option value="draft" '+(kind==='draft'?'selected':'')+'>Não publicados</option></select><input id="contentSearch" placeholder="Buscar conteúdo…" value="'+esc(query)+'"></div><div class="editor-view-switch"><button id="viewList" class="'+(viewMode==='list'?'active':'')+'">Lista</button><button id="viewBoard" class="'+(viewMode==='board'?'active':'')+'">Quadro</button></div><div class="editor-list">'+(viewMode==='board'?board(left):left.map(itemPreview).join(''))+'</div><a class="editor-craft-link" href="craftdocs://open?spaceId=28cd93e6-2faa-c967-1053-8a766a45d839&amp;blockId=c3e544ba-2939-2292-45ce-327664a06d9a">Abrir coleção no Craft</a></aside><section class="editor-detail">'+editorForm(creating?null:current())+'</section></div>';
 root.querySelectorAll('[data-canon-uid]').forEach(b=>b.addEventListener('click',()=>{
  const item=records.find(r=>r.uid===b.dataset.canonUid);
@@ -112,7 +188,7 @@ root.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=
 root.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>{creating=false;selected=b.dataset.id;render()}));
 document.querySelector('#previewEdit').onclick=preview;document.querySelector('#duplicateEdit').onclick=duplicate;document.querySelector('#publishToggle').hidden=creating;document.querySelector('#publishToggle').textContent=current()?.active?'Retirar da aula':'Restaurar na aula';document.querySelector('#publishToggle').onclick=togglePublish;document.querySelector('#editForm').addEventListener('input',()=>{if(document.querySelector('#livePreview'))preview();});document.querySelector('#cancelEdit').addEventListener('click',()=>{newItem=null;creating=false;dirty=false;render()});
 document.querySelector('#blockType').addEventListener('change',e=>{document.querySelector('#questionFields').hidden=e.target.value!=='questao'});
-document.querySelector('#editForm').addEventListener('submit',saveContent);}
+document.querySelector('#editForm').addEventListener('submit',saveContent);enhanceComposer();}
 async function saveContent(e){e.preventDefault();if(busy)return;busy=true;const f=e.target,element=f.elements,read=n=>element.namedItem(n).value.trim();const item={uid:read('uid'),week:Number(read('week')),order:Number(read('order')),type:read('type'),title:read('title'),body:element.namedItem('body').value,image:read('image'),alt:read('alt'),source:read('source'),options:element.namedItem('options').value.split('\n').map(s=>s.trim()).filter(Boolean),answer:Number(read('answer'))||0,why:read('why'),active:element.namedItem('active').checked,module:read('module'),tags:read('tags'),difficulty:read('difficulty'),palette:read('palette'),duration:Number(read('duration'))||0,objective:read('objective')};
 const button=document.querySelector('#saveContent');button.disabled=true;button.textContent='Salvando no Craft…';try{await api(creating?'POST':'PUT',creating?{item}:{id:current().id,revision:current().revision,item});sessionStorage.removeItem('cpop.draft.'+item.uid);toast(creating?'Bloco criado na coleção Craft.':'Alterações sincronizadas no Craft.');creating=false;newItem=null;dirty=false;filter=item.week;await load(true);const saved=records.find(x=>x.uid===item.uid);if(saved){selected=saved.id;render()}}catch(error){const msg=document.querySelector('#editMessage');msg.hidden=false;msg.classList.add('error');msg.textContent=error.message;if(error.status===409)toast('Conflito de edição: recarregue antes de salvar novamente.');button.disabled=false;button.textContent='Tentar salvar novamente'}finally{busy=false}}
 let dirty=false;document.addEventListener('input',e=>{if(e.target.closest('#editForm')){dirty=true;const d=draft();if(d)sessionStorage.setItem('cpop.draft.'+d.uid,JSON.stringify(d));}});window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
