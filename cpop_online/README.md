@@ -99,3 +99,13 @@ Paleta resgatada do Manual/Atlas Cromático real:
 A semana 24 trabalha cultura afro-brasileira e indígena, diversidade de fala e preconceito linguístico. A semana 25 inclui funções da linguagem, textos curtos, tirinhas e memes. A semana 26 aborda inferências, implícitos e resolução justificada de pistas. O editor pode alterar sequência e material sem recriar o site.
 
 O registro técnico original `VALIDACAO-TECNICA` foi mantido; não deve ser interpretado como aluno real nas análises da turma.
+
+## Mini-simulado de revisão final · 03/11/2026
+
+- Aluno: `/minisimulado.html?modo=aluno` — 15 questões do acervo canônico, escolha objetiva ou comentário, rascunho local com envio validado ao Craft.
+- Educador: `/minisimulado.html?modo=professor` e aba **Mini-simulado** dentro de `/professor.html` — acompanhamento por estudante e questão, comentários e devolutivas; PIN docente já existente.
+- Projeção: `/minisimulado.html?modo=projecao` — posição e revelação do gabarito comandadas pelo educador, agregados anonimizados.
+- Banco de questões: coleção institucional de conteúdo `c3e544ba-2939-2292-45ce-327664a06d9a`, com 15 UIDs selecionados e conteúdo atualizado em leitura.
+- Coleta: coleção Craft `675a73a0-b3c2-6a26-4613-0cc6dac7a844`; projeção: `117e4c16-84fb-040f-3300-2952f55ebf55`.
+- Sincronização: cada salvamento aguarda confirmação da API Craft; dashboards e projeção usam consultas periódicas, não websockets.
+- Comentários sem alternativa são aceitos para envio, mas exigem leitura e devolutiva humana; o número de acertos objetivos não equivale a uma nota TRI do ENEM.
