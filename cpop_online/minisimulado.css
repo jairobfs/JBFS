@@ -70,3 +70,9 @@ button.primary,.btn.primary{background:var(--blue);border-color:var(--blue);colo
 .projected-comment blockquote{font-family:Outfit,"DM Sans",system-ui,sans-serif;font-size:clamp(1.3rem,2.2vw,2.3rem);font-weight:550;line-height:1.45;letter-spacing:-.015em;margin:12px 0 16px;white-space:pre-wrap;overflow-wrap:anywhere}
 .projected-comment p{margin:0;color:var(--muted);font-size:13px}
 @media(max-width:740px){.projected-comment blockquote{font-size:1.35rem}.comment-moderation button{width:100%}}
+
+/* Recuperação acessível de imagens originais nas questões do mini-simulado. */
+.mini-media-warning{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--muted) 40%,transparent);background:color-mix(in srgb,var(--panel) 88%,var(--gold) 12%);font-size:14px;line-height:1.5;color:var(--text)}
+.mini-media-warning[hidden]{display:none}
+.mini-media-warning button{flex-shrink:0;min-height:40px}
+@media(max-width:740px){.mini-media-warning{align-items:stretch}.mini-media-warning button{width:100%}}
