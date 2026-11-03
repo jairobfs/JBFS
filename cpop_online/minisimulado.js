@@ -2,7 +2,7 @@
 'use strict';
 const APP=document.getElementById('app'), TOAST=document.getElementById('toast');
 const MODE=new URLSearchParams(location.search).get('modo')||'aluno';
-const ID='mini-linguagens-2026-11', API='/api/minisimulado';
+const ID='mini-linguagens-2026-11', API='/api/lesson?mini=1';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const stored=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k))??fallback}catch{return fallback}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
@@ -54,7 +54,7 @@ function profileForm(){
  };
 }
 async function loadStudent(){
- const url=API+'?mode=student&studentId='+encodeURIComponent(profile.studentId)+'&code='+encodeURIComponent(profile.code);
+ const url=API+'&mode=student&studentId='+encodeURIComponent(profile.studentId)+'&code='+encodeURIComponent(profile.code);
  const info=await fetchJSON(url);
  bank=info;
  const local=stored('cpop.mini.draft.'+profile.studentId,null);
@@ -133,7 +133,7 @@ async function finish(){
 }
 async function liveStudent(){
  if(MODE!=='aluno'||!profile||!bank||!follow||finalized||document.hidden)return;
- try{const j=await fetchJSON(API+'?mode=student');
+ try{const j=await fetchJSON(API+'&mode=student');
   if(j.stage.active&&j.stage.number!==position+1&&document.activeElement?.tagName!=='TEXTAREA'){position=j.stage.number-1;renderStudent()}
  }catch{}
 }
@@ -144,7 +144,7 @@ function teacherLogin(msg=''){
 async function loadTeacher(){
  if(!teacherToken){teacherLogin();return;}
  try{
-  tData=await fetchJSON(API+'?mode=teacher',{headers:{Authorization:'Bearer '+teacherToken}});
+  tData=await fetchJSON(API+'&mode=teacher',{headers:{Authorization:'Bearer '+teacherToken}});
   renderTeacher();
  }catch(e){if(e.status===401){teacherToken='';sessionStorage.removeItem('cpop.teacher.token');teacherLogin('PIN incorreto ou sessão expirada.')}else fail(e,loadTeacher)}
 }
@@ -193,14 +193,14 @@ async function setStage(data){
 async function teacherPoll(){
  if(MODE!=='professor'||!tData||document.hidden||document.activeElement?.tagName==='TEXTAREA')return;
  try{
-  const j=await fetchJSON(API+'?mode=teacher',{headers:{Authorization:'Bearer '+teacherToken}});
+  const j=await fetchJSON(API+'&mode=teacher',{headers:{Authorization:'Bearer '+teacherToken}});
   const before=JSON.stringify({rows:tData.records,stage:tData.stage}),after=JSON.stringify({rows:j.records,stage:j.stage});
   if(before!==after){tData=j;renderTeacher();}
  }catch{}
 }
 async function projectionLoad(){
  try{
-  const j=await fetchJSON(API+'?mode=projection');
+  const j=await fetchJSON(API+'&mode=projection');
   const hash=JSON.stringify(j);
   if(hash!==snapshot){snapshot=hash;renderProjection(j);}
  }catch(e){if(!snapshot)fail(e,projectionLoad)}
