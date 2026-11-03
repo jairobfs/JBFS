@@ -255,3 +255,19 @@ body{background:var(--bg)!important;color:var(--ink)}
  color:var(--ink);background:color-mix(in srgb,var(--gold) 12%,var(--panel));
 }
 .connection-badge.cached .signal{background:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 13%,transparent)}
+
+/* Personalização semântica escrita no Craft e refletida no ambiente discente. */
+.cpop-material-meta{display:flex;align-items:center;flex-wrap:wrap;gap:7px 11px;margin:2px 0 17px;color:var(--soft,var(--ink));font-size:.75rem}
+.cpop-material-meta strong{font-weight:800;color:inherit;letter-spacing:.03em}
+.cpop-material-meta span{border:1px solid color-mix(in srgb,currentColor 17%,transparent);border-radius:30px;padding:3px 9px;font-weight:700}
+.cpop-material-meta small{font-size:.74rem;opacity:.7}
+.lecture-slide.cpop-palette-pinheiro{border-top:4px solid #244A48}
+.lecture-slide.cpop-palette-jade{border-top:4px solid #80B2A8}
+.lecture-slide.cpop-palette-terracota{border-top:4px solid #C25C54}
+.lecture-slide.cpop-palette-ocre{border-top:4px solid #E3B86F}
+.lecture-slide.cpop-palette-malva{border-top:4px solid #A08AB6}
+.lecture-slide.cpop-palette-porcelana{border-top:4px solid #F7F0E3}
+.lecture-slide.cpop-palette-grafite{border-top:4px solid #2D303A}
+.cpop-inline-image{display:block;max-width:100%;max-height:420px;width:auto;height:auto;object-fit:contain;margin:15px auto;border-radius:12px;background:transparent}
+.slide-copy a,.question-stem a{color:var(--blue,#244A48);text-decoration:underline;text-underline-offset:3px;font-weight:650}
+@media(max-width:720px){.cpop-material-meta{font-size:.72rem;gap:6px}.cpop-inline-image{max-height:42vh}}
