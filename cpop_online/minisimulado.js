@@ -290,7 +290,7 @@ function applyTeacherFilters(){
   if(!card.hidden)visible++;
  });
  const count=$('#teacherFilterCount');if(count)count.textContent=visible+' de '+(tData?.records.length||0)+' participantes';
- $('[data-teacher-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.teacherFilter===teacherView.mode)));
+ $$('[data-teacher-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.teacherFilter===teacherView.mode)));
  const empty=$('#teacherNoMatches');if(empty)empty.hidden=visible!==0;
 }
 
@@ -354,7 +354,7 @@ function renderTeacher(){
  $('#teacherTimerReset').onclick=()=>timerAction('reset');
  $('#downloadTeacherCSV').onclick=exportTeacherCSV;
  $('#teacherSearch').oninput=e=>{teacherView.query=e.target.value;applyTeacherFilters()};
- $('[data-teacher-filter]').forEach(btn=>btn.onclick=()=>{teacherView.mode=btn.dataset.teacherFilter;applyTeacherFilters()});
+ $$('[data-teacher-filter]').forEach(btn=>btn.onclick=()=>{teacherView.mode=btn.dataset.teacherFilter;applyTeacherFilters()});
  applyTeacherFilters();
  $$('[data-teacher-jump]').forEach(b=>b.onclick=()=>{tPosition=Number(b.dataset.teacherJump);renderTeacher()});
  $('#projectQuestion').onclick=()=>setStage({number:tPosition+1,active:true,reveal:false});
@@ -366,7 +366,7 @@ function renderTeacher(){
    tData.stage=r.stage;renderTeacher();toast('Comentário ocultado no telão.');
   }catch(e){toast(e.message)}
  };
- $('[data-project-submit]').forEach(btn=>btn.onclick=async()=>{
+ $$('[data-project-submit]').forEach(btn=>btn.onclick=async()=>{
   const rowId=btn.dataset.projectSubmit,box=$('[data-project-text="'+rowId+'"]');
   const value=box?.value.trim()||'';
   if(value.length<8||value.length>700){toast('Revise o texto: utilize entre 8 e 700 caracteres.');return}
@@ -377,7 +377,7 @@ function renderTeacher(){
    tData.stage=r.stage;tPosition=r.stage.number-1;renderTeacher();toast('Comentário selecionado e exibido sem identificação no telão.');
   }catch(e){toast(e.message);btn.disabled=false}
  });
- $('[data-save-feedback]').forEach(btn=>btn.onclick=async()=>{
+ $$('[data-save-feedback]').forEach(btn=>btn.onclick=async()=>{
    const rowId=btn.dataset.saveFeedback,box=$('[data-feedback="'+rowId+'"]');btn.disabled=true;
    try{await req('POST',{action:'feedback',rowId,questionId:q.id,comment:box.value},true);toast('Devolutiva sincronizada no Craft.');await loadTeacher();}
    catch(e){toast(e.message);btn.disabled=false;}
