@@ -1,6 +1,7 @@
 'use strict';
 const {send,method,teacher,parseBody}=require('./_http');
 const {FIELDS,loadContent,revision,updateItem,createItem,media}=require('./_lesson');
+const {canonicalInfo,canonicalAudit}=require('./_canon');
 function validRecord(raw,editing=false){if(!raw||typeof raw!=='object')return null;const uid=String(raw.uid||'').trim().slice(0,90),week=Number(raw.week),order=Number(raw.order),type=String(raw.type||''),title=String(raw.title||'').trim().slice(0,220),body=String(raw.body||'').slice(0,16000),image=String(raw.image||'').trim(),alt=String(raw.alt||'').slice(0,500),source=String(raw.source||'').slice(0,500),options=raw.options;
  if(!/^[A-Za-z0-9_-]{4,90}$/.test(uid)||![24,25,26].includes(week)||!Number.isFinite(order)||order<0||order>9999||!['slide','questao','cartao'].includes(type)||!title||!body||image&&!media(image)||!Array.isArray(options)||options.length>6||options.some(s=>typeof s!=='string'||!s.trim()||s.length>600))return null;
  const answer=Number(raw.answer)||0,why=String(raw.why||'').slice(0,1800);
@@ -8,10 +9,12 @@ function validRecord(raw,editing=false){if(!raw||typeof raw!=='object')return nu
  return {uid,semana:week,ordem:Math.round(order),tipo:type,titulo:title,corpo:body,imagem:image,alt,fonte:source,opcoes:type==='questao'?JSON.stringify(options):'',gabarito:type==='questao'?answer:0,justificativa:type==='questao'||type==='cartao'?why:'',ativo:raw.active!==false,pontos:type==='questao'?100:0};
 }
 module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
- try{const rows=await loadContent();if(req.method==='GET'){send(res,200,{source:'Craft',items:rows});return;}
+ try{const rows=await loadContent();if(req.method==='GET'){send(res,200,{source:'Craft',items:rows,canonAudit:canonicalAudit(rows)});return;}
   const data=parseBody(req);const p=validRecord(data?.item);if(!p){send(res,422,{error:'Campos inválidos. Revise título, texto, alternativas e gabarito.'});return;}
   if(req.method==='PUT'){const id=String(data?.id||'');const current=rows.find(r=>r.id===id);if(!current){send(res,404,{error:'Bloco inexistente no Craft.'});return}
    if(current.revision!==data.revision){send(res,409,{error:'Este bloco foi alterado em outro lugar. Recarregue antes de salvar.',current});return}
+   const nextCanon=canonicalInfo({uid:p.uid,source:p.fonte});
+   if((current.canonicalId&&(nextCanon.id!==current.canonicalId||nextCanon.issues.length))||(nextCanon.id&&rows.some(r=>r.id!==id&&r.canonicalId===nextCanon.id))){send(res,409,{error:'O vínculo com o Exame Canônico não pode ser perdido, alterado nem duplicado. Revise o código Q na fonte e o identificador.'});return;}
    if(p.uid!==current.uid&&rows.some(r=>r.uid===p.uid)){send(res,409,{error:'Identificador já usado em outro bloco.'});return}
    const prev={uid:current.uid,semana:current.week,ordem:current.order,tipo:current.type,titulo:current.title,corpo:current.body,imagem:current.image,alt:current.alt,fonte:current.source,opcoes:current.type==='questao'?JSON.stringify(current.options):'',gabarito:current.answer,justificativa:current.why,ativo:current.active,pontos:current.points};
    const changes=Object.fromEntries(Object.entries(p).filter(([k,v])=>v!==prev[k]));
@@ -19,6 +22,9 @@ module.exports=async(req,res)=>{if(!method(req,res,['GET','PUT','POST']))return;
    send(res,200,{saved:true,changed:Object.keys(changes),source:'Craft'});return;
   }
   if(rows.some(r=>r.uid===p.uid)){send(res,409,{error:'Já existe um bloco com este identificador.'});return}
+  const nextCanon=canonicalInfo({uid:p.uid,source:p.fonte});
+  if(p.uid.startsWith('canon-')&&(!nextCanon.id||nextCanon.issues.length)){send(res,422,{error:'Para importar do Cânone, use um código Q001–Q301 consistente com a identidade da questão.'});return;}
+  if(nextCanon.id&&rows.some(r=>r.canonicalId===nextCanon.id)){send(res,409,{error:'Esta questão Q já existe na seleção, inclusive como rascunho.'});return;}
   const createdProperties={...p};if(!createdProperties.imagem)delete createdProperties.imagem;
   await createItem({bloco:'S'+p.semana+' · '+p.titulo,properties:createdProperties});send(res,201,{saved:true,created:true,source:'Craft'});
  }catch(e){console.error('Lesson edit',e.code||e.message,e.status||'');send(res,503,{error:'Não foi possível sincronizar esta edição com o Craft.'})}};
