@@ -4,6 +4,7 @@
   "private": true,
   "description": "Trilhas gamificadas de Linguagens com persistência no Craft",
   "scripts": {
+    "pretest": "npm run build:cloudflare",
     "test": "node --test tests/*.test.js",
     "build:cloudflare": "node scripts/build-cloudflare.js",
     "check:cloudflare": "npm run build:cloudflare && wrangler deploy --dry-run",
