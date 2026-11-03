@@ -1,0 +1,67 @@
+
+:root{--form-jade:#80B2A8;--form-pine:#244A48;--form-clay:#C25C54;--form-ochre:#E3B86F;--form-mauve:#A08AB6;--form-ink:#2D303A}
+.form-app{max-width:1280px;margin:auto;padding:clamp(18px,3vw,36px);color:var(--text,#27333a);font-size:16px}
+.form-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center;margin-bottom:24px}
+.form-top h1{font-size:clamp(1.85rem,3vw,2.8rem);line-height:1.15;letter-spacing:-.035em;margin:4px 0}
+.form-top p{margin:8px 0 0;color:var(--muted,#64746f)}
+.form-layout{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:24px;align-items:start}
+.form-panel,.form-card,.form-entry,.form-response{background:color-mix(in srgb,var(--surface,#fff) 78%,transparent);border:1px solid color-mix(in srgb,var(--form-jade) 40%,transparent);border-radius:24px;box-shadow:0 15px 50px -35px #244a4870;backdrop-filter:blur(22px) saturate(1.26);-webkit-backdrop-filter:blur(22px) saturate(1.26)}
+.form-panel{padding:18px;position:sticky;top:18px}
+.form-panel h2{font-size:1.05rem;margin:0 0 14px}
+.form-card{padding:clamp(18px,3vw,32px)}
+.form-cards{display:grid;gap:10px}
+.form-select{width:100%;text-align:left;padding:15px 16px;border-radius:16px;border:1px solid transparent;background:color-mix(in srgb,var(--form-jade) 10%,transparent);color:inherit;cursor:pointer;display:grid;gap:6px}
+.form-select[aria-current="true"]{border-color:var(--form-jade);background:color-mix(in srgb,var(--form-jade) 23%,transparent)}
+.form-select strong{font-size:.94rem;line-height:1.35}
+.form-select small,.form-muted,.form-kicker{color:var(--muted,#60716c)}
+.form-kicker{font-size:.73rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800}
+.form-card h2{font-size:clamp(1.4rem,2.8vw,2rem);margin:8px 0}
+.form-card p{line-height:1.6}
+.form-fields{display:grid;gap:18px;margin:24px 0}
+.form-entry{padding:18px 20px;min-width:0}
+.form-entry legend,.form-entry label.form-label{font-weight:760;font-size:1rem;display:block;line-height:1.4;margin-bottom:10px}
+.form-entry .hint{color:var(--muted,#64746f);font-size:.9rem;margin:0 0 12px}
+.form-entry input:not([type=radio]):not([type=checkbox]),.form-entry select,.form-entry textarea,.form-editor input:not([type=checkbox]),.form-editor select,.form-editor textarea{font:inherit;width:100%;min-width:0;border:1px solid color-mix(in srgb,var(--form-jade) 47%,transparent);background:var(--surface,#fff);color:inherit;border-radius:13px;padding:12px 14px;outline-offset:3px}
+.form-entry textarea,.form-editor textarea{resize:vertical}
+.form-entry input:focus-visible,.form-entry textarea:focus-visible,.form-entry select:focus-visible{outline:2px solid var(--form-jade)}
+.form-choices{display:grid;gap:9px}
+.form-choice{display:flex;align-items:flex-start;gap:11px;cursor:pointer;border-radius:14px;padding:12px;border:1px solid color-mix(in srgb,var(--form-jade) 25%,transparent);background:color-mix(in srgb,var(--surface,#fff) 68%,transparent)}
+.form-choice:has(input:checked){border-color:var(--form-jade);background:color-mix(in srgb,var(--form-jade) 16%,transparent)}
+.form-choice input{accent-color:var(--form-pine);width:19px;height:19px;flex:none;margin:2px 0}
+.form-rating{display:flex;gap:8px;flex-wrap:wrap}
+.form-rating label{display:grid;place-items:center;min-width:46px;height:46px;border-radius:15px;border:1px solid var(--form-jade);cursor:pointer}
+.form-rating label:has(input:checked){background:var(--form-pine);color:#fff}
+.form-rating input{position:absolute;opacity:0;width:1px;height:1px}
+.form-rating input:focus-visible+span{outline:2px solid var(--form-clay);outline-offset:5px}
+.form-actions{display:flex;flex-wrap:wrap;gap:10px}
+.form-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:1px solid color-mix(in srgb,var(--form-jade) 45%,transparent);background:color-mix(in srgb,var(--form-jade) 15%,var(--surface,#fff));padding:12px 18px;color:inherit;cursor:pointer;font:inherit;font-weight:740}
+.form-btn.primary{background:var(--form-pine);color:#fff;border-color:var(--form-pine)}
+.form-btn.ghost{background:transparent}
+.form-btn:disabled{opacity:.55;cursor:not-allowed}
+.form-status{padding:12px 15px;border-radius:14px;background:color-mix(in srgb,var(--form-jade) 13%,transparent);margin-top:16px}
+.form-status.error{border-left:4px solid var(--form-clay)}
+.form-status.success{border-left:4px solid var(--form-jade)}
+.form-progress{height:6px;background:color-mix(in srgb,var(--form-jade) 19%,transparent);border-radius:99px;overflow:hidden}
+.form-progress span{display:block;background:var(--form-jade);height:100%;transition:width .2s ease}
+.form-editor{display:grid;gap:16px}
+.form-editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form-editor label{display:grid;gap:6px;font-size:.88rem;font-weight:680}
+.form-editor .form-entry{background:color-mix(in srgb,var(--form-jade) 5%,transparent)}
+.form-editor-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.form-editor-head h3{font-size:1.08rem;margin:0}
+.form-field-tools{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.form-results{margin-top:20px;display:grid;gap:12px}
+.form-response{padding:16px}
+.form-response summary{cursor:pointer}
+.form-response dl{display:grid;grid-template-columns:minmax(120px,35%) 1fr;gap:8px 14px;margin:16px 0}
+.form-response dt{font-weight:680;color:var(--muted,#64746f)}
+.form-response dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.form-empty{text-align:center;padding:44px 18px}
+.form-field-number{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--form-pine);font-weight:800;margin-bottom:7px}
+.form-result-good{color:var(--form-pine);font-weight:760}
+[data-theme=dark] .form-app{--surface:#1c282c;--text:#f4f1e7;--muted:#b6c7c0;color:#f4f1e7}
+[data-theme=dark] .form-choice{background:#ffffff0a}
+[data-theme=dark] .form-entry input:not([type=radio]):not([type=checkbox]),[data-theme=dark] .form-entry select,[data-theme=dark] .form-entry textarea,[data-theme=dark] .form-editor input:not([type=checkbox]),[data-theme=dark] .form-editor select,[data-theme=dark] .form-editor textarea{background:#152327;color:#f4f1e7}
+[data-theme=dark] .form-field-number,[data-theme=dark] .form-result-good{color:var(--form-jade)}
+@media(max-width:760px){.form-app{padding:18px 12px 34px}.form-layout{grid-template-columns:1fr;gap:12px}.form-panel{position:static}.form-cards{display:flex;gap:10px;overflow:auto;padding-bottom:4px}.form-select{min-width:200px}.form-editor-grid{grid-template-columns:1fr}.form-entry{padding:16px}.form-card{padding:19px}.form-response dl{grid-template-columns:1fr}.form-rating label{flex:1}}
+@media(prefers-reduced-motion:reduce){.form-progress span{transition:none}}
