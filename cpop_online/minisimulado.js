@@ -41,8 +41,12 @@ function saveLocal(){if(!profile)return;write('cpop.mini.draft.'+profile.student
 function byId(id){let a=answers.find(x=>x.id===id);if(!a){a={id,choice:0,comment:''};answers.push(a);}return a;}
 function completed(){return bank.questions.filter(q=>{let a=byId(q.id);return a.choice>0||a.comment.trim().length>=8}).length;}
 function countStatus(){return bank.questions.map(q=>{const a=byId(q.id);return a.choice?'done':a.comment.trim().length>=8?'comment-only':''})}
+function sharedProfile(){
+ const p=stored('cpop.profile',null);
+ return p&&String(p.name||'').trim().length>=4&&p.group==='CPOP - Campo Mourão'&&String(p.joinCode||'').trim()&&typeof p.studentId==='string'&&/^[a-z0-9-]{12,90}$/i.test(p.studentId)?p:null;
+}
 function profileForm(){
- const cached=stored('cpop.mini.profile',null)||stored('cpop.profile',{})||{};
+ const cached=sharedProfile()||stored('cpop.mini.profile',{})||{};
  APP.innerHTML='<section class="intro-form"><div class="eyebrow">CPOP · Campo Mourão</div><h1>Mini-simulado de Linguagens.</h1><p class="muted">Questões do acervo Craft, com alternativas e comentários. Responda pelo celular; cada envio confirmado fica disponível no painel do educador.</p><div class="card"><form id="join" class="stack"><label class="field">Nome completo<input name="name" list="rosterNames" value="'+esc(cached.name||'')+'" autocomplete="name" maxlength="120" required></label><div class="row"><button id="loadRoster" type="button">Buscar nome na lista de presença</button><span class="micro" id="rosterStatus"></span></div><datalist id="rosterNames"></datalist><label class="field">Turma<input value="CPOP - Campo Mourão" readonly></label><label class="field">Código de participação<input name="code" type="password" value="'+esc(cached.code||cached.joinCode||'')+'" required autocomplete="off"></label><button class="primary" type="submit">Entrar no mini-simulado</button><p class="micro">A senha do Craft não é solicitada. O código da turma apenas autoriza o envio; os comentários são visíveis ao educador.</p></form></div></section>';
  $('#loadRoster').onclick=async()=>{const code=$('#join').elements.code.value.trim();if(!code){toast('Informe primeiro o código da turma.');return;}$('#rosterStatus').textContent='Consultando Craft…';try{const j=await fetchJSON('/api/people',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({joinCode:code})});$('#rosterNames').innerHTML=(j.items||[]).map(x=>'<option value="'+esc(x.name)+'"></option>').join('');$('#rosterStatus').textContent=(j.items||[]).length+' nomes disponíveis';toast('Lista de presença recuperada do Craft.');}catch(e){$('#rosterStatus').textContent='Lista indisponível';toast(e.message)}};
  $('#join').onsubmit=async e=>{
@@ -54,6 +58,7 @@ function profileForm(){
   const samePerson=String(cached.name||'').trim().toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR');
   const studentId=(samePerson&&cached.studentId&&/^[a-z0-9-]{12,90}$/i.test(cached.studentId))?cached.studentId:(globalThis.crypto?.randomUUID?.()||'student-'+Date.now()+'-'+Math.random().toString(36).slice(2));
   profile={name,code,studentId,group:'CPOP - Campo Mourão'};
+  write('cpop.profile',{name,alias:samePerson?String(cached.alias||''):'',group:'CPOP - Campo Mourão',joinCode:code,studentId});
   write('cpop.mini.profile',profile);
   wait('Recuperando as respostas do Craft…');
   try{await loadStudent()}catch(err){fail(err,()=>loadStudent().catch(x=>fail(x,loadStudent)))}
@@ -318,8 +323,17 @@ function renderProjection(j){
  (s.reveal?'<h3>Respostas agregadas</h3><div class="distribution">'+q.options.map((o,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(d.counts[i]/Math.max(1,d.counts.reduce((a,b)=>a+b,0))*100)+'%"></span></div><span>'+d.counts[i]+'</span></div>').join('')+'</div>':'<p class="muted">As escolhas da turma permanecem ocultas até a revelação do gabarito.</p>')+
  '<div class="note"><strong>'+d.comments+' comentários</strong><p class="micro">As respostas discursivas são exibidas individualmente apenas no painel do educador.</p></div></aside></div></div>';
 }
+function beginWithSharedProfile(){
+ const shared=sharedProfile();
+ if(!shared)return false;
+ profile={name:shared.name,code:shared.joinCode,studentId:shared.studentId,group:shared.group};
+ write('cpop.mini.profile',profile);
+ wait('Recuperando seu mini-simulado no Craft…');
+ loadStudent().catch(err=>{profile=null;bank=null;profileForm();toast('Confira seu acesso: '+(err.message||'consulta indisponível'));});
+ return true;
+}
 if(MODE==='professor'){loadTeacher();}
 else if(MODE==='projecao'){projectionLoad();setInterval(projectionLoad,5000);}
-else{profileForm();setInterval(liveStudent,8000);setInterval(refreshFeedback,15000);}
+else{if(!beginWithSharedProfile())profileForm();setInterval(liveStudent,8000);setInterval(refreshFeedback,15000);}
 if(MODE==='professor')setInterval(teacherPoll,8000);
 })();
