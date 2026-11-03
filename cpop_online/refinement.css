@@ -200,3 +200,9 @@ body{background:var(--bg)!important;color:var(--ink)}
  .media-audit-list{grid-template-columns:1fr}
  .media-audit-row{min-height:64px}
 }
+
+.media-audit-mirror{border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.media-audit-mirror .media-audit-mark{
+ color:var(--gold);background:color-mix(in srgb,var(--gold) 15%,transparent)
+}
+.media-audit-mirror>small:last-child{color:var(--gold)}
