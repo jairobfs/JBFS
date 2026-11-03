@@ -63,7 +63,7 @@ npx wrangler deploy
 
 - [ ] Resposta `ready: true` da API de saúde, sem expor a chave Craft.
 - [ ] Conteúdos das semanas 24–26, imagens e estilos carregam sem URLs quebradas.
-- [ ] Mini-simulado contém 23 questões, alternativas, comentários e respostas locais.
+- [ ] Mini-simulado contém 30 questões (15 canônicas, 8 recentes e 7 de revisão incorporadas em 03/11), alternativas, comentários e respostas locais.
 - [ ] Acesso de estudante com código da turma; acesso docente somente com PIN.
 - [ ] Prévia docente lê resultados e controles de projeção; estudante não recebe gabaritos ocultos.
 - [ ] Uma tentativa **técnica autorizada**, com identificador separado, é gravada e relida do Craft; verificar que o reenvio finalizado recebe 409. Remover a tentativa técnica **apenas após revisão do alvo exato**.
