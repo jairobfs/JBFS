@@ -112,7 +112,7 @@ O registro técnico original `VALIDACAO-TECNICA` foi mantido; não deve ser inte
 
 ## Mini-simulado de revisão final · 03/11/2026
 
-- Aluno: `/minisimulado.html?modo=aluno` — 23 questões (15 do acervo canônico e 8 recentes integradas), escolha objetiva ou comentário, rascunho local com envio e leitura de volta pelo Craft.
+- Aluno: `/minisimulado.html?modo=aluno` — 30 questões (15 do acervo canônico, 8 recentes e 7 de revisão incorporadas em 03/11), escolha objetiva ou comentário, rascunho local com envio e leitura de volta pelo Craft.
 - Educador: `/minisimulado.html?modo=professor` e aba **Mini-simulado** dentro de `/professor.html` — acompanhamento por estudante e questão, comentários e devolutivas; PIN docente já existente.
 - Projeção: `/minisimulado.html?modo=projecao` — posição e revelação do gabarito comandadas pelo educador, agregados anonimizados.
 - Banco de questões: coleção institucional de conteúdo `c3e544ba-2939-2292-45ce-327664a06d9a`, com 23 UIDs selecionados, ordenados por identidade estável e conteúdo atualizado em leitura.
@@ -138,3 +138,11 @@ O educador pode selecionar a justificativa de um estudante no painel do mini-sim
 - A interface de projeção exibe o texto somente com a apresentação ativa; o modo estudante não recebe o comentário projetado no campo de sessão.
 - O texto é escapado no navegador. O educador deve revisar e remover informações pessoais do trecho antes de autorizar sua divulgação.
 - O teste de regressão automatizado verifica: HTTP 401 para publicação sem PIN, revisão e publicação docente, ausência de nome na resposta pública, ocultação manual e limpeza ao mudar de questão.
+
+### Consolidação de sete notas-base de Linguagens · 03/11/2026
+
+- As sete notas de origem foram lidas integralmente (16 páginas de conteúdo paginado), preservadas no arquivo de integridade `archive/notas_base_linguagens_2026-11-03.md` e sintetizadas em **16 registros** da coleção canônica no Craft: 9 exposições e 7 questões com quatro alternativas e gabaritos comentados.
+- Identificadores das novas entradas: prefixo `inc-20261103-` (semanas 24–26); não foram reproduzidas como questões oficiais do ENEM as situações hipotéticas/autorais das notas.
+- Alinhamento pedagógico revisto com a Matriz oficial do Inep: H18–H20 (competência de área 6), H21–H24 (competência 7) e H25–H27 (competência 8). A competência 1 de Linguagens diz respeito aos sistemas de comunicação e informação.
+- O Censo Demográfico 2022 identifica 295 línguas indígenas faladas ou utilizadas por pessoas indígenas com 2 anos ou mais, com base em autodeclaração e critérios próprios de coleta (IBGE); evitar números antigos ou interpretar o total como medida direta de vitalidade linguística.
+- A coleção antiga foi reutilizada, sem novas subpáginas temáticas. O mini-simulado incorpora as sete questões novas, totalizando **30 questões**, preservando os UIDs originais e versões de tentativas no Craft.
