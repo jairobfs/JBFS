@@ -10,6 +10,7 @@ const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
 const $=(s,base=document)=>base.querySelector(s);
 const $$=(s,base=document)=>[...base.querySelectorAll(s)];
 const safeNumber=x=>Number.isFinite(Number(x))?Number(x):0;
+const richBody=x=>{const y=esc(String(x||'').replace(/\\([*_])/g,'$1'));return y.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+)\*/g,'<em>$1</em>').replace(/^&gt;\s?/gm,'');};
 let bank=null,profile=null,answers=[],position=0,finalized=false,dirty=false,saveTimer=null,saveQueue=Promise.resolve(),statusText='',
     teacherToken=sessionStorage.getItem('cpop.teacher.token')||'',tData=null,tPosition=0,follow=stored('cpop.mini.follow',false),snapshot='';
 const dark=stored('cpop.mini.dark',null);
