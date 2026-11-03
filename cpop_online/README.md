@@ -112,10 +112,19 @@ O registro técnico original `VALIDACAO-TECNICA` foi mantido; não deve ser inte
 
 ## Mini-simulado de revisão final · 03/11/2026
 
-- Aluno: `/minisimulado.html?modo=aluno` — 15 questões do acervo canônico, escolha objetiva ou comentário, rascunho local com envio validado ao Craft.
+- Aluno: `/minisimulado.html?modo=aluno` — 23 questões (15 do acervo canônico e 8 recentes integradas), escolha objetiva ou comentário, rascunho local com envio e leitura de volta pelo Craft.
 - Educador: `/minisimulado.html?modo=professor` e aba **Mini-simulado** dentro de `/professor.html` — acompanhamento por estudante e questão, comentários e devolutivas; PIN docente já existente.
 - Projeção: `/minisimulado.html?modo=projecao` — posição e revelação do gabarito comandadas pelo educador, agregados anonimizados.
-- Banco de questões: coleção institucional de conteúdo `c3e544ba-2939-2292-45ce-327664a06d9a`, com 15 UIDs selecionados e conteúdo atualizado em leitura.
+- Banco de questões: coleção institucional de conteúdo `c3e544ba-2939-2292-45ce-327664a06d9a`, com 23 UIDs selecionados, ordenados por identidade estável e conteúdo atualizado em leitura.
 - Coleta: coleção Craft `675a73a0-b3c2-6a26-4613-0cc6dac7a844`; projeção: `117e4c16-84fb-040f-3300-2952f55ebf55`.
 - Sincronização: cada salvamento aguarda confirmação da API Craft; dashboards e projeção usam consultas periódicas, não websockets.
 - Comentários sem alternativa são aceitos para envio, mas exigem leitura e devolutiva humana; o número de acertos objetivos não equivale a uma nota TRI do ENEM.
+
+### Homologação E2E (03/11/2026)
+
+- Uma implantação **de prévia isolada** executou POST real de rascunho com 23 respostas, incluindo 1 questão respondida somente por texto; leitura subsequente pela API Craft confirmou o conteúdo.
+- A finalização real registrou 22 acertos objetivos e 1 resposta pendente de análise humana. Reenvio de tentativa já finalizada foi rejeitado com HTTP 409, sem apagar a entrega.
+- Uma devolutiva escrita na coleção Craft foi recuperada corretamente pela API de estudante. O registro técnico foi excluído após a verificação; a coleção permaneceu sem tentativas de teste.
+- A rota temporária de QA foi desativada na branch de ensaio e não integra o código de produção.
+- Foram acrescentados testes de regressão em `tests/minisimulado.test.js` para preservar gabaritos, comentários, correção, acesso docente, projeção e compatibilidade com versões armazenadas.
+- Não foi realizado teste automatizado visual com interação de iPhone; a garantia de layout depende de validação em dispositivo real. A API é por consulta periódica, não websockets.
