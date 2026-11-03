@@ -23,21 +23,24 @@ npm run check:cloudflare
 
 A GitHub Action `CPOP · Cloudflare · validação` executa testes e `wrangler deploy --dry-run` sem publicar nem usar credenciais do Craft.
 
-## Configurar a prévia na conta Cloudflare
+## Reconfigurar o Worker `jbfs` existente na conta Cloudflare
 
-1. Em **Workers & Pages → Create → Import a repository**, selecione `jairobfs/JBFS`.
-2. Defina o diretório raiz do projeto como `cpop_online` e a branch `feat/cpop-cloudflare-workers`, se oferecida. Alternativamente, clone a branch localmente e execute os comandos abaixo.
-3. Configure o build como `npm run build:cloudflare` e o deploy como `npx wrangler deploy`.
-4. Deixe habilitado o endereço de prévia `*.workers.dev`; **não configure ainda o domínio dos estudantes**.
-5. Insira as credenciais abaixo em **Workers → Settings → Variables and Secrets**, exclusivamente como Secrets:
+O log de importação identifica o Worker `jbfs` e a antiga configuração `Framework: Static / Output Directory: cpop_online`. Essa configuração antiga **não deve continuar**: publicaria o diretório de código-fonte em vez do pacote público isolado.
+
+1. Em **Workers & Pages**, abra o Worker **`jbfs`** existente. Confirme que sua conexão Git aponta para `jairobfs/JBFS` e ajuste-a, se necessário.
+2. Configure o diretório raiz como **`cpop_online`** e a branch de implantação como **`feat/cpop-cloudflare-workers`**. Não aponte a produção para `main` enquanto o PR não estiver homologado.
+3. Use o build **`npm run build:cloudflare`** e o deploy **`npx wrangler deploy`**. O `wrangler.jsonc` desta branch tem `name: jbfs`, `main: cloudflare/worker.mjs` e publica somente `.cloudflare-public`.
+4. Mantenha o endereço de teste `*.workers.dev`; **não configure ainda o domínio dos estudantes**, e não remova o deployment Vercel.
+5. Se não for possível selecionar a branch de prévia no painel, interrompa a implantação automática e utilize o fluxo CLI abaixo, executado a partir da branch correta.
+6. Insira as credenciais abaixo em **Workers → Settings → Variables and Secrets**, exclusivamente como Secrets:
    - `CRAFT_API_BASE`
    - `CRAFT_API_KEY`
    - `CRAFT_COLLECTION_ID`
    - `CRAFT_CONTENT_COLLECTION_ID`
    - `CRAFT_LIVE_COLLECTION_ID`
    - `CRAFT_REVIEW_COLLECTION_ID`
-6. Os códigos docente/discente são validados por hashes mantidos na coleção de acesso do Craft. Não copie PINs ou códigos para arquivos públicos. Não é necessário alterar a coleção existente.
-7. Faça primeiro testes **somente de leitura**: `/api/health` com `ready: true`, `/api/lesson`, `/api/lesson?mini=1`, `/aula.html`, `/professor.html` e `/minisimulado.html?modo=aluno`.
+7. Os códigos docente/discente são validados por hashes mantidos na coleção de acesso do Craft. Não copie PINs ou códigos para arquivos públicos. Não é necessário alterar a coleção existente.
+8. Faça primeiro testes **somente de leitura**: `/api/health` com `ready: true`, `/api/lesson`, `/api/lesson?mini=1`, `/aula.html`, `/professor.html` e `/minisimulado.html?modo=aluno`.
 
 Alternativa por CLI autenticado, após o checkout da branch e a instalação de dependências:
 
