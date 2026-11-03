@@ -238,3 +238,13 @@ body{background:var(--bg)!important;color:var(--ink)}
  .slide-copy blockquote,.question-stem blockquote{padding:13px 16px;margin:1.2em 0;border-radius:0 9px 9px 0}
  .slide-copy ul,.slide-copy ol,.question-stem ul,.question-stem ol{padding-inline-start:1.45em}
 }
+
+/* Em questões visuais, respostas ficam indisponíveis até a figura aparecer. */
+.lecture-question .class-option:disabled{
+ cursor:wait;opacity:.6;border-color:var(--line)!important;
+ background:var(--panel2)!important;color:var(--muted);
+ transform:none;box-shadow:none;
+}
+.lecture-question .class-option:disabled:hover{transform:none}
+.lecture-question #classAnswerHint{max-width:66ch;line-height:1.55;
+ font-size:.87rem;color:var(--muted)}
