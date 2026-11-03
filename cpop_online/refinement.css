@@ -1,0 +1,161 @@
+/* CPOP • Editor de interface v4
+   Hierarquia de aula antes da decoração; mídia preservada em proporção original.
+   Carregado após glass-web.css para substituir apenas apresentação. */
+:root{
+ --ui-max:1240px;
+ --ui-text:clamp(1.02rem,1.1vw,1.13rem);
+ --ui-radius:18px;
+ --ui-shadow:0 10px 38px rgba(5,13,31,.09);
+}
+:root[data-theme=light]{
+ --bg:#F7F8FA;--bg2:#F1F4F8;--panel:#FFFFFF;
+ --panel2:#F5F7FA;--panel3:#E9EEF7;--line:#CFD7E3;
+ --ink:#1D2838;--muted:#45536B;--soft:#627189;
+ --blue:#1C3B8E;--red:#B42620;--gold:#9F650B;--green:#397C23;
+ --glass-surface:rgba(255,255,255,.97);--glass-panel:#FFFFFF;
+ --glass-border:#D7DFE9;
+}
+:root[data-theme=dark]{
+ --bg:#0B111C;--bg2:#111A29;--panel:#151F2F;
+ --panel2:#1C2839;--panel3:#24334B;--line:#34445D;
+ --ink:#F5F7FC;--muted:#D0D9E7;--soft:#9BACC4;
+ --glass-surface:rgba(16,23,36,.96);--glass-panel:#182236;
+ --glass-border:#3A4B63;
+}
+body{background:var(--bg)!important;color:var(--ink)}
+.site-shell{width:100%;overflow-x:clip}
+.topbar{width:calc(100% - clamp(20px,3vw,52px));max-width:var(--ui-max);
+ margin:10px auto 0;border-radius:15px;padding:12px clamp(14px,2vw,28px);
+ border-color:var(--line);box-shadow:0 3px 18px rgba(8,20,38,.05);
+ backdrop-filter:blur(18px)}
+.brand{font-size:1.04rem;letter-spacing:.02em}
+.brand-mark{border-radius:9px;width:34px;height:34px}
+.brand small{letter-spacing:.06em}
+.main{max-width:var(--ui-max);padding:clamp(16px,2.6vw,34px) clamp(16px,3vw,34px) 80px}
+.student-portal-nav,.teacher-tabs{max-width:calc(var(--ui-max) - 50px);
+ margin:12px auto 8px;top:78px;gap:4px;padding:6px;background:var(--glass-surface);
+ border-color:var(--line);border-radius:14px;box-shadow:none}
+.student-portal-nav button,.teacher-tabs button{border-radius:10px;min-height:42px;
+ padding:9px 16px;font-size:.88rem;letter-spacing:0}
+.student-portal-nav button[aria-selected=true],.teacher-tabs button[aria-pressed=true]{
+ background:var(--panel3);color:var(--ink);border-color:var(--line);box-shadow:none;
+ font-weight:800}
+.student-portal-nav button[aria-selected=true]::before,
+.teacher-tabs button[aria-pressed=true]::before{display:none}
+.classroom-main{padding-top:18px}
+.class-hero{padding:clamp(22px,3.7vw,43px)!important;background:var(--panel)!important;
+ border:1px solid var(--line);border-radius:var(--ui-radius)!important;
+ box-shadow:none!important;max-width:none;overflow:hidden}
+.class-hero::after{display:none!important}
+.class-hero h1{font-size:clamp(2.4rem,5.1vw,4.7rem);letter-spacing:-.055em;
+ line-height:1.06;max-width:20ch;margin:12px 0}
+.class-hero .lead{font-size:clamp(.97rem,1.3vw,1.12rem);line-height:1.65;
+ max-width:65ch}
+.class-hero-foot{margin-top:19px;padding-top:14px;gap:8px}
+.class-hero-foot span{font-size:.75rem;padding:6px 10px;
+ background:var(--panel2);border:1px solid var(--line);border-radius:9px}
+.class-week-list{gap:14px}
+.class-week{box-shadow:none!important;border-color:var(--line)!important;
+ background:var(--panel)!important;border-radius:var(--ui-radius)!important;
+ padding:clamp(17px,2vw,25px)!important;min-height:0}
+.class-week:hover{box-shadow:var(--ui-shadow)!important;transform:translateY(-2px)}
+.class-week-number{color:var(--blue);opacity:.9}
+.class-week strong{font-size:clamp(1.22rem,2vw,1.65rem)}
+.class-week small{color:var(--muted);line-height:1.55;font-size:.88rem}
+.class-week em{font-size:.75rem;line-height:1.4}
+.section-heading h2{letter-spacing:-.035em}
+.class-profile,.class-profile-ok,.class-visitor-note{box-shadow:none!important;
+ border-color:var(--line);border-radius:14px}
+.class-toolbar{gap:8px;align-items:center}
+.class-toolbar-week{font-size:.8rem;line-height:1.4}
+.lecture-layout{grid-template-columns:clamp(205px,22vw,264px) minmax(0,1fr);gap:16px}
+.lecture-outline{background:var(--panel);padding:13px;top:96px;border-radius:13px;
+ border-color:var(--line);max-height:calc(100dvh - 110px)}
+.outline-item{border-radius:9px;min-height:39px;color:var(--muted);font-size:.81rem}
+.outline-item.active{background:var(--panel3);border-color:var(--line);color:var(--ink);font-weight:750}
+.lecture-stage{border:1px solid var(--line);background:var(--panel)!important;
+ border-radius:17px!important;box-shadow:none!important;overflow:hidden}
+.lecture-topline{padding:14px clamp(19px,3vw,39px);border-bottom:1px solid var(--line)}
+.lecture-slide{padding:clamp(24px,3.4vw,49px)!important;min-height:0!important;
+ display:flex;justify-content:flex-start;gap:0}
+.lecture-type{font-size:.72rem;letter-spacing:.09em;margin-bottom:17px}
+.lecture-slide h2{font-size:clamp(1.7rem,3.3vw,3.25rem);line-height:1.13;
+ letter-spacing:-.042em;margin:0 0 22px;max-width:24ch}
+.slide-copy{font-size:var(--ui-text);line-height:1.75;max-width:68ch}
+.slide-copy p{margin-bottom:1.15em}
+.question-stem{font-size:var(--ui-text);line-height:1.7;color:var(--ink)}
+.class-options{gap:10px;max-width:860px}
+.class-option{border-radius:12px;min-height:60px;padding:15px 16px!important;
+ background:var(--panel2)!important;color:var(--ink);font-size:.98rem;
+ border:1px solid var(--line)!important;line-height:1.55}
+.class-option:hover:not([disabled]){background:var(--panel3)!important;border-color:var(--blue)!important}
+.class-option.selected{background:var(--panel3)!important;border:2px solid var(--blue)!important;padding:14px 15px!important}
+.class-option:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.class-media{max-width:950px;margin:23px 0 19px;border-radius:14px!important;
+ box-shadow:none!important;border:1px solid var(--line);background:var(--panel2)}
+.class-media-surface{background:#fff;padding:clamp(12px,2.8vw,30px);
+ min-height:120px;position:relative}
+.class-media img{width:auto;height:auto;max-width:100%;max-height:min(67dvh,760px);
+ object-fit:contain;border:none;box-shadow:none;border-radius:4px}
+.class-media figcaption{padding:10px 17px;font-size:.75rem;color:var(--muted);
+ line-height:1.5;text-align:left;margin:0}
+.class-media-error{display:grid;gap:10px;place-items:start;width:100%;
+ padding:clamp(24px,4vw,46px);background:#fff;color:#28354b;text-align:left}
+.class-media-error[hidden]{display:none!important}
+.class-media-error strong{font-size:1.08rem}
+.class-media-error p{margin:0;max-width:52ch;font-size:.94rem;line-height:1.6}
+.class-media-error button{margin-top:4px}
+.class-media.media-unavailable .class-media-enlarge{display:none}
+.editor-heading{align-items:center;margin-bottom:17px}
+.editor-heading h1{font-size:clamp(2rem,3.3vw,3.2rem);margin:5px 0 10px}
+.editor-heading p{line-height:1.6;max-width:64ch;font-size:.95rem}
+.editor-structure{grid-template-columns:clamp(240px,25vw,304px) minmax(0,1fr);gap:16px}
+.editor-sidebar{background:var(--panel);border-color:var(--line);
+ padding:14px;border-radius:14px;top:90px;max-height:calc(100dvh - 108px)}
+.editor-form{box-shadow:none!important;border-color:var(--line);border-radius:15px;
+ padding:clamp(18px,3vw,34px)}
+.editor-edit-head h2{font-size:clamp(1.45rem,2.5vw,2.28rem);letter-spacing:-.03em}
+.editor-fields .field{font-size:.85rem;line-height:1.4}
+.editor-fields input,.editor-fields textarea,.editor-fields select{
+ border-color:var(--line);background:var(--panel2);font-size:1rem;line-height:1.55}
+.editor-fields textarea{min-height:110px}
+.editor-actions{background:var(--panel);border-top:1px solid var(--line);
+ padding:12px 0;box-shadow:0 -8px 18px rgba(0,0,0,.025)}
+.editor-row.active{background:var(--panel3);border-color:var(--line)}
+.student-portal-frame,.teacher-frame{border-color:var(--line);box-shadow:none;
+ border-radius:14px}
+@media(max-width:960px){
+ .lecture-layout{grid-template-columns:minmax(0,1fr)}
+ .lecture-outline{position:relative;top:auto;max-height:none}
+ .class-toolbar{flex-wrap:wrap}
+ .editor-structure{grid-template-columns:minmax(0,1fr)}
+ .editor-sidebar{position:static;max-height:none}
+ .editor-list{max-height:310px;overflow:auto}
+}
+@media(max-width:640px){
+ .topbar{margin:5px auto 0;width:calc(100% - 12px);border-radius:11px;padding:9px 12px}
+ .main{padding:12px 13px 84px}
+ .student-portal-nav,.teacher-tabs{top:64px;width:calc(100% - 22px);
+ margin:8px auto;padding:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+ .student-portal-nav button,.teacher-tabs button{min-width:max-content;padding:9px 11px;min-height:42px;font-size:.81rem}
+ .class-hero{padding:21px!important}
+ .class-hero h1{font-size:clamp(2.13rem,8vw,3.1rem);max-width:20ch}
+ .class-hero .lead{font-size:1rem;line-height:1.65}
+ .class-week{padding:18px!important;gap:12px}
+ .class-week strong{font-size:1.27rem}
+ .lecture-stage{border-radius:13px!important}
+ .lecture-slide{padding:22px 18px 32px!important}
+ .lecture-slide h2{font-size:clamp(1.75rem,7vw,2.45rem);margin-bottom:15px}
+ .slide-copy,.question-stem{font-size:1rem;line-height:1.72}
+ .class-option{font-size:.96rem;min-height:56px}
+ .class-media{margin:18px 0 13px}
+ .class-media-surface{padding:10px}
+ .class-media img{max-height:62dvh}
+ .class-media figcaption{padding:10px 12px;font-size:.72rem}
+ .class-media-enlarge{position:static;width:100%;margin-top:10px}
+ .editor-form{padding:18px 14px;border-radius:13px}
+ .editor-actions{bottom:0;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+ .editor-actions button{min-height:44px}
+ .student-portal-frame,.teacher-frame{border-radius:11px;min-height:76dvh;height:76dvh}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
