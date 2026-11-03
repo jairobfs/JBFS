@@ -25,8 +25,9 @@
     let reported = 0;
     const report = () => {
       scheduled = false;
+      // The root scrollHeight never falls below the iframe viewport, which
+      // would make the parent's initial fixed height impossible to shrink.
       const height = Math.ceil(Math.max(
-        document.documentElement.scrollHeight,
         body.scrollHeight,
         body.getBoundingClientRect().height
       ));
