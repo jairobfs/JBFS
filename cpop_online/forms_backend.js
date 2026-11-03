@@ -56,10 +56,11 @@ function fieldsOf(raw){
 }
 function textFields(fields){
  const oneLine=x=>safe(x).replace(/\s*\n\s*/g,' ');
+ const localized={radio:'múltipla escolha',select:'categoria',text:'resposta curta',textarea:'discursiva',rating:'escala',checkbox:'confirmação'};
  return fields.map((f,index)=>[
   '## '+(index+1)+'. '+oneLine(f.label),
   'ID: '+f.id,
-  'Tipo: '+f.kind,
+  'Tipo: '+(localized[f.kind]||f.kind),
   'Obrigatória: '+(f.required?'sim':'não'),
   f.hint?'Contexto: '+oneLine(f.hint):'',
   ...f.options.map((opt,i)=>String.fromCharCode(65+i)+') '+oneLine(opt)),
