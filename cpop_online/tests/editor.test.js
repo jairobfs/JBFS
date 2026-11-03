@@ -28,4 +28,20 @@ test('criar e retirar questão atualiza a aula, oculta gabarito e recusa revisã
  r=await call(lesson);assert.equal(r.body.weeks[0].entries.length,0);assert.equal(rows.length,1);
 });
 
+test('cânone preserva Q mesmo após edição e bloqueia duplicatas',async()=>{
+ const item={uid:'canon-q251',week:24,order:45,type:'questao',title:'SAEB II/01',body:'Enunciado original',options:['A','B','C'],answer:2,why:'Evidência e mecanismo.',source:'Q251 ↔ SAEB II/01',active:true};
+ assert.equal((await call(admin,'POST',{item},true)).status,201);
+ let r=await call(admin,'GET',null,true),q=r.body.items.find(x=>x.uid==='canon-q251');
+ assert.equal(q.canonicalId,'Q251');
+ assert.equal(r.body.canonAudit.active,1);
+ assert.equal(r.body.canonAudit.issues.length,0);
+ assert.equal((await call(admin,'PUT',{id:q.id,revision:q.revision,item:{...q,source:'fonte apagada'}},true)).status,409);
+ assert.equal((await call(admin,'PUT',{id:q.id,revision:q.revision,item:{...q,source:'Q252 ↔ SAEB II/01'}},true)).status,409);
+ assert.equal((await call(admin,'POST',{item:{...item,uid:'alias-251'}},true)).status,409);
+ assert.equal((await call(admin,'PUT',{id:q.id,revision:q.revision,item:{...q,body:'Enunciado revisado'}},true)).body.saved,true);
+ r=await call(admin,'GET',null,true);
+ assert.equal(r.body.items.find(x=>x.uid==='canon-q251').body,'Enunciado revisado');
+ assert.equal(r.body.canonAudit.issues.length,0);
+});
+
 test('troca de PIN e código invalida os anteriores e confirma os novos sem expor hashes',async()=>{const settings=require('../api/_settings'),{teacher,classAccess}=require('../api/_http');let r=await call(settings,'PUT',{pin:'9876',code:'nova-turma'},true);assert.equal(r.body.saved,true);assert.equal(await teacher({headers:{authorization:'Bearer '+process.env.CPOP_TEACHER_KEY}}),false);assert.equal(await teacher({headers:{authorization:'Bearer 9876'}}),true);assert.equal(await classAccess('jbfs'),false);assert.equal(await classAccess('nova-turma'),true);assert.equal('pinhash' in r.body,false);});
