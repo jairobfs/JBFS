@@ -60,33 +60,6 @@ function distrib(q,rows,idx){
 module.exports=async(req,res)=>{
  if(!method(req,res,['GET','POST','PUT']))return;
  try{
- // Diagnóstico E2E temporário em branch isolada; nenhum endpoint de teste integra a produção.
- const qaUrl=new URL(req.url||'/', 'https://cpop.local');
- if(req.method==='GET'&&qaUrl.searchParams.has('qa')){
-  const crypto=require('node:crypto');
-  const expected='37404fd8e96f80a0405c03f8c78e159e168c087aacdf7c6e1b27860792b76b2b';
-  const received=crypto.createHash('sha256').update(qaUrl.searchParams.get('qa')||'').digest('hex');
-  if(!crypto.timingSafeEqual(Buffer.from(expected),Buffer.from(received))){send(res,404,{error:'Não encontrado.'});return;}
-  const step=qaUrl.searchParams.get('step')||'inspect';
-  const sid='qa-mini-validacao-20261103',nome='VALIDACAO TECNICA MINI CPOP',code='jbfs';
-  const makeRes=()=>({statusCode:0,setHeader(){},end(text){this.data=JSON.parse(text)}});
-  if(step==='create'||step==='finalize'||step==='inspect'){
-   const {questions,version}=await bank();
-   const selected=questions.map((q,i)=>({id:q.uid,choice:i===0?0:q.answer,comment:i===0?'Comentário técnico: resposta textual independente da alternativa, sujeita à correção humana.':i===1?'Comentário técnico complementar.':''}));
-   let saved=null;
-   if(step!=='inspect'){
-    const tr=makeRes();
-    await module.exports({method:'POST',body:{name:nome,code,group:'CPOP - Campo Mourão',studentId:sid,version,answers:selected,final:step==='finalize'},url:'/api/lesson?mini=1'},tr);
-    saved={http:tr.statusCode,body:tr.data};
-   }
-   const gr=makeRes();
-   await module.exports({method:'GET',url:'/api/lesson?mini=1&mode=student&studentId='+sid+'&code='+code,query:{mode:'student',studentId:sid,code}},gr);
-   const p=gr.data?.progress;
-   send(res,200,{test:true,step,write:saved,read:{http:gr.statusCode,saved:!!p?.saved,final:!!p?.final,answers:p?.answers?.length||0,comment:p?.answers?.[0]?.comment?.slice(0,120)||'',correct:p?.correct??null,feedback:p?.feedback||{}},id:sid});
-   return;
-  }
-  send(res,422,{error:'Etapa de teste desconhecida.'});return;
- }
  const {questions,version}=await bank();
  if(req.method==='GET'){
   const info=query(req),stage=await getStage();
