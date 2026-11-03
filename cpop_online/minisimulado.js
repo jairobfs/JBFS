@@ -13,6 +13,7 @@ const safeNumber=x=>Number.isFinite(Number(x))?Number(x):0;
 const richBody=x=>{const y=esc(String(x||'').replace(/\\([*_])/g,'$1'));return y.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+)\*/g,'<em>$1</em>').replace(/^&gt;\s?/gm,'');};
 let bank=null,profile=null,answers=[],position=0,finalized=false,dirty=false,saveTimer=null,saveQueue=Promise.resolve(),statusText='',
     teacherToken=sessionStorage.getItem('cpop.teacher.token')||'',tData=null,tPosition=0,follow=stored('cpop.mini.follow',false),snapshot='';
+const teacherView={mode:'all',query:''};
 const dark=stored('cpop.mini.dark',null);
 document.documentElement.dataset.theme=dark===null?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):(dark?'dark':'light');
 $('#toggleTheme').onclick=()=>{const yes=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=yes?'dark':'light';write('cpop.mini.dark',yes)};
@@ -223,9 +224,43 @@ function teacherCounts(idx){
  }
  return {total,correct,comments,choices};
 }
+
+function exportTeacherCSV(){
+ if(!tData)return;
+ const rows=[['Identificador','Nome completo','Turma','Situação da tentativa','Questão','Identificador da questão','Alternativa','Gabarito objetivo','Acerto objetivo','Comentário do estudante','Devolutiva do professor','Data de atualização','Versão da atividade']];
+ for(const record of tData.records){
+  for(const [i,q] of tData.questions.entries()){
+   const response=record.answers[i]||{},choice=Number(response.choice)||0;
+   rows.push([record.studentId,record.name,record.group,record.final?'Finalizada':'Rascunho',i+1,q.id,choice?String.fromCharCode(64+choice):'',String.fromCharCode(64+q.answer),choice?choice===q.answer?'Sim':'Não':'Pendente de correção textual',response.comment||'',record.feedback?.[q.id]||'',record.updated||'',record.savedVersion||'']);
+  }
+ }
+ const quote=x=>{
+  let value=String(x??'').replace(/\r/g,' ');
+  if(/^\s*[=+\-@]/.test(value)||value.startsWith('\t'))value="'"+value;
+  return '"'+value.replace(/"/g,'""')+'"';
+ };
+ const csv='\ufeff'+rows.map(row=>row.map(quote).join(';')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+ const link=document.createElement('a');link.href=url;link.download='cpop-mini-linguagens-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+ toast('Exportação preparada: '+tData.records.length+' participantes.');
+}
+function applyTeacherFilters(){
+ const query=teacherView.query.trim().toLocaleLowerCase('pt-BR');let visible=0;
+ $('.student-card[data-student-name]').forEach(card=>{
+  const searchOk=!query||card.dataset.studentName.includes(query);
+  const modeOk=teacherView.mode==='all'||teacherView.mode==='comments'&&card.dataset.hasComment==='yes'||teacherView.mode==='pending'&&card.dataset.needsFeedback==='yes';
+  card.hidden=!(searchOk&&modeOk);
+  if(!card.hidden)visible++;
+ });
+ const count=$('#teacherFilterCount');if(count)count.textContent=visible+' de '+(tData?.records.length||0)+' participantes';
+ $('[data-teacher-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.teacherFilter===teacherView.mode)));
+ const empty=$('#teacherNoMatches');if(empty)empty.hidden=visible!==0;
+}
+
 function renderTeacher(){
  const q=tData.questions[tPosition],stage=tData.stage,records=tData.records,submitted=records.filter(r=>r.final),c=teacherCounts(tPosition);
- APP.innerHTML='<div class="intro"><div><div class="eyebrow">PAINEL DOCENTE · CPOP</div><h1>Mini-simulado · gestão da turma.</h1><p>Respostas comentadas, correção, projeção e armazenamento institucional Craft.</p></div><div class="row"><span class="chip good">Craft conectado</span><a class="btn" href="/minisimulado.html?modo=projecao" target="_blank" rel="noopener">Abrir projeção</a><button id="reloadTeacher">Atualizar</button></div></div>'+
+ APP.innerHTML='<div class="intro"><div><div class="eyebrow">PAINEL DOCENTE · CPOP</div><h1>Mini-simulado · gestão da turma.</h1><p>Respostas comentadas, correção, projeção e armazenamento institucional Craft.</p></div><div class="row"><span class="chip good">Craft conectado</span><a class="btn" href="/minisimulado.html?modo=projecao" target="_blank" rel="noopener">Abrir projeção</a><button id="downloadTeacherCSV" title="Exportar respostas com comentários e devolutivas">Exportar CSV</button><button id="reloadTeacher">Atualizar</button></div></div>'+
  '<div class="stats"><div class="stat"><strong>'+records.length+'</strong><span>Participantes iniciados</span></div><div class="stat"><strong>'+submitted.length+'</strong><span>Entregas finalizadas</span></div><div class="stat"><strong>'+c.total+'</strong><span>Alternativas na questão</span></div><div class="stat"><strong>'+c.comments+'</strong><span>Comentários na questão</span></div></div>'+
  '<div class="line"></div><div class="teacher-grid"><section class="teacher-rows"><div class="card"><div class="row space"><div><div class="eyebrow">TRANSMISSÃO · QUESTÃO '+(tPosition+1)+'/'+tData.questions.length+'</div><h2>'+esc(q.title)+'</h2></div><span class="chip '+(stage.active?'good':'')+'">'+(stage.active?'Ao vivo · questão '+stage.number:'Projeção pausada')+'</span></div>'+
  '<div class="numbers">'+tData.questions.map((x,i)=>'<button class="number '+(i===tPosition?'selected':'')+'" data-teacher-jump="'+i+'">'+(i+1)+'</button>').join('')+'</div><div class="line"></div>'+
@@ -234,14 +269,19 @@ function renderTeacher(){
  '<div class="card"><h3>Distribuição de respostas · questão '+(tPosition+1)+'</h3><div class="distribution">'+c.choices.map((n,i)=>'<div class="barrow"><span>'+String.fromCharCode(65+i)+'</span><div class="bar"><span style="width:'+Math.round(n/Math.max(c.total,1)*100)+'%"></span></div><span>'+n+'</span></div>').join('')+'</div><p class="micro">'+c.correct+' acertos em '+c.total+' alternativas registradas. Comentários sem alternativa requerem avaliação humana; nenhuma pontuação TRI é estimada.</p></div>'+
  '<div class="card"><h3>Projeção nesta mesma tela</h3><iframe class="presenter-frame" title="Projeção sincronizada" src="/minisimulado.html?modo=projecao&embed=1"></iframe></div></section>'+
  '<section class="card"><div class="row space"><h2>Respostas da questão '+(tPosition+1)+'</h2><span class="chip">'+records.length+' registros</span></div><p class="micro">Respostas e comentários aparecem à medida que são sincronizados, mesmo antes da entrega final.</p>'+
+ '<div class="teacher-filters"><label class="field">Localizar estudante<input id="teacherSearch" type="search" autocomplete="off" value="'+esc(teacherView.query)+'" placeholder="Nome ou parte do nome"></label><div class="row"><button type="button" data-teacher-filter="all" aria-pressed="true">Todos</button><button type="button" data-teacher-filter="comments" aria-pressed="false">Com comentários</button><button type="button" data-teacher-filter="pending" aria-pressed="false">Aguardando devolutiva</button></div><span id="teacherFilterCount" class="micro"></span></div>'+
  '<div class="teacher-responses">'+(records.length?records.sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')).map(row=>{
   const a=row.answers[tPosition]||{choice:0,comment:''},mark=a.choice?(a.choice===q.answer?'Correta':'Incorreta'):'Sem alternativa';
-  return '<article class="student-card"><div class="row space"><strong>'+esc(row.name)+'</strong><span class="chip '+(row.final?'good':'')+'">'+(row.final?'Enviado':'Rascunho')+'</span></div>'+
+  return '<article class="student-card" data-student-name="'+esc(String(row.name||'').toLocaleLowerCase('pt-BR'))+'" data-has-comment="'+(a.comment?'yes':'no')+'" data-needs-feedback="'+(a.comment&&!row.feedback?.[q.id]?'yes':'no')+'"><div class="row space"><strong>'+esc(row.name)+'</strong><span class="chip '+(row.final?'good':'')+'">'+(row.final?'Enviado':'Rascunho')+'</span></div>'+
   '<div class="micro">'+(a.choice?'Alternativa '+String.fromCharCode(64+a.choice)+' · '+mark:'Somente comentário / não respondida')+'</div>'+
   (a.comment?'<p>'+esc(a.comment)+'</p>':'<p class="micro">Nenhum comentário registrado.</p>')+
   '<label class="field">Devolutiva ao estudante<textarea data-feedback="'+esc(row.id)+'" maxlength="1200" placeholder="Escreva uma devolutiva individual para esta questão…">'+esc(row.feedback?.[q.id]||'')+'</textarea></label><button data-save-feedback="'+esc(row.id)+'">Salvar devolutiva no Craft</button></article>';
- }).join(''):'<p class="muted">Ainda não há respostas sincronizadas.</p>')+'</div></section></div>';
+ }).join(''):'<p class="muted">Ainda não há respostas sincronizadas.</p>')+'<p id="teacherNoMatches" class="muted" hidden>Nenhum registro corresponde aos filtros.</p></div></section></div>';
  $('#reloadTeacher').onclick=loadTeacher;
+ $('#downloadTeacherCSV').onclick=exportTeacherCSV;
+ $('#teacherSearch').oninput=e=>{teacherView.query=e.target.value;applyTeacherFilters()};
+ $('[data-teacher-filter]').forEach(btn=>btn.onclick=()=>{teacherView.mode=btn.dataset.teacherFilter;applyTeacherFilters()});
+ applyTeacherFilters();
  $$('[data-teacher-jump]').forEach(b=>b.onclick=()=>{tPosition=Number(b.dataset.teacherJump);renderTeacher()});
  $('#projectQuestion').onclick=()=>setStage({number:tPosition+1,active:true,reveal:false});
  $('#liveToggle').onclick=()=>setStage({number:stage.number,active:!stage.active,reveal:stage.reveal});
