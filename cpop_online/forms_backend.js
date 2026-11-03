@@ -9,8 +9,36 @@ const stamp=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex
 const safe=x=>typeof x==='string'?x.trim():'';
 const validId=x=>/^[a-z0-9_-]{4,90}$/i.test(x);
 const json=(x,f)=>{try{const v=JSON.parse(x||'');return v??f}catch{return f}};
+function plainFields(raw){
+ const sections=raw.replace(/\r\n?/g,'\n').split(/^##\s+/m).map(x=>x.trim()).filter(Boolean);
+ if(!sections.length||sections.length>15)return [];
+ const normalizeLabel=x=>safe(x).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ return sections.map((section,index)=>{
+  const [heading,...lines]=section.split('\n'),meta={},options=[];
+  for(const line of lines){
+   const value=line.trim();if(!value)continue;
+   const opt=/^([A-F])[\).]\s+(.+)$/i.exec(value);
+   if(opt){options.push(safe(opt[2]));continue;}
+   const pair=/^([^:]{2,35}):\s*(.*)$/.exec(value);
+   if(pair)meta[normalizeLabel(pair[1])]=safe(pair[2]);
+  }
+  const type=normalizeLabel(meta.tipo||'');
+  const kind=/^(radio|multipla escolha|objetiva|questao)$/.test(type)?'radio':
+   /^(select|menu|categoria|selecao)$/.test(type)?'select':
+   /^(text|resposta curta|curta)$/.test(type)?'text':
+   /^(rating|escala|avaliacao)$/.test(type)?'rating':
+   /^(checkbox|confirmacao)$/.test(type)?'checkbox':
+   /^(textarea|discursiva|resposta aberta|aberta)$/.test(type)?'textarea':
+   options.length?'radio':'textarea';
+  const answer=(meta.gabarito||'').trim().toUpperCase();
+  const correct=/^[A-F]$/.test(answer)?answer.charCodeAt(0)-64:
+   /^\d+$/.test(answer)?Number(answer):0;
+  const required=!/^(nao|n|false|0|opcional)$/.test(normalizeLabel(meta.obrigatoria||meta.obrigatorio||'sim'));
+  return {id:safe(meta.id)||'campo'+(index+1),kind,label:safe(heading).replace(/^\d+\s*[.)-]\s*/,''),hint:meta.contexto||meta.ajuda||'',required,options,correct,explanation:meta.explicacao||meta.justificativa||''};
+ });
+}
 function fieldsOf(raw){
- const a=Array.isArray(raw)?raw:json(raw,[]);
+ const a=Array.isArray(raw)?raw:(typeof raw==='string'&&/^\s*##\s+\S/m.test(raw)?plainFields(raw):json(raw,[]));
  if(!Array.isArray(a)||a.length<1||a.length>15)return null;
  const seen=new Set(),out=[];
  for(const x of a){
