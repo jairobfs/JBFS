@@ -19,7 +19,7 @@ async function getStage(){
  const row=rows.find(x=>x.properties?.atividade===ACTIVITY);
  if(!row)throw Error('Sessão de projeção não encontrada.');
  const p=row.properties||{};
- return {row:row.id,number:Math.min(IDS.length,Math.max(1,Number(p.questao)||1)),active:p.ativo===true,reveal:p.revelar===true,updated:String(p.atualizado||'')};
+ return {row:row.id,number:Math.min(IDS.length,Math.max(1,Number(p.questao)||1)),active:p.ativo===true,reveal:p.revelar===true,updated:String(p.atualizado||''),projectedComment:String(p.comentarioprojetado||'').slice(0,700)};
 }
 function safeParse(raw,fallback){try{const p=JSON.parse(raw||'');return p&&typeof p==='object'?p:fallback}catch{return fallback}}
 function normalizeAnswers(raw,qs){
@@ -68,12 +68,12 @@ module.exports=async(req,res)=>{
   if(info.mode==='teacher'){
    if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
    const records=(await getRows()).filter(r=>r.properties?.atividade===ACTIVITY).map(r=>rowPublic(r,questions));
-   send(res,200,{activity:ACTIVITY,version,questions:questions.map((q,i)=>({...qPublic(q,i),answer:q.answer,why:q.why})),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated},records});return;
+   send(res,200,{activity:ACTIVITY,version,questions:questions.map((q,i)=>({...qPublic(q,i),answer:q.answer,why:q.why})),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated,projectedComment:stage.projectedComment},records});return;
   }
   if(info.mode==='projection'){
    const q=questions[stage.number-1];
    const rows=stage.active?(await getRows()).filter(r=>r.properties?.atividade===ACTIVITY).map(r=>rowPublic(r,questions)):[];
-   send(res,200,{activity:ACTIVITY,version,total:questions.length,question:qPublic(q,stage.number-1),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated},distribution:distrib(q,rows,stage.number-1),answer:stage.reveal?q.answer:null,why:stage.reveal?q.why:''});return;
+   send(res,200,{activity:ACTIVITY,version,total:questions.length,question:qPublic(q,stage.number-1),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated},distribution:distrib(q,rows,stage.number-1),projectedComment:stage.active?stage.projectedComment:'',answer:stage.reveal?q.answer:null,why:stage.reveal?q.why:''});return;
   }
   const output={activity:ACTIVITY,version,title:'Revisão final de Linguagens · CPOP',questions:questions.map(qPublic),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated}};
   if(info.studentId&&info.code&&await classAccess(info.code)){
@@ -87,9 +87,29 @@ module.exports=async(req,res)=>{
   if(!await teacher(req)){send(res,401,{error:'Apenas o educador controla a projeção.'});return;}
   const stage=await getStage(),number=Number(body.number);
   if(!Number.isInteger(number)||number<1||number>questions.length){send(res,422,{error:'Questão inválida.'});return;}
-  const props={questao:number,ativo:body.active===true,revelar:body.reveal===true,atualizado:new Date().toISOString()};
+  const props={questao:number,ativo:body.active===true,revelar:body.reveal===true,atualizado:new Date().toISOString(),comentarioprojetado:number===stage.number&&body.active===true?stage.projectedComment:''};
   await request('/collections/'+PRESENTATION+'/items','PUT',{itemsToUpdate:[{id:stage.row,properties:props}]});
-  send(res,200,{saved:true,stage:{number,active:props.ativo,reveal:props.revelar,updated:props.atualizado}});return;
+  send(res,200,{saved:true,stage:{number,active:props.ativo,reveal:props.revelar,updated:props.atualizado,projectedComment:props.comentarioprojetado}});return;
+ }
+ if(body.action==='project-comment'){
+  if(!await teacher(req)){send(res,401,{error:'Apenas o educador pode projetar comentários.'});return;}
+  const stage=await getStage(),show=body.show===true;
+  let nextNumber=stage.number,comment='';
+  if(show){
+   const qid=str(body.questionId,100),rowId=str(body.rowId,100),index=questions.findIndex(q=>q.uid===qid);
+   const row=(await getRows()).find(r=>r.id===rowId&&r.properties?.atividade===ACTIVITY);
+   if(index<0||!row){send(res,404,{error:'Resposta não encontrada nesta atividade.'});return;}
+   const answers=safeParse(row.properties?.respostas,[]);
+   const source=Array.isArray(answers)?answers.find(a=>a?.id===qid):null;
+   if(!source||typeof source.comment!=='string'||!source.comment.trim()){send(res,422,{error:'Esta questão não possui comentário do estudante.'});return;}
+   comment=typeof body.text==='string'?body.text.trim():'';
+   if(comment.length<8||comment.length>700){send(res,422,{error:'Revise o trecho: são permitidos de 8 a 700 caracteres.'});return;}
+   nextNumber=index+1;
+  }
+  const updated=new Date().toISOString();
+  const props={questao:nextNumber,ativo:show?true:stage.active,revelar:show?false:stage.reveal,comentarioprojetado:comment,atualizado:updated};
+  await request('/collections/'+PRESENTATION+'/items','PUT',{itemsToUpdate:[{id:stage.row,properties:props}]});
+  send(res,200,{saved:true,stage:{number:props.questao,active:props.ativo,reveal:props.revelar,projectedComment:comment,updated}});return;
  }
  if(body.action==='feedback'){
   if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
