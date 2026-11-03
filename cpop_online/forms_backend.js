@@ -97,7 +97,7 @@ module.exports=async(req,res)=>{
    const studentId=str(req.query?.studentId||new URL(req.url||'/', 'https://cpop.local').searchParams.get('studentId'),90),code=str(req.headers['x-class-code'],80);
    if(studentId&&code&&await classAccess(code)){
     const rows=(await answerRows()).filter(r=>r.properties?.alunoid===studentId&&String(r.properties?.atividade||'').startsWith('form:')).map(answersFor);
-    out.progress=rows.map(r=>{const form=forms.find(f=>f.uid===r.formId);return {...r,review:form?feedback(form,r.answers):null};});
+    out.progress=rows.map(r=>{const form=forms.find(f=>f.uid===r.formId);return {formId:r.formId,answers:r.answers,updated:r.updated,final:r.final,review:form?feedback(form,r.answers):null};});
    }
    send(res,200,out);return;
   }
