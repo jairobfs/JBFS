@@ -1,1 +1,26 @@
 .editor-actions{position:sticky;bottom:0;background:var(--bg,#10141c);padding:16px 0;z-index:3;display:flex;flex-wrap:wrap;gap:10px}.person-row{display:grid;grid-template-columns:minmax(180px,1fr) auto auto;align-items:end;gap:14px;padding:18px 0;border-bottom:1px solid #8884}.person-row input:not([type=checkbox]){width:100%}#livePreview{margin-top:24px;line-height:1.65;overflow-wrap:anywhere}#livePreview img{display:block;margin:24px auto}.editor-heading-actions{flex-wrap:wrap}.editor-form textarea{line-height:1.6}#loadNames{margin-top:8px}#rosterStatus{display:block;margin-top:8px}.question-stem{white-space:pre-wrap!important}@media(max-width:640px){.person-row{grid-template-columns:1fr auto;gap:12px}.person-row .field{grid-column:1/-1}.editor-actions{padding-bottom:calc(12px + env(safe-area-inset-bottom))}.editor-actions button{flex:1 1 40%;min-height:44px}.editor-heading h1{font-size:clamp(2rem,9vw,3rem)}.editor-detail{min-width:0}.editor-field-grid{grid-template-columns:1fr}}
+
+/* Auditoria de proveniência Q001–Q301: compacto por padrão, legível no celular. */
+.editor-canon-audit{margin:8px 0 22px;border:1px solid color-mix(in srgb,currentColor 17%,transparent);border-radius:18px;background:color-mix(in srgb,var(--bg,#10141c) 92%,currentColor 8%);overflow:hidden}
+.editor-canon-audit summary{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;padding:17px 20px;list-style:none}
+.editor-canon-audit summary::-webkit-details-marker{display:none}
+.editor-canon-audit summary:focus-visible,.canon-audit-row:focus-visible{outline:3px solid #529F32;outline-offset:-3px}
+.canon-audit-summary{display:grid;gap:4px}
+.canon-audit-kicker{font-size:.69rem;letter-spacing:.11em;font-weight:800;color:#88a4d9}
+.canon-audit-summary strong{font-size:clamp(.98rem,2.6vw,1.25rem);line-height:1.3}
+.canon-audit-summary small,.canon-audit-note{opacity:.72;font-size:.83rem;line-height:1.5}
+.canon-audit-chevron{font-size:1.15rem;transition:transform .2s}
+.editor-canon-audit[open] .canon-audit-chevron{transform:rotate(180deg)}
+.canon-audit-body{padding:0 20px 18px;display:grid;gap:12px}
+.canon-audit-stats{display:flex;flex-wrap:wrap;gap:8px}
+.canon-audit-stats span{padding:8px 12px;border-radius:11px;background:color-mix(in srgb,currentColor 6%,transparent);font-size:.85rem}
+.canon-audit-stats strong{margin-left:8px;font-variant-numeric:tabular-nums}
+.canon-audit-ok,.canon-audit-warning{font-size:.86rem;line-height:1.55;margin:0}
+.canon-audit-warning{color:#bc6550}
+.canon-audit-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:8px;max-height:300px;overflow:auto}
+.canon-audit-row{border:1px solid color-mix(in srgb,currentColor 15%,transparent);border-radius:11px;background:transparent;color:inherit;display:grid;gap:5px;min-height:61px;padding:10px 12px;text-align:left;cursor:pointer}
+.canon-audit-row:hover{background:color-mix(in srgb,currentColor 7%,transparent)}
+.canon-audit-row span{overflow-wrap:anywhere;font-size:.86rem}
+.canon-audit-row small{opacity:.73;font-size:.75rem}
+.canon-audit-note{margin:0}
+@media(max-width:640px){.editor-canon-audit{margin-bottom:14px;border-radius:14px}.editor-canon-audit summary{padding:15px}.canon-audit-body{padding:0 15px 15px}.canon-audit-row{min-height:52px}.canon-audit-list{max-height:240px}}
