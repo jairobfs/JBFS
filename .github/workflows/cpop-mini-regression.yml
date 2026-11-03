@@ -1,0 +1,35 @@
+name: CPOP · Mini-simulado · regressão
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cpop_online/mini_backend.js'
+      - 'cpop_online/api/_lesson.js'
+      - 'cpop_online/api/_http.js'
+      - 'cpop_online/api/_craft.js'
+      - 'cpop_online/tests/minisimulado.test.js'
+      - '.github/workflows/cpop-mini-regression.yml'
+  pull_request:
+    paths:
+      - 'cpop_online/mini_backend.js'
+      - 'cpop_online/api/_lesson.js'
+      - 'cpop_online/api/_http.js'
+      - 'cpop_online/api/_craft.js'
+      - 'cpop_online/tests/minisimulado.test.js'
+      - '.github/workflows/cpop-mini-regression.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    name: Respostas, comentários, autenticação e projeção
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter código
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Informações do Node
+        run: node --version
+      - name: Regressão do mini-simulado sem credenciais reais
+        run: node --test cpop_online/tests/minisimulado.test.js
