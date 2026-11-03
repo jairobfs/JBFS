@@ -383,3 +383,10 @@ a{color:inherit}
  .class-option,.class-week,.lecture-stage,.editor-form,.class-media{border-width:2px}
  .student-portal-nav button[aria-selected=true],.teacher-tabs button[aria-pressed=true]{outline:2px solid var(--ink)}
 }
+
+/* Embedded modules expand into the discente page; no nested scrolling. */
+html.cpop-embedded body { min-height: 0 !important; background: transparent !important; }
+html.cpop-embedded main#app, html.cpop-embedded .main { min-height: 0 !important; }
+html.cpop-embedded .intro-form { margin: 0 auto; max-width: 680px; }
+html.cpop-embedded .intro-form .card { padding: clamp(18px, 3vw, 32px); }
+.student-portal-frame.is-autosized { min-height: 0 !important; max-height: none !important; }
