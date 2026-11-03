@@ -6,10 +6,24 @@
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   })[ch]);
   function inline(value){
-    let text=escapeHTML(value);
-    text=text.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+    const replacements=[];
+    const safeUrl=value=>{
+      try{const url=new URL(value);return url.protocol==='https:'&&value.length<=1200&&!/[\s"'<>]/.test(value)?url.href:''}
+      catch{return ''}
+    };
+    const hold=html=>{const key='\uE000'+replacements.length+'\uE001';replacements.push(html);return key;};
+    let source=String(value??'');
+    source=source.replace(/!\[([^\]\n]{1,180})\]\((https:\/\/[^\s)]+)\)/g,(full,alt,href)=>{
+      const url=safeUrl(href);return url?hold('<img class="cpop-inline-image" src="'+escapeHTML(url)+'" alt="'+escapeHTML(alt)+'" loading="lazy" referrerpolicy="no-referrer">'):full;
+    });
+    source=source.replace(/\[([^\]\n]{1,180})\]\((https:\/\/[^\s)]+)\)/g,(full,label,href)=>{
+      const url=safeUrl(href);return url?hold('<a href="'+escapeHTML(url)+'" target="_blank" rel="noopener noreferrer">'+escapeHTML(label)+'</a>'):full;
+    });
+    let text=escapeHTML(source);
+    text=text.replace(/`([^\u0060\n]+)`/g,'<code>$1</code>');
     text=text.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
     text=text.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g,'$1<em>$2</em>');
+    for(let i=0;i<replacements.length;i++)text=text.replace('\uE000'+i+'\uE001',replacements[i]);
     return text;
   }
   function render(value){
