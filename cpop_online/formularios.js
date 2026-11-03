@@ -10,7 +10,7 @@ let token=sessionStorage.getItem('cpop.teacher.token')||'';
 let profile=get('cpop.profile'),forms=[],records=[],selected='',editing=null,busy=false,preview=false,status='';
 let localDraft={},finals={};
 const gid=()=>('c'+Math.random().toString(36).slice(2,10));
-const newForm=()=>({uid:'form-'+Date.now().toString(36),week:26,order:900,title:'',description:'',active:false,fields:[{id:'q1',kind:'radio',label:'',hint:'',required:true,options:['','','',''],correct:0,explanation:''},{id:'q2',kind:'textarea',label:'',hint:'',required:false,options:[],correct:0,explanation:''}]});
+const newForm=()=>({uid:'form-'+Date.now().toString(36),week:26,order:900,title:'',description:'',active:false,fields:[{id:'campo1',kind:'radio',label:'',hint:'',required:true,options:['','','',''],correct:0,explanation:''},{id:'campo2',kind:'textarea',label:'',hint:'',required:false,options:[],correct:0,explanation:''}]});
 const current=()=>forms.find(x=>x.uid===selected);
 function notify(message,type){status=message;const node=document.querySelector('#formStatus');if(node){node.className='form-status '+(type||'');node.textContent=message;node.hidden=false;}}
 async function api(method,body,mode,studentId){
