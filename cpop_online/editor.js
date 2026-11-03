@@ -1,6 +1,9 @@
 (()=>{
 'use strict';if(new URLSearchParams(location.search).get('embed')==='1'){document.querySelector('.topbar')?.remove();document.querySelector('.footer')?.remove();}
 const root=document.querySelector('#editorRoot'),notice=document.querySelector('#notice');
+document.addEventListener('error',event=>{const img=event.target;if(!(img instanceof HTMLImageElement)||!(img.matches('.editor-image')||img.closest('#livePreview')))return;img.hidden=true;let note=img.nextElementSibling;if(!note?.classList.contains('editor-image-warning')){note=document.createElement('p');note.className='editor-image-warning';img.insertAdjacentElement('afterend',note)}note.textContent='Imagem indisponível. Confirme a URL ou substitua a figura pelo arquivo hospedado na plataforma antes de publicar.';},true);
+document.addEventListener('load',event=>{const img=event.target;if(!(img instanceof HTMLImageElement)||!(img.matches('.editor-image')||img.closest('#livePreview')))return;img.hidden=false;const note=img.nextElementSibling;if(note?.classList.contains('editor-image-warning'))note.remove();},true);
+
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function imagePreviewUrl(x){try{const u=new URL(x);if(u.hostname.startsWith('cpop-linguagens')&&u.hostname.endsWith('.vercel.app')&&u.pathname.startsWith('/assets/'))return u.pathname;return u.href}catch{return x}}
 let token=sessionStorage.getItem('cpop.teacher.token')||'',records=[],selected='',filter=24,kind='all',query='',creating=false,busy=false,viewMode='list',dragId='',canonAudit=null;
