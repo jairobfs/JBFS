@@ -50,7 +50,8 @@ function profileForm(){
   const name=form.elements.name.value.trim().replace(/\s+/g,' '),code=form.elements.code.value.trim();
   if(name.length<4||!code){toast('Informe nome completo e código.');return}
   try{await fetchJSON('/api/people',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({joinCode:code})});}catch(e){toast(e.message||'Código inválido ou lista de presença indisponível.');return;}
-  const studentId=(cached.studentId&&/^[a-z0-9-]{12,90}$/i.test(cached.studentId))?cached.studentId:(globalThis.crypto?.randomUUID?.()||'student-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+  const samePerson=String(cached.name||'').trim().toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR');
+  const studentId=(samePerson&&cached.studentId&&/^[a-z0-9-]{12,90}$/i.test(cached.studentId))?cached.studentId:(globalThis.crypto?.randomUUID?.()||'student-'+Date.now()+'-'+Math.random().toString(36).slice(2));
   profile={name,code,studentId,group:'CPOP - Campo Mourão'};
   write('cpop.mini.profile',profile);
   wait('Recuperando as respostas do Craft…');
