@@ -50,7 +50,8 @@ function profileForm(){
   const name=form.elements.name.value.trim().replace(/\s+/g,' '),code=form.elements.code.value.trim();
   if(name.length<4||!code){toast('Informe nome completo e código.');return}
   try{await fetchJSON('/api/people',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({joinCode:code})});}catch(e){toast(e.message||'Código inválido ou lista de presença indisponível.');return;}
-  const studentId=(cached.studentId&&/^[a-z0-9-]{12,90}$/i.test(cached.studentId))?cached.studentId:(globalThis.crypto?.randomUUID?.()||'student-'+Date.now()+'-'+Math.random().toString(36).slice(2));
+  const samePerson=String(cached.name||'').trim().toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR');
+  const studentId=(samePerson&&cached.studentId&&/^[a-z0-9-]{12,90}$/i.test(cached.studentId))?cached.studentId:(globalThis.crypto?.randomUUID?.()||'student-'+Date.now()+'-'+Math.random().toString(36).slice(2));
   profile={name,code,studentId,group:'CPOP - Campo Mourão'};
   write('cpop.mini.profile',profile);
   wait('Recuperando as respostas do Craft…');
@@ -82,10 +83,10 @@ async function loadStudent(){
 function renderStudent(){
  const statuses=countStatus(),completedNum=completed(),q=bank.questions[position],a=byId(q.id);
  APP.innerHTML='<div class="intro"><div><div class="eyebrow">REVISÃO FINAL · LINGUAGENS · 2026</div><h1>Seu mini-simulado.</h1><p>'+esc(profile.name)+' · CPOP - Campo Mourão</p></div><div class="row"><span class="chip '+(finalized?'good':'')+'">'+(finalized?'Entrega confirmada':bank.questions.length+' questões · 1 tentativa')+'</span><button id="changeName">Trocar participante</button></div></div>'+
- '<div class="quiz-layout"><aside class="sidebar card stack"><div class="row space"><strong>Seu progresso</strong><span>'+completedNum+'/'+bank.questions.length+'</span></div><div class="progressbar"><span style="width:'+Math.round(completedNum/bank.questions.length*100)+'%"></span></div><div class="numbers">'+statuses.map((s,i)=>'<button class="number '+s+(i===position?' selected':'')+'" data-jump="'+i+'" aria-label="Questão '+(i+1)+'">'+(i+1)+'</button>').join('')+'</div>'+
+ '<div class="quiz-layout"><aside class="sidebar card stack"><div class="row space"><strong>Seu progresso</strong><span data-progress-count>'+completedNum+'/'+bank.questions.length+'</span></div><div class="progressbar"><span style="width:'+Math.round(completedNum/bank.questions.length*100)+'%"></span></div><div class="numbers">'+statuses.map((s,i)=>'<button class="number '+s+(i===position?' selected':'')+'" data-jump="'+i+'" aria-label="Questão '+(i+1)+'">'+(i+1)+'</button>').join('')+'</div>'+
  '<p class="micro">Verde: alternativa selecionada. Amarelo: resposta apenas por comentário. Comentários podem acompanhar qualquer alternativa.</p><label class="row micro"><input type="checkbox" id="followTeacher" '+(follow?'checked':'')+'> Seguir projeção do professor</label><p id="syncStatus" class="status">'+esc(statusText)+'</p>'+
  (finalized?'<div class="note">Sua entrega está registrada no Craft. A devolutiva textual do professor pode ser consultada posteriormente nesta página.</div>':'<button id="finish" class="primary" '+(completedNum!==bank.questions.length?'disabled':'')+'>Finalizar e enviar</button>')+'</aside>'+
- '<section class="card question-card"><div class="row space"><span class="chip">Questão '+(position+1)+' de '+bank.questions.length+'</span><span class="chip">'+(a.choice?'Alternativa '+String.fromCharCode(64+a.choice):a.comment.length>=8?'Comentário registrado':'Não respondida')+'</span></div><div class="line"></div>'+
+ '<section class="card question-card"><div class="row space"><span class="chip">Questão '+(position+1)+' de '+bank.questions.length+'</span><span class="chip" data-answer-status>'+(a.choice?'Alternativa '+String.fromCharCode(64+a.choice):a.comment.length>=8?'Comentário registrado':'Não respondida')+'</span></div><div class="line"></div>'+
  '<div class="qid">'+esc(q.title)+'</div><div class="stem">'+formatStem(q.body)+'</div>'+
  (q.image?'<figure><img src="'+esc(q.image)+'" alt="'+esc(q.alt||q.title)+'"><figcaption>'+esc(q.source)+'</figcaption></figure>':'')+
  '<fieldset class="choices" style="border:0;padding:0"><legend class="eyebrow" style="margin-bottom:8px">Selecione uma alternativa (opcional se comentar)</legend>'+
@@ -93,22 +94,43 @@ function renderStudent(){
  '<section class="comment-box"><label class="field">Seu comentário, justificativa ou resposta discursiva<textarea id="comment" '+(finalized?'readonly':'')+' maxlength="750" placeholder="Explique a evidência textual, justifique sua alternativa ou responda apenas por comentário (mínimo de 8 caracteres).">'+esc(a.comment||'')+'</textarea></label><p class="micro">O comentário será salvo no Craft e poderá receber uma devolutiva individual do professor.</p>'+
  (bank.progress?.feedback?.[q.id]?'<div class="note"><strong>Devolutiva do educador</strong><p>'+esc(bank.progress.feedback[q.id])+'</p></div>':'')+'</section>'+
  (finalized?'<div class="note">Entrega confirmada. '+(bank.progress?.correct!==null&&bank.progress?.correct!==undefined?'Acertos objetivos registrados: '+bank.progress.correct+'. ':'')+'Respostas apenas por comentário aguardam avaliação humana.</div>':'')+
- '<div class="question-foot"><button id="prev" '+(position===0?'disabled':'')+'>Anterior</button><span class="micro">Questão '+(position+1)+'/'+bank.questions.length+'</span><button id="next" class="primary" '+(position===bank.questions.length-1?'disabled':'')+'>Próxima</button></div></section></div>';
- $('#changeName').onclick=()=>{profile=null;profileForm()};
- $$('#app [data-jump]').forEach(b=>b.onclick=()=>{position=Number(b.dataset.jump);renderStudent()});
+ '<div class="question-foot"><button id="prev" '+(position===0?'disabled':'')+'>Anterior</button><span class="micro">Questão '+(position+1)+'/'+bank.questions.length+'</span><button id="next" class="primary" '+(position===bank.questions.length-1?'disabled':'')+'>Próxima</button></div></section></div>'+
+ '<div class="student-mobile-bar" role="navigation" aria-label="Navegação entre questões"><button id="mobilePrev" '+(position===0?'disabled':'')+' aria-label="Questão anterior">Anterior</button><span data-mobile-progress>Questão '+(position+1)+'/'+bank.questions.length+'</span><button id="mobileNext" class="primary" '+(position===bank.questions.length-1?'disabled':'')+'>Próxima</button></div>';
+ $('#changeName').onclick=()=>{
+  clearTimeout(saveTimer);
+  if(dirty)saveLocal();
+  profile=null;bank=null;answers=[];finalized=false;dirty=false;position=0;
+  profileForm();
+ };
+ const navigateTo=index=>{position=Math.max(0,Math.min(bank.questions.length-1,index));renderStudent();window.scrollTo({top:0,behavior:'instant'})};
+ $('#app [data-jump]').forEach(b=>b.onclick=()=>navigateTo(Number(b.dataset.jump)));
  $('#followTeacher').onchange=e=>{follow=e.target.checked;write('cpop.mini.follow',follow)};
- $('#prev').onclick=()=>{position=Math.max(0,position-1);renderStudent()};
- $('#next').onclick=()=>{position=Math.min(bank.questions.length-1,position+1);renderStudent()};
+ $('#prev').onclick=()=>navigateTo(position-1);
+ $('#next').onclick=()=>navigateTo(position+1);
+ $('#mobilePrev').onclick=()=>navigateTo(position-1);
+ $('#mobileNext').onclick=()=>navigateTo(position+1);
  if(!finalized){
-  $$('input[name="choice"]').forEach(i=>i.onchange=()=>{
-   a.choice=Number(i.value);markDirty();renderStudent();
+  $('input[name="choice"]').forEach(i=>i.onchange=()=>{
+   a.choice=Number(i.value);markDirty();
+   $('.choices .choice').forEach(label=>label.classList.toggle('checked',label.querySelector('input')?.checked===true));
+   updateStudentProgress();
   });
   $('#comment').oninput=e=>{
-   a.comment=e.target.value;markDirty();const s=$('#syncStatus');if(s)s.textContent=statusText;const finish=$('#finish');if(finish)finish.disabled=completed()!==bank.questions.length;const progress=$('.progressbar span');if(progress)progress.style.width=Math.round(completed()/bank.questions.length*100)+'%';
+   a.comment=e.target.value;markDirty();updateStudentProgress();
   };
   $('#comment').onblur=()=>{const c=$('#syncStatus');if(c)c.textContent=statusText};
   $('#finish').onclick=finish;
  }
+}
+function updateStudentProgress(){
+ if(!bank)return;
+ const all=countStatus(),num=completed(),q=bank.questions[position],answer=byId(q.id);
+ const count=$('[data-progress-count]');if(count)count.textContent=num+'/'+bank.questions.length;
+ const progress=$('.sidebar .progressbar span');if(progress)progress.style.width=Math.round(num/bank.questions.length*100)+'%';
+ const label=$('[data-answer-status]');if(label)label.textContent=answer.choice?'Alternativa '+String.fromCharCode(64+answer.choice):answer.comment.trim().length>=8?'Comentário registrado':'Não respondida';
+ $('#app .number[data-jump]').forEach((btn,i)=>{btn.classList.toggle('done',all[i]==='done');btn.classList.toggle('comment-only',all[i]==='comment-only');});
+ const finish=$('#finish');if(finish)finish.disabled=num!==bank.questions.length;
+ const sync=$('#syncStatus');if(sync)sync.textContent=statusText;
 }
 function markDirty(){
  dirty=true;statusText='Alterações no aparelho · sincronização pendente';saveLocal();queueAutosave();
