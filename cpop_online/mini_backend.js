@@ -19,7 +19,22 @@ async function getStage(){
  const row=rows.find(x=>x.properties?.atividade===ACTIVITY);
  if(!row)throw Error('Sessão de projeção não encontrada.');
  const p=row.properties||{};
- return {row:row.id,number:Math.min(IDS.length,Math.max(1,Number(p.questao)||1)),active:p.ativo===true,reveal:p.revelar===true,updated:String(p.atualizado||''),projectedComment:String(p.comentarioprojetado||'').slice(0,700)};
+ return {row:row.id,number:Math.min(IDS.length,Math.max(1,Number(p.questao)||1)),active:p.ativo===true,reveal:p.revelar===true,updated:String(p.atualizado||''),projectedComment:String(p.comentarioprojetado||'').slice(0,700),timerDuration:p.cronoduracao,timerRemaining:p.cronorestante,timerUntil:String(p.cronofim||'')};
+}
+
+function timerOf(stage, now=Date.now()){
+ const configured=Number(stage.timerDuration);
+ const duration=Number.isFinite(configured)&&configured>=15&&configured<=900?Math.floor(configured):120;
+ const saved=Number(stage.timerRemaining);
+ const remainingStored=stage.timerRemaining!==null&&stage.timerRemaining!==undefined&&stage.timerRemaining!==''&&Number.isFinite(saved)?Math.max(0,Math.min(duration,Math.floor(saved))):duration;
+ const deadlineMs=Date.parse(stage.timerUntil||'');
+ const hasDeadline=stage.timerUntil&&Number.isFinite(deadlineMs);
+ const remaining=hasDeadline?Math.min(duration,Math.max(0,Math.ceil((deadlineMs-now)/1000))):remainingStored;
+ const running=Boolean(stage.active&&!stage.reveal&&hasDeadline&&remaining>0);
+ return {duration,remaining,running,deadline:running?stage.timerUntil:null,serverTime:new Date(now).toISOString()};
+}
+function snapshot(stage,now=Date.now()){
+ return {number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated,projectedComment:stage.projectedComment,clock:timerOf(stage,now)};
 }
 function safeParse(raw,fallback){try{const p=JSON.parse(raw||'');return p&&typeof p==='object'?p:fallback}catch{return fallback}}
 function normalizeAnswers(raw,qs){
@@ -68,14 +83,14 @@ module.exports=async(req,res)=>{
   if(info.mode==='teacher'){
    if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
    const records=(await getRows()).filter(r=>r.properties?.atividade===ACTIVITY).map(r=>rowPublic(r,questions));
-   send(res,200,{activity:ACTIVITY,version,questions:questions.map((q,i)=>({...qPublic(q,i),answer:q.answer,why:q.why})),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated,projectedComment:stage.projectedComment},records});return;
+   send(res,200,{activity:ACTIVITY,version,questions:questions.map((q,i)=>({...qPublic(q,i),answer:q.answer,why:q.why})),stage:snapshot(stage),records});return;
   }
   if(info.mode==='projection'){
    const q=questions[stage.number-1];
    const rows=stage.active?(await getRows()).filter(r=>r.properties?.atividade===ACTIVITY).map(r=>rowPublic(r,questions)):[];
-   send(res,200,{activity:ACTIVITY,version,total:questions.length,question:qPublic(q,stage.number-1),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated},distribution:distrib(q,rows,stage.number-1),projectedComment:stage.active?stage.projectedComment:'',answer:stage.reveal?q.answer:null,why:stage.reveal?q.why:''});return;
+   send(res,200,{activity:ACTIVITY,version,total:questions.length,question:qPublic(q,stage.number-1),stage:{...snapshot(stage),projectedComment:undefined},distribution:distrib(q,rows,stage.number-1),projectedComment:stage.active?stage.projectedComment:'',answer:stage.reveal?q.answer:null,why:stage.reveal?q.why:''});return;
   }
-  const output={activity:ACTIVITY,version,title:'Revisão final de Linguagens · CPOP',questions:questions.map(qPublic),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated}};
+  const output={activity:ACTIVITY,version,title:'Revisão final de Linguagens · CPOP',questions:questions.map(qPublic),stage:{number:stage.number,active:stage.active,reveal:stage.reveal,updated:stage.updated,clock:timerOf(stage)}};
   if(info.studentId&&info.code&&await classAccess(info.code)){
    const row=(await getRows()).find(r=>r.properties?.atividade===ACTIVITY&&r.properties?.alunoid===info.studentId);
    if(row)output.progress=studentOutput(row,questions);
@@ -87,9 +102,34 @@ module.exports=async(req,res)=>{
   if(!await teacher(req)){send(res,401,{error:'Apenas o educador controla a projeção.'});return;}
   const stage=await getStage(),number=Number(body.number);
   if(!Number.isInteger(number)||number<1||number>questions.length){send(res,422,{error:'Questão inválida.'});return;}
-  const props={questao:number,ativo:body.active===true,revelar:body.reveal===true,atualizado:new Date().toISOString(),comentarioprojetado:number===stage.number&&body.active===true?stage.projectedComment:''};
+  const clock=timerOf(stage),changed=number!==stage.number,active=body.active===true,reveal=body.reveal===true;
+  const keepRunning=!changed&&active&&!reveal&&clock.running;
+  const remaining=changed?clock.duration:clock.remaining;
+  const props={questao:number,ativo:active,revelar:reveal,atualizado:new Date().toISOString(),comentarioprojetado:!changed&&active?stage.projectedComment:'',cronoduracao:clock.duration,cronorestante:remaining,cronofim:keepRunning?stage.timerUntil:''};
   await request('/collections/'+PRESENTATION+'/items','PUT',{itemsToUpdate:[{id:stage.row,properties:props}]});
-  send(res,200,{saved:true,stage:{number,active:props.ativo,reveal:props.revelar,updated:props.atualizado,projectedComment:props.comentarioprojetado}});return;
+  send(res,200,{saved:true,stage:snapshot({number,active,reveal,updated:props.atualizado,projectedComment:props.comentarioprojetado,timerDuration:clock.duration,timerRemaining:remaining,timerUntil:props.cronofim})});return;
+ }
+ if(body.action==='timer'){
+  if(!await teacher(req)){send(res,401,{error:'Somente o professor controla o cronômetro.'});return;}
+  const stage=await getStage(),clock=timerOf(stage),op=String(body.op||''),now=Date.now();
+  let duration=clock.duration,remaining=clock.remaining,until='',active=stage.active,reveal=stage.reveal;
+  if(op==='set'){
+   duration=Number(body.seconds);
+   if(!Number.isInteger(duration)||duration<15||duration>900){send(res,422,{error:'Defina um tempo de 15 segundos a 15 minutos.'});return;}
+   remaining=duration;
+  }else if(op==='start'){
+   remaining=remaining>0?remaining:duration;
+   until=new Date(now+remaining*1000).toISOString();
+   active=true;reveal=false;
+   if(clock.running)until=stage.timerUntil;
+  }else if(op==='pause'){
+   remaining=clock.remaining;
+  }else if(op==='reset'){
+   remaining=duration;
+  }else{send(res,422,{error:'Comando de cronômetro inválido.'});return;}
+  const props={cronoduracao:duration,cronorestante:remaining,cronofim:until,ativo:active,revelar:reveal,atualizado:new Date(now).toISOString()};
+  await request('/collections/'+PRESENTATION+'/items','PUT',{itemsToUpdate:[{id:stage.row,properties:props}]});
+  send(res,200,{saved:true,stage:snapshot({...stage,active,reveal,timerDuration:duration,timerRemaining:remaining,timerUntil:until,updated:props.atualizado},now)});return;
  }
  if(body.action==='project-comment'){
   if(!await teacher(req)){send(res,401,{error:'Apenas o educador pode projetar comentários.'});return;}
@@ -106,10 +146,12 @@ module.exports=async(req,res)=>{
    if(comment.length<8||comment.length>700){send(res,422,{error:'Revise o trecho: são permitidos de 8 a 700 caracteres.'});return;}
    nextNumber=index+1;
   }
-  const updated=new Date().toISOString();
-  const props={questao:nextNumber,ativo:show?true:stage.active,revelar:show?false:stage.reveal,comentarioprojetado:comment,atualizado:updated};
+  const updated=new Date().toISOString(),currentClock=timerOf(stage),changed=nextNumber!==stage.number;
+  const active=show?true:stage.active,reveal=show?false:stage.reveal;
+  const remaining=changed?currentClock.duration:currentClock.remaining,until=!changed&&currentClock.running&&active&&!reveal?stage.timerUntil:'';
+  const props={questao:nextNumber,ativo:active,revelar:reveal,comentarioprojetado:comment,atualizado:updated,cronoduracao:currentClock.duration,cronorestante:remaining,cronofim:until};
   await request('/collections/'+PRESENTATION+'/items','PUT',{itemsToUpdate:[{id:stage.row,properties:props}]});
-  send(res,200,{saved:true,stage:{number:props.questao,active:props.ativo,reveal:props.revelar,projectedComment:comment,updated}});return;
+  send(res,200,{saved:true,stage:snapshot({...stage,number:nextNumber,active,reveal,projectedComment:comment,updated,timerDuration:currentClock.duration,timerRemaining:remaining,timerUntil:until})});return;
  }
  if(body.action==='feedback'){
   if(!await teacher(req)){send(res,401,{error:'Acesso reservado ao educador.'});return;}
