@@ -183,11 +183,12 @@ function enqueue(final){
   try{
    const result=await req('POST',payload);
    const cache=stored('cpop.mini.draft.'+payload.studentId,{});
-   if(JSON.stringify(cache.answers)===JSON.stringify(payload.answers)){
+   const sameDraft=JSON.stringify(cache.answers)===JSON.stringify(payload.answers);
+   if(sameDraft){
     write('cpop.mini.draft.'+payload.studentId,{answers:payload.answers,dirty:false,updated:Date.now()});
     if(profile?.studentId===payload.studentId)dirty=false;
    }
-   statusText='Sincronizado no Craft · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+   statusText=sameDraft?'Sincronizado no Craft · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'Há alterações mais recentes aguardando sincronização';
    if(final&&profile?.studentId===payload.studentId){
     finalized=true;bank.progress={...bank.progress,final:true,correct:result.correct,answers:payload.answers};
     toast('Entrega confirmada no Craft.');renderStudent();
@@ -426,6 +427,14 @@ function beginWithSharedProfile(){
  loadStudent().catch(err=>{profile=null;bank=null;profileForm();toast('Confira seu acesso: '+(err.message||'consulta indisponível'));});
  return true;
 }
+function retryPendingDraft(){
+ if(MODE!=='aluno'||document.hidden||!profile||!bank||finalized||!dirty)return;
+ const local=stored('cpop.mini.draft.'+profile.studentId,null);
+ if(local?.dirty!==true)return;
+ enqueue(false).catch(()=>{});
+}
+window.addEventListener('online',retryPendingDraft);
+setInterval(retryPendingDraft,45000);
 if(MODE==='professor'){loadTeacher();}
 else if(MODE==='projecao'){projectionLoad();setInterval(projectionLoad,5000);}
 else{if(!beginWithSharedProfile())profileForm();setInterval(liveStudent,8000);setInterval(refreshFeedback,15000);}
