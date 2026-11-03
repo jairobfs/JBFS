@@ -390,3 +390,7 @@ html.cpop-embedded main#app, html.cpop-embedded .main { min-height: 0 !important
 html.cpop-embedded .intro-form { margin: 0 auto; max-width: 680px; }
 html.cpop-embedded .intro-form .card { padding: clamp(18px, 3vw, 32px); }
 .student-portal-frame.is-autosized { min-height: 0 !important; max-height: none !important; }
+
+/* Respect readable tab labels when editorial surfaces override active backgrounds. */
+.student-portal-nav button[aria-selected="true"],
+.teacher-tabs button[aria-pressed="true"] { color: var(--ink) !important; }
