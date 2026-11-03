@@ -128,3 +128,13 @@ O registro técnico original `VALIDACAO-TECNICA` foi mantido; não deve ser inte
 - A rota temporária de QA foi desativada na branch de ensaio e não integra o código de produção.
 - Foram acrescentados testes de regressão em `tests/minisimulado.test.js` para preservar gabaritos, comentários, correção, acesso docente, projeção e compatibilidade com versões armazenadas.
 - Não foi realizado teste automatizado visual com interação de iPhone; a garantia de layout depende de validação em dispositivo real. A API é por consulta periódica, não websockets.
+
+### Projeção pedagógica moderada de comentários
+
+O educador pode selecionar a justificativa de um estudante no painel do mini-simulado, revisar o trecho para ocultar nomes e dados privados e confirmar sua exibição **sem identificação** na projeção. A decisão é exclusivamente docente: nenhuma resposta discursiva aparece automaticamente no telão.
+
+- A sessão é persistida na coleção Craft de projeção, propriedade `comentarioprojetado`. A mudança de questão ou a pausa limpa o comentário.
+- A ação `project-comment` exige a autenticação docente, valida a existência de comentário naquele item e limita o texto projetado a 700 caracteres.
+- A interface de projeção exibe o texto somente com a apresentação ativa; o modo estudante não recebe o comentário projetado no campo de sessão.
+- O texto é escapado no navegador. O educador deve revisar e remover informações pessoais do trecho antes de autorizar sua divulgação.
+- O teste de regressão automatizado verifica: HTTP 401 para publicação sem PIN, revisão e publicação docente, ausência de nome na resposta pública, ocultação manual e limpeza ao mudar de questão.
