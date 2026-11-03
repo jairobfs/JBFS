@@ -160,8 +160,6 @@ async function submit(){if(busy||guestMode||!validProfile())return;busy=true;con
 function renderResult(){root.innerHTML='<div class="class-review"><div class="eyebrow">Registro confirmado · Craft</div><h1>Aula entregue.</h1><div class="result-big">'+result.points+' XP</div><p class="lead">'+result.correct+' de '+result.total+' questões corretas. Suas escolhas e justificativas estão na coleção de tentativas da turma.</p>'+(week===26?'<div class="escape-final '+(result.unlock?'open':'pending')+'"><span>'+ (result.unlock?'MISSÃO CONCLUÍDA · CÓDIGO DA SAÍDA':'CÓDIGO DA SAÍDA AINDA BLOQUEADO')+'</span><strong>'+esc(result.unlock||'Reveja as pistas')+'</strong><p>'+(result.unlock?'Todas as inferências deste percurso foram validadas. Use o código na etapa de encerramento com o educador.':'Você pode revisar as respostas comentadas e tentar novamente para encontrar todas as pistas.')+'</p></div>':'')+'<button class="primary" id="finish">Voltar às aulas '+icon('arrow')+'</button><div class="section-heading"><div><div class="eyebrow">Correção comentada</div><h2>Respostas e evidências</h2></div></div><div class="feedback-list">'+result.feedback.map((f,i)=>'<div class="feedback-item '+(f.isCorrect?'':'wrong')+'"><span class="outcome">'+(f.isCorrect?'Correta':'Revisar')+' · '+esc(f.id)+'</span><strong>'+esc(activity().questions[i].prompt)+'</strong><p>'+esc(f.why)+'</p></div>').join('')+'</div></div>';$('#finish').addEventListener('click',()=>{root.classList.remove('playing');renderWeeks()});window.scrollTo(0,0)}
 async function checkLive(){if(guestMode||!follow||!lesson||!catalog||!document.querySelector('.lecture-layout'))return;try{const r=await fetch('/api/live',{cache:'no-store'});if(!r.ok)return;const s=await r.json();liveState=s;if(!s.active)return;let targetWeek=lesson.weeks.find(x=>x.week===s.week);if(!targetWeek)return;const next=targetWeek.entries.findIndex(x=>x.uid===s.uid);if(next<0)return;const switched=week!==s.week;if(switched){persist();week=s.week;const d=get('cpop.lesson.'+week+'.'+profile.studentId,null);answers=d?.version===catalog.version?d.answers:{};started=d?.started||Date.now();submissionId=d?.submissionId||crypto.randomUUID();notes=get(notesKey(),{})}if(switched||position!==next){position=next;renderPlayer();window.scrollTo({top:0,behavior:'smooth'})}}catch(e){/* manter navegação local se a transmissão oscilar */}}
 root.addEventListener('click',ev=>{
- const retry=ev.target.closest('[data-image-retry]');
- if(retry){const surface=retry.closest('.class-media-surface');const image=surface?.querySelector('img');if(image){surface.classList.remove('media-error');const error=surface.querySelector('.media-feedback');error?.remove();const original=new URL(image.src,location.origin);original.searchParams.set('retry',String(Date.now()));image.src=original.href;}return;}
  const trigger=ev.target.closest('[data-enlarge]');if(!trigger)return;
  const image=trigger.closest('.class-media-surface')?.querySelector('img');if(!image||!image.complete||!image.naturalWidth)return;
  const modal=document.createElement('dialog');modal.className='cpop-media-dialog';modal.setAttribute('aria-label','Imagem ampliada');
@@ -169,17 +167,7 @@ root.addEventListener('click',ev=>{
  const large=document.createElement('img');large.src=image.currentSrc||image.src;large.alt=image.alt;large.decoding='async';
  modal.append(close,large);modal.addEventListener('click',event=>{if(event.target===modal)modal.close()});modal.addEventListener('close',()=>modal.remove());document.body.append(modal);modal.showModal();
 });
-root.addEventListener('error',ev=>{
- const image=ev.target;if(!(image instanceof HTMLImageElement)||!image.closest('.class-media-surface'))return;
- const surface=image.closest('.class-media-surface');surface.classList.add('media-error');
- if(surface.querySelector('.media-feedback'))return;
- const wrap=document.createElement('div');wrap.className='media-feedback';
- const title=document.createElement('strong');title.textContent='A figura não pôde ser carregada.';
- const details=document.createElement('span');details.textContent='A pergunta continua disponível. Você pode tentar novamente ou abrir a imagem em outra aba.';
- const retry=document.createElement('button');retry.type='button';retry.textContent='Tentar novamente';retry.setAttribute('data-image-retry','');
- const link=document.createElement('a');link.href=image.src;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Abrir arquivo';
- wrap.append(title,details,retry,link);surface.append(wrap);
-},true);
+
 window.addEventListener('pagehide',persist);
 document.addEventListener('keydown',ev=>{if(!week||!document.querySelector('.lecture-layout')||ev.ctrlKey||ev.metaKey||ev.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))return;if(ev.shiftKey&&ev.key==='ArrowLeft'){ev.preventDefault();nav(-1)}else if(ev.shiftKey&&ev.key==='ArrowRight'){ev.preventDefault();nav(1)}else if(ev.key==='Escape'){document.querySelector('#notebookOverlay')?.remove();root.classList.remove('class-focused')}else if(/^[a-f]$/i.test(ev.key)&&entry()?.type==='questao'){const b=$('[data-value="'+(ev.key.toUpperCase().charCodeAt(0)-64)+'"]');if(b){ev.preventDefault();b.click();b.focus()}}});
 setInterval(checkLive,8000);
