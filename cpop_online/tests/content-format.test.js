@@ -24,3 +24,18 @@ test('mantém ordem de listas numeradas para itens comentados',()=>{
  const html=render('1. evidência\n2. hipótese');
  assert.equal(html,'<ol><li>evidência</li><li>hipótese</li></ol>');
 });
+
+test('insere links HTTPS de PDF e imagens em notas vindas do Craft',()=>{
+ const html=render('Leitura: [Artigo](https://example.org/artigo.pdf)\n\n![Diagrama](https://example.org/media.png)');
+ assert.match(html,/href="https:\/\/example.org\/artigo.pdf"/);
+ assert.match(html,/rel="noopener noreferrer"/);
+ assert.match(html,/class="cpop-inline-image"/);
+ assert.match(html,/alt="Diagrama"/);
+});
+test('bloqueia links ativos inseguros e atributos HTML enviados pelo Craft',()=>{
+ const html=render('<script>alert(1)</script>\n\n[link](javascript:alert(1))\n\n![x" onerror="alert(1)](https://example.org/img.png)');
+ assert.doesNotMatch(html,/<script>/);
+ assert.doesNotMatch(html,/href="javascript:/);
+ assert.doesNotMatch(html,/<img[^>]*\sonerror=/);
+ assert.match(html,/&lt;script&gt;/);
+});
