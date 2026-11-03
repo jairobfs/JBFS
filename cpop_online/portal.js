@@ -2,11 +2,12 @@
   'use strict';
   const studentNav = document.querySelector('[data-student-portal]');
   const teacherTheme = document.querySelector('#teacherThemeToggle');
-  const allowed = new Set(['aula','estudo','jogos','mini']);
+  const allowed = new Set(['aula','estudo','jogos','mini','forms']);
   const frameUrls = {
     estudo: '/estudar.html?embed=1',
     jogos: '/jogos.html?embed=1',
-    mini: '/minisimulado.html?modo=aluno&embed=1'
+    mini: '/minisimulado.html?modo=aluno&embed=1',
+    forms: '/formularios.html?modo=aluno&embed=1'
   };
   const frameProfiles = new WeakMap();
   function profileFingerprint() {
@@ -80,11 +81,11 @@
     if (event.data?.type !== 'cpop:portal-navigate') return;
     const path = new URL(event.data.href, location.origin);
     if (studentNav) {
-      const v = {'/aula.html':'aula','/estudar.html':'estudo','/jogos.html':'jogos','/minisimulado.html':'mini','/':'aula'}[path.pathname];
+      const v = {'/aula.html':'aula','/estudar.html':'estudo','/jogos.html':'jogos','/minisimulado.html':'mini','/formularios.html':'forms','/':'aula'}[path.pathname];
       if (v) studentSelect(v);
       return;
     }
-    const panel = {'/professor.html':'results','/editor.html':'edit','/apresentar.html':'live','/minisimulado.html':'mini'}[path.pathname];
+    const panel = {'/professor.html':'results','/editor.html':'edit','/apresentar.html':'live','/minisimulado.html':'mini','/formularios.html':'forms'}[path.pathname];
     if (panel) document.querySelector('[data-pane="'+panel+'"]')?.click();
   });
   if (teacherTheme) {
