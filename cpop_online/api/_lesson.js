@@ -23,10 +23,27 @@ function normalize(row){const p=row.properties||{};const x={id:row.id||'',revisi
  if(x.type==='questao'){const info=canonicalInfo(x);x.canonicalId=info.id;x.canonicalIssues=info.issues;}
  return x;}
 async function loadContent(){const raw=await request('/collections/'+requireCollection()+'/items?maxDepth=0');return itemsOf(raw).map(normalize).filter(Boolean).sort((a,b)=>a.week-b.week||a.order-b.order||a.uid.localeCompare(b.uid,'pt-BR'));}
+const publicSnapshot={value:null,updated:0,pending:null};
+async function loadPublicContent(){
+ const age=Date.now()-publicSnapshot.updated;
+ if(publicSnapshot.value&&age<14000)return publicSnapshot.value;
+ if(publicSnapshot.pending)return publicSnapshot.pending;
+ publicSnapshot.pending=loadContent().then(rows=>{
+  if(!rows.length)throw Error('Coleção vazia');
+  publicSnapshot.value=rows;publicSnapshot.updated=Date.now();return rows;
+ }).catch(error=>{
+  if(publicSnapshot.value&&Date.now()-publicSnapshot.updated<300000){
+   console.warn('Craft indisponível; fornecendo conteúdo público previamente validado.',error.status||error.code||'');
+   return publicSnapshot.value;
+  }
+  throw error;
+ }).finally(()=>{publicSnapshot.pending=null;});
+ return publicSnapshot.pending;
+}
 function fingerprint(rows){return crypto.createHash('sha256').update(rows.map(r=>r.id+':'+r.revision).join('|')).digest('hex').slice(0,12);}
 function buildActivities(rows){const all=legacy.map(a=>({...a,questions:[]}));for(const q of rows.filter(r=>r.active&&r.type==='questao')){const a=all.find(x=>x.week===q.week);if(!a)continue;const prev=legacy.flatMap(x=>x.questions).find(x=>x.id===q.uid);a.questions.push({id:q.uid,type:'choice',prompt:q.body,options:q.options,answer:q.answer,why:q.why,evidence:!!prev?.evidence||q.week===26,image:q.image,alt:q.alt,source:q.source});}for(const a of all){a.duration=Math.max(15,Math.round(a.questions.length*2.2));if(a.week===26)a.subtitle=a.questions.length+' estações de inferência, pistas visuais e um código final.';a.color=a.week===24?'#B42620':a.week===25?'#1C3B8E':'#EEAF3D';}return all;}
 function publicActivities(rows){return buildActivities(rows).map(({id,week,type,eyebrow,title,theme,subtitle,color,duration,questions})=>({id,week,type,eyebrow,title,theme,subtitle,color,duration,questions:questions.map(({id,prompt,options,evidence,image,alt,source})=>({id,prompt,options,evidence,image:publishedMedia(image),alt,source}))}));}
 function publicLesson(rows){return {version:'craft-'+fingerprint(rows),source:'Craft',weeks:[24,25,26].map(week=>({week,title:legacy.find(a=>a.week===week)?.title||'',entries:rows.filter(r=>r.week===week&&r.active).map(({uid,week,order,type,title,body,image,alt,source,options,why,points})=>({uid,week,order,type,title,body,image:publishedMedia(image),alt,source,options:type==='questao'?options:[],example:type==='cartao'?why:'',points}))}))};}
 async function updateItem(id,props){return request('/collections/'+requireCollection()+'/items','PUT',{itemsToUpdate:[{id,properties:props}]});}
 async function createItem(item){return request('/collections/'+requireCollection()+'/items','POST',{items:[item]});}
-module.exports={FIELDS,loadContent,buildActivities,publicActivities,publicLesson,publishedMedia,fingerprint,updateItem,createItem,revision,media,parseOptions,requireCollection};
+module.exports={FIELDS,loadContent,loadPublicContent,buildActivities,publicActivities,publicLesson,publishedMedia,fingerprint,updateItem,createItem,revision,media,parseOptions,requireCollection};
