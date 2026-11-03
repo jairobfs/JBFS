@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { readdirSync, existsSync } = require('node:fs');
+const { readdirSync, existsSync, readFileSync } = require('node:fs');
 const { join } = require('node:path');
 
 const root = join(__dirname, '..');
@@ -74,4 +74,12 @@ test('generated public bundle does not expose server-side routes or secrets', ()
   assert.equal(names.includes('.env.example'), false);
   assert.equal(names.includes('aula.html'), true);
   assert.equal(names.includes('minisimulado.html'), true);
+});
+
+test('Cloudflare targets the existing jbfs Worker and only deploys the isolated public bundle', () => {
+  const config = JSON.parse(readFileSync(join(root, 'wrangler.jsonc'), 'utf8'));
+  assert.equal(config.name, 'jbfs');
+  assert.equal(config.main, './cloudflare/worker.mjs');
+  assert.equal(config.assets.directory, './.cloudflare-public');
+  assert.deepEqual(config.assets.run_worker_first, ['/api/*']);
 });
