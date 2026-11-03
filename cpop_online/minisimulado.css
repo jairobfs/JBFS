@@ -57,3 +57,16 @@ button.primary,.btn.primary{background:var(--blue);border-color:var(--blue);colo
 
 /* O painel discente embutido deve manter a área útil acima da navegação fixa. */
 @media(max-width:740px){html.cpop-embedded main#app:has(.student-mobile-bar){padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}}
+
+/* Comentários de estudantes: publicação moderada e sem identificação no telão. */
+.comment-moderation{margin:15px 0;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--blue) 3%,var(--panel))}
+.comment-moderation summary{font-weight:750;cursor:pointer;color:var(--blue);padding:3px 0}
+.comment-moderation[open]{display:grid;gap:12px}
+.comment-moderation .field{margin-top:11px}
+.comment-moderation textarea{min-height:104px}
+.comment-moderation button{justify-self:start}
+.projected-status{margin:12px 0;padding:12px 14px;border:1px solid color-mix(in srgb,var(--green) 40%,var(--line));background:color-mix(in srgb,var(--green) 7%,var(--panel));border-radius:12px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.projected-comment{margin-top:25px;padding:clamp(18px,2.8vw,35px);border:1px solid color-mix(in srgb,var(--blue) 36%,var(--line));border-left:5px solid var(--blue);border-radius:17px;background:color-mix(in srgb,var(--blue) 7%,var(--panel))}
+.projected-comment blockquote{font-family:Outfit,"DM Sans",system-ui,sans-serif;font-size:clamp(1.3rem,2.2vw,2.3rem);font-weight:550;line-height:1.45;letter-spacing:-.015em;margin:12px 0 16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.projected-comment p{margin:0;color:var(--muted);font-size:13px}
+@media(max-width:740px){.projected-comment blockquote{font-size:1.35rem}.comment-moderation button{width:100%}}
