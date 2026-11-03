@@ -6,7 +6,7 @@ document.addEventListener('load',event=>{const img=event.target;if(!(img instanc
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function imagePreviewUrl(x){try{const u=new URL(x);if(u.hostname.startsWith('cpop-linguagens')&&u.hostname.endsWith('.vercel.app')&&u.pathname.startsWith('/assets/'))return u.pathname;return u.href}catch{return x}}
-let token=sessionStorage.getItem('cpop.teacher.token')||'',records=[],selected='',filter=24,kind='all',query='',creating=false,busy=false,viewMode='list',dragId='',canonAudit=null;
+let token=sessionStorage.getItem('cpop.teacher.token')||'',records=[],selected='',filter=24,kind='all',query='',creating=false,busy=false,viewMode='list',dragId='',canonAudit=null,mediaAudit=null,mediaAuditBusy=false;
 function toast(s){notice.textContent=s;notice.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>notice.hidden=true,5200)}
 function login(msg=''){root.innerHTML='<div class="editor-login"><div class="eyebrow">Estúdio · acesso do educador</div><h1>Sua aula, suas questões, sua turma.</h1><p class="lead">Edite slides, questões, imagens, alternativas e comentários. Cada salvamento altera a coleção do Craft usada pela plataforma.</p><form id="teacherLogin" class="question-card"><label class="field">PIN do professor<input id="teacherToken" type="password" autocomplete="off" required></label><button class="primary" type="submit">Acessar editor</button>'+(msg?'<p class="status-message error">'+esc(msg)+'</p>':'')+'</form></div>';document.querySelector('#teacherLogin').addEventListener('submit',e=>{e.preventDefault();token=document.querySelector('#teacherToken').value;sessionStorage.setItem('cpop.teacher.token',token);load()})}
 async function api(method='GET',body){const r=await fetch('/api/lesson-admin',{method,headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},cache:'no-store',body:body?JSON.stringify(body):undefined});const j=await r.json();if(!r.ok)throw Object.assign(new Error(j.error||'Falha ao acessar o Craft.'),{status:r.status});return j}
@@ -36,12 +36,52 @@ function canonAuditMarkup(){
  const lines=items.map(x=>'<button type="button" class="canon-audit-row" data-canon-uid="'+esc(x.uid)+'"><span><strong>'+esc(x.id||'Sem Q')+'</strong> · '+esc(x.uid)+'</span><small>S'+x.week+' · '+(x.active?'publicada':'rascunho')+(x.issues.length?' · '+esc(x.issues.join(', ')):'')+'</small></button>').join('');
  return '<details class="editor-canon-audit"><summary>'+summary+'<span class="canon-audit-chevron" aria-hidden="true">▾</span></summary><div class="canon-audit-body">'+stats+flags+'<div class="canon-audit-list" aria-label="Questões com proveniência canônica">'+lines+'</div><p class="canon-audit-note">Esta auditoria verifica os vínculos e duplicatas da seleção; não indica sincronização automática com o documento original.</p></div></details>';
 }
-function render(){const left=records.filter(r=>r.week===filter&&(kind==='all'||kind==='draft'&&!r.active||kind===r.type)&&(!query||((r.title+' '+r.uid+' '+r.body).toLocaleLowerCase('pt-BR')).includes(query.toLocaleLowerCase('pt-BR'))));root.innerHTML='<div class="editor-heading"><div><div class="eyebrow">CP֍P · Estúdio de aula</div><h1>Conteúdo vivo.</h1><p>Selecione um item para editar. Salvar publica no Craft; a aula recebe a alteração automaticamente. Retirar da aula mantém o conteúdo como rascunho.</p></div><div class="editor-heading-actions"><button class="secondary" id="people">Participantes</button><button class="secondary" id="reload">'+ 'Recarregar Craft</button><button class="primary" id="create">Novo bloco</button></div></div>'+canonAuditMarkup()+'<div class="editor-structure '+(viewMode==='board'?'board-mode':'')+'"><aside class="editor-sidebar"><div class="editor-tabs">'+[24,25,26].map(w=>'<button data-filter="'+w+'" class="'+(w===filter?'active':'')+'">S'+w+'</button>').join('')+'</div><div class="editor-filters"><select id="kindFilter" aria-label="Filtrar conteúdo"><option value="all" '+(kind==='all'?'selected':'')+'>Todos os blocos</option><option value="slide" '+(kind==='slide'?'selected':'')+'>Slides</option><option value="questao" '+(kind==='questao'?'selected':'')+'>Questões</option><option value="cartao" '+(kind==='cartao'?'selected':'')+'>Cartões</option><option value="draft" '+(kind==='draft'?'selected':'')+'>Não publicados</option></select><input id="contentSearch" placeholder="Buscar conteúdo…" value="'+esc(query)+'"></div><div class="editor-view-switch"><button id="viewList" class="'+(viewMode==='list'?'active':'')+'">Lista</button><button id="viewBoard" class="'+(viewMode==='board'?'active':'')+'">Quadro</button></div><div class="editor-list">'+(viewMode==='board'?board(left):left.map(itemPreview).join(''))+'</div><a class="editor-craft-link" href="craftdocs://open?spaceId=28cd93e6-2faa-c967-1053-8a766a45d839&amp;blockId=c3e544ba-2939-2292-45ce-327664a06d9a">Abrir coleção no Craft</a></aside><section class="editor-detail">'+editorForm(creating?null:current())+'</section></div>';
+
+function mediaAuditMarkup(){
+ const list=mediaAudit?.results||[],bad=list.filter(x=>!x.ok),n=records.filter(r=>r.active&&r.image).length;
+ const label=mediaAudit?.busy?'Verificando imagens…':mediaAudit?list.length+' figuras verificadas · '+bad.length+' falhas':n+' figuras na aula';
+ return '<details class="editor-media-audit" '+(mediaAudit?'open':'')+'><summary><span><small>ACERVO VISUAL · INTEGRIDADE</small><strong>'+esc(label)+'</strong></span><span aria-hidden="true">▾</span></summary><div class="media-audit-body"><p>Este teste abre as imagens no navegador atual. Não altera os arquivos ou a coleção Craft.</p>'+(mediaAudit?.busy?'<p role="status">Carregando figuras…</p>':mediaAudit?'<div class="media-audit-list">'+list.map(x=>'<button type="button" class="media-audit-row '+(x.ok?'media-audit-ok':'media-audit-fail')+'" data-media-uid="'+esc(x.uid)+'"><span class="media-audit-mark">'+(x.ok?'✓':'!')+'</span><span><strong>'+esc(x.title)+'</strong><small>'+esc(x.uid)+' · S'+x.week+' · '+(x.ok?x.width+'×'+x.height:x.reason)+'</small></span><small>'+(x.ok?'Carregou':'Corrigir')+'</small></button>').join('')+'</div>':'<p>Selecione <strong>Verificar imagens</strong> para detectar arquivos indisponíveis.</p>')+'</div></details>';
+}
+function imageHealth(url){
+ return new Promise(resolve=>{
+  const img=new Image();let done=false;
+  const finish=(ok,reason='')=>{if(done)return;done=true;clearTimeout(t);img.onload=img.onerror=null;resolve({ok,width:ok?img.naturalWidth:0,height:ok?img.naturalHeight:0,reason});};
+  const t=setTimeout(()=>finish(false,'Tempo limite'),12000);
+  img.onload=()=>finish(img.naturalWidth>0&&img.naturalHeight>0,'Arquivo inválido');
+  img.onerror=()=>finish(false,'Arquivo inacessível');
+  img.src=imagePreviewUrl(url);
+ });
+}
+async function runMediaAudit(){
+ if(mediaAuditBusy)return;
+ if(dirty&&!confirm('Existem alterações não salvas. Deseja executar a verificação?'))return;
+ mediaAuditBusy=true;mediaAudit={busy:true,results:[]};render();
+ try{
+  const grouped=new Map();
+  for(const row of records.filter(r=>r.active&&r.image)){
+    const source=imagePreviewUrl(row.image);if(!grouped.has(source))grouped.set(source,[]);grouped.get(source).push(row);
+  }
+  const checked=await Promise.all([...grouped].map(async ([url,rows])=>({...await imageHealth(url),rows})));
+  const results=checked.flatMap(x=>x.rows.map(row=>({uid:row.uid,title:row.title,week:row.week,ok:x.ok,width:x.width,height:x.height,reason:x.reason})));
+  results.sort((a,b)=>Number(a.ok)-Number(b.ok)||a.week-b.week);
+  mediaAudit={busy:false,results};toast(results.some(x=>!x.ok)?'Imagens com problema identificadas.':'Todas as figuras publicadas carregaram neste navegador.');
+ }catch(e){mediaAudit={busy:false,results:[]};toast('Falha na verificação de figuras.');}
+ finally{mediaAuditBusy=false;render();}
+}
+function render(){const left=records.filter(r=>r.week===filter&&(kind==='all'||kind==='draft'&&!r.active||kind===r.type)&&(!query||((r.title+' '+r.uid+' '+r.body).toLocaleLowerCase('pt-BR')).includes(query.toLocaleLowerCase('pt-BR'))));root.innerHTML='<div class="editor-heading"><div><div class="eyebrow">CP֍P · Estúdio de aula</div><h1>Conteúdo vivo.</h1><p>Selecione um item para editar. Salvar publica no Craft; a aula recebe a alteração automaticamente. Retirar da aula mantém o conteúdo como rascunho.</p></div><div class="editor-heading-actions"><button class="secondary" id="people">Participantes</button><button class="secondary" id="reload">'+ 'Recarregar Craft</button><button class="secondary" id="checkMedia">Verificar imagens</button><button class="primary" id="create">Novo bloco</button></div></div>'+canonAuditMarkup()+mediaAuditMarkup()+'<div class="editor-structure '+(viewMode==='board'?'board-mode':'')+'"><aside class="editor-sidebar"><div class="editor-tabs">'+[24,25,26].map(w=>'<button data-filter="'+w+'" class="'+(w===filter?'active':'')+'">S'+w+'</button>').join('')+'</div><div class="editor-filters"><select id="kindFilter" aria-label="Filtrar conteúdo"><option value="all" '+(kind==='all'?'selected':'')+'>Todos os blocos</option><option value="slide" '+(kind==='slide'?'selected':'')+'>Slides</option><option value="questao" '+(kind==='questao'?'selected':'')+'>Questões</option><option value="cartao" '+(kind==='cartao'?'selected':'')+'>Cartões</option><option value="draft" '+(kind==='draft'?'selected':'')+'>Não publicados</option></select><input id="contentSearch" placeholder="Buscar conteúdo…" value="'+esc(query)+'"></div><div class="editor-view-switch"><button id="viewList" class="'+(viewMode==='list'?'active':'')+'">Lista</button><button id="viewBoard" class="'+(viewMode==='board'?'active':'')+'">Quadro</button></div><div class="editor-list">'+(viewMode==='board'?board(left):left.map(itemPreview).join(''))+'</div><a class="editor-craft-link" href="craftdocs://open?spaceId=28cd93e6-2faa-c967-1053-8a766a45d839&amp;blockId=c3e544ba-2939-2292-45ce-327664a06d9a">Abrir coleção no Craft</a></aside><section class="editor-detail">'+editorForm(creating?null:current())+'</section></div>';
 root.querySelectorAll('[data-canon-uid]').forEach(b=>b.addEventListener('click',()=>{
  const item=records.find(r=>r.uid===b.dataset.canonUid);
  if(!item)return;
  if(dirty&&!confirm('Há alterações ainda não salvas. Deseja sair da edição atual?'))return;
  creating=false;kind='questao';filter=item.week;selected=item.id;render();
+ document.querySelector('.editor-detail')?.scrollIntoView({behavior:'smooth',block:'start'});
+}));
+document.querySelector('#checkMedia').onclick=runMediaAudit;
+root.querySelectorAll('[data-media-uid]').forEach(b=>b.addEventListener('click',()=>{
+ const item=records.find(r=>r.uid===b.dataset.mediaUid);
+ if(!item)return;
+ if(dirty&&!confirm('Há alterações ainda não salvas. Deseja sair da edição atual?'))return;
+ creating=false;selected=item.id;filter=item.week;kind='all';render();
  document.querySelector('.editor-detail')?.scrollIntoView({behavior:'smooth',block:'start'});
 }));
 document.querySelector('#people').onclick=people;document.querySelector('#viewList').addEventListener('click',()=>{viewMode='list';render()});document.querySelector('#viewBoard').addEventListener('click',()=>{viewMode='board';render()});if(viewMode==='board')connectBoard();
