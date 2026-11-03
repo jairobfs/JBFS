@@ -3,7 +3,7 @@
 const root=document.querySelector('#classroomRoot'),notice=document.querySelector('#notice');
 const $=(s,c=document)=>c.querySelector(s);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rich=x=>String(x||'').split(/\n\s*\n/).map(p=>'<p>'+esc(p).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<span class="soft-break"></span>')+'</p>').join('');
+const rich=x=>window.CPOPContent?.render(x)||'<p>'+esc(x)+'</p>';
 const get=(k,v)=>{try{return JSON.parse(localStorage.getItem(k))??v}catch{return v}};
 const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const icon=(n)=>'<svg viewBox="0 0 24 24" aria-hidden="true" width="19" height="19">'+({arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',back:'<path d="m14 18-6-6 6-6"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>',check:'<path d="m5 12 4 4L19 6"/>',play:'<path d="m8 5 12 7-12 7V5Z"/>',note:'<path d="M4 20h16M6 15.5l9.8-9.8 2.5 2.5-9.8 9.8-4 1 1-4Z"/>',bookmark:'<path d="M6 4h12v17l-6-4-6 4V4Z"/>',expand:'<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3"/>'})[n]+'</svg>';
