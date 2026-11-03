@@ -62,9 +62,18 @@ async function loadStudent(){
  const info=await fetchJSON(url);
  bank=info;
  const local=stored('cpop.mini.draft.'+profile.studentId,null);
- if(local?.dirty&&Array.isArray(local.answers)){answers=local.answers;dirty=true;statusText='Rascunho recuperado deste aparelho · envio pendente';}
- else if(info.progress){answers=info.progress.answers||[];finalized=info.progress.final;statusText='Respostas recuperadas do Craft';}
- else{answers=local?.answers||[];statusText='Rascunho local · ainda não enviado';}
+ finalized=info.progress?.final===true;
+ if(finalized){
+  answers=info.progress.answers||[];dirty=false;
+  write('cpop.mini.draft.'+profile.studentId,{answers,dirty:false,updated:Date.now()});
+  statusText='Entrega finalizada · confirmada no Craft';
+ }else if(local?.dirty&&Array.isArray(local.answers)){
+  answers=local.answers;dirty=true;statusText='Rascunho recuperado deste aparelho · envio pendente';
+ }else if(info.progress){
+  answers=info.progress.answers||[];dirty=false;statusText='Respostas recuperadas do Craft';
+ }else{
+  answers=local?.answers||[];dirty=false;statusText='Rascunho local · ainda não enviado';
+ }
  for(const q of bank.questions)byId(q.id);
  position=Math.min(position,bank.questions.length-1);
  renderStudent();
@@ -115,16 +124,23 @@ function enqueue(final){
  saveQueue=saveQueue.catch(()=>null).then(async()=>{
   try{
    const result=await req('POST',payload);
-   const cache=stored('cpop.mini.draft.'+profile.studentId,{});
-   if(JSON.stringify(cache.answers)===JSON.stringify(payload.answers)){write('cpop.mini.draft.'+profile.studentId,{answers:payload.answers,dirty:false,updated:Date.now()});dirty=false;}
+   const cache=stored('cpop.mini.draft.'+payload.studentId,{});
+   if(JSON.stringify(cache.answers)===JSON.stringify(payload.answers)){
+    write('cpop.mini.draft.'+payload.studentId,{answers:payload.answers,dirty:false,updated:Date.now()});
+    if(profile?.studentId===payload.studentId)dirty=false;
+   }
    statusText='Sincronizado no Craft · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-   if(final){finalized=true;bank.progress={...bank.progress,final:true,correct:result.correct,answers:payload.answers};toast('Entrega confirmada no Craft.');renderStudent();}
-   else{const s=$('#syncStatus');if(s)s.textContent=statusText;}
+   if(final&&profile?.studentId===payload.studentId){
+    finalized=true;bank.progress={...bank.progress,final:true,correct:result.correct,answers:payload.answers};
+    toast('Entrega confirmada no Craft.');renderStudent();
+   }else if(profile?.studentId===payload.studentId){
+    const s=$('#syncStatus');if(s)s.textContent=statusText;
+   }
    return result;
   }catch(err){
    statusText='Não sincronizado · seu rascunho permanece neste aparelho';
    const s=$('#syncStatus');if(s)s.textContent=statusText;
-   if(final)toast(err.message);throw err;
+   if(final&&profile?.studentId===payload.studentId)toast(err.message);throw err;
   }
  });
  return saveQueue;
@@ -133,7 +149,30 @@ async function finish(){
  const miss=bank.questions.findIndex(q=>{const a=byId(q.id);return !a.choice&&a.comment.trim().length<8});
  if(miss>=0){position=miss;renderStudent();toast('Responda esta questão por alternativa ou por comentário.');return;}
  const btn=$('#finish');if(btn)btn.disabled=true;
- try{await enqueue(true)}catch{if(btn)btn.disabled=false;}
+ try{await enqueue(true)}
+ catch{
+  try{
+   const recovered=await fetchJSON(API+'&mode=student&studentId='+encodeURIComponent(profile.studentId)+'&code='+encodeURIComponent(profile.code));
+   if(recovered.progress?.final){
+    bank.progress=recovered.progress;answers=recovered.progress.answers||answers;finalized=true;dirty=false;
+    write('cpop.mini.draft.'+profile.studentId,{answers,dirty:false,updated:Date.now()});
+    statusText='Entrega finalizada · confirmada após reconexão ao Craft';
+    renderStudent();toast('A entrega já havia sido registrada no Craft.');return;
+   }
+  }catch{}
+  if(btn)btn.disabled=false;
+ }
+}
+async function refreshFeedback(){
+ if(MODE!=='aluno'||!profile||!finalized||document.hidden||!bank)return;
+ try{
+  const latest=await fetchJSON(API+'&mode=student&studentId='+encodeURIComponent(profile.studentId)+'&code='+encodeURIComponent(profile.code));
+  const before=JSON.stringify(bank.progress?.feedback||{});
+  if(latest.progress?.final&&JSON.stringify(latest.progress.feedback||{})!==before){
+   bank.progress=latest.progress;answers=latest.progress.answers||answers;
+   renderStudent();toast('Nova devolutiva do professor sincronizada.');
+  }
+ }catch{}
 }
 async function liveStudent(){
  if(MODE!=='aluno'||!profile||!bank||!follow||finalized||document.hidden)return;
@@ -219,6 +258,6 @@ function renderProjection(j){
 }
 if(MODE==='professor'){loadTeacher();}
 else if(MODE==='projecao'){projectionLoad();setInterval(projectionLoad,5000);}
-else{profileForm();setInterval(liveStudent,8000);}
+else{profileForm();setInterval(liveStudent,8000);setInterval(refreshFeedback,15000);}
 if(MODE==='professor')setInterval(teacherPoll,8000);
 })();
