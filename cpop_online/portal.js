@@ -51,7 +51,19 @@
     });
   }
   window.addEventListener('message', event => {
-    if (event.origin !== location.origin || event.data?.type !== 'cpop:portal-navigate') return;
+    if (event.origin !== location.origin) return;
+    if (studentNav && event.data?.type === 'cpop:embed-height') {
+      const frame = [...document.querySelectorAll('.student-portal-frame')].find(f => f.contentWindow === event.source);
+      const height = Number(event.data.height);
+      if (!frame || !Number.isFinite(height) || height < 180 || height > 18000) return;
+      const next = Math.ceil(height + 2);
+      if (Math.abs(frame.getBoundingClientRect().height - next) > 6) {
+        frame.style.height = next + 'px';
+        frame.classList.add('is-autosized');
+      }
+      return;
+    }
+    if (event.data?.type !== 'cpop:portal-navigate') return;
     const path = new URL(event.data.href, location.origin);
     if (studentNav) {
       const v = {'/aula.html':'aula','/estudar.html':'estudo','/jogos.html':'jogos','/minisimulado.html':'mini','/':'aula'}[path.pathname];
