@@ -54,3 +54,6 @@ button.primary,.btn.primary{background:var(--blue);border-color:var(--blue);colo
  body:has(textarea:focus) #toast.show{bottom:15px}
 }
 @media print{.student-mobile-bar,.teacher-filters{display:none!important}}
+
+/* O painel discente embutido deve manter a área útil acima da navegação fixa. */
+@media(max-width:740px){html.cpop-embedded main#app:has(.student-mobile-bar){padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))!important}}
