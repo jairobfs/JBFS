@@ -43,3 +43,35 @@ test('public Craft reads coalesce, reuse snapshots and survive a temporary 429',
   delete require.cache[lessonPath];
  }
 });
+
+test('a Craft edit invalidates a cached read even when an older request is pending',async()=>{
+ const craftPath=require.resolve('../api/_craft');
+ const lessonPath=require.resolve('../api/_lesson');
+ const original=require(craftPath).request;
+ const previous=process.env.CRAFT_CONTENT_COLLECTION_ID;
+ process.env.CRAFT_CONTENT_COLLECTION_ID='00000000-0000-0000-0000-000000000001';
+ let resolveOld,reads=0;
+ const props=title=>({uid:'s24-slide-test',semana:24,ordem:1,tipo:'slide',titulo:title,corpo:'Conteúdo',ativo:true,pontos:0});
+ require(craftPath).request=async(_path,method='GET')=>{
+  if(method==='POST')return {saved:true};
+  reads++;
+  if(reads===1)return new Promise(resolve=>{resolveOld=resolve});
+  return {items:[{id:'record',properties:props('Novo conteúdo')}]};
+ };
+ delete require.cache[lessonPath];
+ try{
+  const {loadPublicContent,createItem}=require('../api/_lesson');
+  const oldRead=loadPublicContent();
+  await createItem({bloco:'Teste',properties:props('Novo conteúdo')});
+  resolveOld({items:[{id:'record',properties:props('Conteúdo anterior')}]});
+  assert.equal((await oldRead)[0].title,'Conteúdo anterior');
+  const fresh=await loadPublicContent();
+  assert.equal(fresh[0].title,'Novo conteúdo');
+  assert.equal(reads,2);
+ }finally{
+  require(craftPath).request=original;
+  if(previous===undefined)delete process.env.CRAFT_CONTENT_COLLECTION_ID;
+  else process.env.CRAFT_CONTENT_COLLECTION_ID=previous;
+  delete require.cache[lessonPath];
+ }
+});

@@ -1,0 +1,42 @@
+name: CPOP · Cloudflare · validação
+on:
+  push:
+    branches: ['feat/cpop-cloudflare-workers']
+    paths:
+      - 'cpop_online/**'
+      - '.github/workflows/cpop-cloudflare.yml'
+  pull_request:
+    paths:
+      - 'cpop_online/**'
+      - '.github/workflows/cpop-cloudflare.yml'
+permissions:
+  contents: read
+jobs:
+  workers-preview:
+    name: Testes + empacotamento Workers (sem publicação)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: cpop_online
+    steps:
+      - name: Obter código
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Instalar ferramentas de build
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Preparar arquivos públicos
+        run: npm run build:cloudflare
+      - name: Regressão Cloudflare, Craft, mini-simulado e cadernos
+        run: node --test tests/app.test.js tests/canon.test.js tests/cloudflare.test.js tests/content-format.test.js tests/editor-authoring.test.js tests/identity.test.js tests/media-routing.test.js tests/minisimulado.test.js tests/notebook.test.js tests/public-cache.test.js
+      - name: Verificar suíte completa, inclusive edição e cache do Craft
+        run: npm test
+      - name: Verificar bundle Cloudflare sem credenciais
+        run: npx wrangler deploy --dry-run
+      - name: Executar Worker real localmente sem segredos Craft
+        run: node scripts/smoke-cloudflare.js
