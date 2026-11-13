@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="940" viewBox="0 0 1500 940" role="img" aria-labelledby="ttl desc">
+<title id="ttl">Bloqueio atrioventricular de segundo grau, Mobitz I, fenômeno de Wenckebach</title>
+<desc id="desc">Traçado vetorial esquemático: cinco ondas P igualmente espaçadas, PR crescente de 180, 280 e 340 milissegundos, quarta P não conduzida e reinício do PR em 180 milissegundos no quinto ciclo.</desc>
+<defs>
+ <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#112A44"/><stop offset=".52" stop-color="#0C2035"/><stop offset="1" stop-color="#0A182C"/></linearGradient>
+ <linearGradient id="strokeGlow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#A5FFFF"/><stop offset="1" stop-color="#38CDD9"/></linearGradient>
+ <linearGradient id="header" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#152E49" stop-opacity=".95"/><stop offset="1" stop-color="#152E49" stop-opacity=".45"/></linearGradient>
+ <pattern id="minor" width="10.4" height="10.4" patternUnits="userSpaceOnUse"><path d="M10.4 0H0V10.4" fill="none" stroke="#60A9BB" stroke-width=".6" opacity=".22"/></pattern>
+ <pattern id="major" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#78ADBF" stroke-width="1.1" opacity=".34"/></pattern>
+ <filter id="shadow" x="-15%" y="-20%" width="130%" height="145%"><feGaussianBlur in="SourceAlpha" stdDeviation="13" result="blur"/><feOffset dy="12"/><feComponentTransfer><feFuncA type="linear" slope=".28"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="neon" x="-12%" y="-80%" width="124%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>
+ <clipPath id="chartClip"><rect x="110" y="316" width="1290" height="242" rx="12"/></clipPath>
+</defs>
+<!-- Fora do painel principal não há preenchimento: alfa realmente transparente. -->
+<rect x="34" y="28" width="1432" height="872" rx="47" fill="url(#navy)" stroke="#4A8BA3" stroke-opacity=".45" stroke-width="2" filter="url(#shadow)"/>
+<rect x="35" y="29" width="1430" height="195" rx="46" fill="url(#header)"/>
+<path d="M36 188H1464" stroke="#88CCDE" stroke-opacity=".13"/>
+<rect x="76" y="73" width="7" height="108" rx="3.5" fill="#55DFE4"/>
+<text x="109" y="95" font-family="DejaVu Sans,Arial,sans-serif" font-size="21" font-weight="600" letter-spacing="2.1" fill="#82B8C7">HP7  /  ELETROCARDIOGRAMA</text>
+<text x="108" y="153" font-family="DejaVu Sans,Arial,sans-serif" font-size="44" font-weight="700" fill="#EDF9FC">BAV de 2º grau · Mobitz I</text>
+<text x="108" y="191" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" fill="#5DE4EC">Fenômeno de Wenckebach</text>
+<rect x="1118" y="88" width="276" height="54" rx="27" fill="#143D50" stroke="#58DAE8" stroke-opacity=".49"/>
+<text x="1256" y="123" font-family="DejaVu Sans,Arial,sans-serif" font-size="19" font-weight="600" text-anchor="middle" fill="#A2FAFD">SEQUÊNCIA 4:3</text>
+<!-- Banda explicativa do intervalo PP: igual espaçamento das ondas P. -->
+<text x="113" y="266" fill="#A2B8C9" font-family="DejaVu Sans,Arial,sans-serif" font-size="21" letter-spacing=".6">RITMO ATRIAL REGULAR</text>
+<path d="M175 292H1215" stroke="#5DE4EC" stroke-width="2" stroke-opacity=".6"/>
+
+<circle cx="175" cy="292" r="5.2" fill="#5DE4EC"/><path d="M175 299V324" stroke="#5DE4EC" stroke-opacity=".40" stroke-dasharray="4 7"/>
+<circle cx="435" cy="292" r="5.2" fill="#5DE4EC"/><path d="M435 299V324" stroke="#5DE4EC" stroke-opacity=".40" stroke-dasharray="4 7"/>
+<circle cx="695" cy="292" r="5.2" fill="#5DE4EC"/><path d="M695 299V324" stroke="#5DE4EC" stroke-opacity=".40" stroke-dasharray="4 7"/>
+<circle cx="955" cy="292" r="5.2" fill="#5DE4EC"/><path d="M955 299V324" stroke="#5DE4EC" stroke-opacity=".40" stroke-dasharray="4 7"/>
+<circle cx="1215" cy="292" r="5.2" fill="#5DE4EC"/><path d="M1215 299V324" stroke="#5DE4EC" stroke-opacity=".40" stroke-dasharray="4 7"/>
+<text x="305" y="282" font-family="DejaVu Sans,Arial,sans-serif" text-anchor="middle" font-size="17" fill="#8DD3DE">P–P constante</text>
+<text x="565" y="282" font-family="DejaVu Sans,Arial,sans-serif" text-anchor="middle" font-size="17" fill="#8DD3DE">P–P constante</text>
+<text x="825" y="282" font-family="DejaVu Sans,Arial,sans-serif" text-anchor="middle" font-size="17" fill="#8DD3DE">P–P constante</text>
+<text x="1085" y="282" font-family="DejaVu Sans,Arial,sans-serif" text-anchor="middle" font-size="17" fill="#8DD3DE">P–P constante</text>
+<rect x="108" y="321" width="1294" height="239" rx="16" fill="#081828" stroke="#41788D" stroke-opacity=".45"/>
+<g clip-path="url(#chartClip)"><rect x="110" y="322" width="1290" height="237" fill="url(#minor)"/>
+<rect x="110" y="322" width="1290" height="237" fill="url(#major)"/></g>
+<!-- Reforço de base do traçado para percepção visual em claro e escuro. -->
+
+<rect x="938" y="354" width="61" height="151" rx="25" fill="#FF857B" opacity=".085"/>
+<path d="M1002 360V524" stroke="#FF857B" stroke-width="1.8" stroke-dasharray="5 9" opacity=".55"/>
+<path d="M 114 418 L 175 418 C 181 416 184 401 192 399 C 201 400 205 416 211 418 L 222 418 L 227 430 L 233 317 L 240 446 L 245 418 L 265 418 C 274 415 280 386 296 388 C 312 389 320 416 330 418 L 435 418 C 441 416 444 401 452 399 C 461 400 465 416 471 418 L 508 418 L 513 430 L 519 317 L 526 446 L 531 418 L 551 418 C 560 415 566 386 582 388 C 598 389 606 416 616 418 L 695 418 C 701 416 704 401 712 399 C 721 400 725 416 731 418 L 783 418 L 788 430 L 794 317 L 801 446 L 806 418 L 826 418 C 835 415 841 386 857 388 C 873 389 881 416 891 418 L 955 418 C 961 416 964 401 972 399 C 981 400 985 416 991 418 L 1215 418 C 1221 416 1224 401 1232 399 C 1241 400 1245 416 1251 418 L 1262 418 L 1267 430 L 1273 317 L 1280 446 L 1285 418 L 1305 418 C 1314 415 1320 386 1336 388 C 1352 389 1360 416 1370 418 L 1395 418" stroke="#5DE4EC" stroke-width="13" opacity=".2" fill="none" stroke-linejoin="round" stroke-linecap="round" filter="url(#neon)"/>
+<path d="M 114 418 L 175 418 C 181 416 184 401 192 399 C 201 400 205 416 211 418 L 222 418 L 227 430 L 233 317 L 240 446 L 245 418 L 265 418 C 274 415 280 386 296 388 C 312 389 320 416 330 418 L 435 418 C 441 416 444 401 452 399 C 461 400 465 416 471 418 L 508 418 L 513 430 L 519 317 L 526 446 L 531 418 L 551 418 C 560 415 566 386 582 388 C 598 389 606 416 616 418 L 695 418 C 701 416 704 401 712 399 C 721 400 725 416 731 418 L 783 418 L 788 430 L 794 317 L 801 446 L 806 418 L 826 418 C 835 415 841 386 857 388 C 873 389 881 416 891 418 L 955 418 C 961 416 964 401 972 399 C 981 400 985 416 991 418 L 1215 418 C 1221 416 1224 401 1232 399 C 1241 400 1245 416 1251 418 L 1262 418 L 1267 430 L 1273 317 L 1280 446 L 1285 418 L 1305 418 C 1314 415 1320 386 1336 388 C 1352 389 1360 416 1370 418 L 1395 418" stroke="url(#strokeGlow)" stroke-width="5.2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+
+<text x="190" y="374" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="600" fill="#5DE4EC" text-anchor="middle">P</text>
+<text x="450" y="374" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="600" fill="#5DE4EC" text-anchor="middle">P</text>
+<text x="710" y="374" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="600" fill="#5DE4EC" text-anchor="middle">P</text>
+<text x="970" y="374" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="600" fill="#FF857B" text-anchor="middle">P</text>
+<text x="1230" y="374" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" font-weight="600" fill="#5DE4EC" text-anchor="middle">P</text>
+<circle cx="1011" cy="389" r="20" fill="#653C46" stroke="#FF857B" stroke-width="2"/>
+<path d="M1003 381L1019 397M1019 381L1003 397" stroke="#FF857B" stroke-width="3" stroke-linecap="round"/>
+<text x="1015" y="533" fill="#FF857B" font-family="DejaVu Sans,Arial,sans-serif" font-size="16" font-weight="600" text-anchor="middle">SEM QRS</text>
+<text x="113" y="606" fill="#91B5C9" font-family="DejaVu Sans,Arial,sans-serif" font-size="20">INTERVALOS PR</text>
+<path d="M175 631V647M222 631V647M175 639H222" fill="none" stroke="#8DF4F5" stroke-width="2.1" stroke-linecap="round"/>
+<text x="198.5" y="677" text-anchor="middle" font-size="20" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" fill="#8DF4F5">180 ms</text>
+<path d="M435 631V647M508 631V647M435 639H508" fill="none" stroke="#8DF4F5" stroke-width="2.1" stroke-linecap="round"/>
+<text x="471.5" y="677" text-anchor="middle" font-size="20" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" fill="#8DF4F5">280 ms</text>
+<path d="M695 631V647M783 631V647M695 639H783" fill="none" stroke="#FF857B" stroke-width="2.1" stroke-linecap="round"/>
+<text x="739.0" y="677" text-anchor="middle" font-size="20" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" fill="#FF857B">340 ms</text>
+<path d="M1215 631V647M1262 631V647M1215 639H1262" fill="none" stroke="#8DF4F5" stroke-width="2.1" stroke-linecap="round"/>
+<text x="1238.5" y="677" text-anchor="middle" font-size="20" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" fill="#8DF4F5">180 ms</text>
+<text x="972" y="657" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="19" fill="#FF857B" font-weight="700">P não</text>
+<text x="972" y="682" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="19" fill="#FF857B" font-weight="700">conduzida</text>
+
+<path d="M224 707H812" stroke="#6DE6E9" opacity=".6" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M801 700L816 707L801 714" fill="none" stroke="#6DE6E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="510" y="738" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="18" fill="#9FCBD4">Prolongamento progressivo</text>
+<!-- Rodapé gráfico integrado ao painel: destaque da pausa e reinício. -->
+<path d="M90 774H1410" stroke="#5799AE" stroke-opacity=".25"/>
+<circle cx="118" cy="815" r="9" fill="#59DFE7"/>
+<text x="144" y="825" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" fill="#D1ECF1">PR aumenta</text>
+<circle cx="537" cy="815" r="9" fill="#FF857B"/>
+<text x="563" y="825" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" fill="#D1ECF1">P bloqueada</text>
+<circle cx="964" cy="815" r="9" fill="#59DFE7"/>
+<text x="990" y="825" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" fill="#D1ECF1">PR reinicia curto</text>
+<text x="1402" y="868" text-anchor="end" font-family="DejaVu Sans,Arial,sans-serif" font-size="15" letter-spacing="1.2" fill="#638B9C">JBFS  /  MED</text>
+</svg>
