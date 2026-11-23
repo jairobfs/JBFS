@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Estude Habilidades Médicas VII com 17 estações de OSCE, checklists, traçados de ECG e cronômetro.">
+  <meta name="theme-color" content="#f6f2e7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101a18" media="(prefers-color-scheme: dark)">
+  <title>OSCE · Prática HP7</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2323483e'/%3E%3Cpath d='M8 21h7l3-8 5 15 3-7h6' fill='none' stroke='%23e1f5e3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+  <header class="site-header">
+    <div class="frame masthead">
+      <a class="brand" href="#estacoes" aria-label="OSCE HP7, início">
+        <svg class="brand-icon" aria-hidden="true" viewBox="0 0 40 40"><rect width="40" height="40" rx="12"/><path d="M8 21h7l3-8 5 15 3-7h6"/></svg>
+        <span>OSCE <span class="brand-sub">HP7</span></span>
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="#estacoes" id="nav-stations">Estações</a>
+        <a href="#progresso" id="nav-progress">Meu progresso</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="frame" id="main" tabindex="-1">
+    <noscript><p>Ative o JavaScript para usar o simulador.</p></noscript>
+  </main>
+
+  <footer class="frame site-footer"><span>OSCE · Habilidades Médicas VII</span><span>Simulação acadêmica · JBFS</span></footer>
+
+  <dialog id="reset-dialog" aria-labelledby="reset-title">
+    <form method="dialog">
+      <h2 id="reset-title">Limpar progresso?</h2>
+      <p>Você vai remover as marcações das estações deste navegador.</p>
+      <div class="dialog-controls">
+        <button class="button button-muted" type="submit" value="cancel" autofocus>Cancelar</button>
+        <button class="button button-danger" type="submit" value="clear">Limpar marcações</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="timer-template">
+    <section class="timer-panel" aria-labelledby="timer-title">
+      <h2 id="timer-title"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="7"/><path d="M12 10v4l2 2M9 2h6m-3 0v4m5.5 2.5 1.5-1.5"/></svg> Tempo de estação</h2>
+      <div class="timer-face">
+        <span id="timer-clock" role="timer" aria-label="Tempo restante">05:00</span>
+        <span id="timer-status" role="status">Pronto</span>
+      </div>
+      <progress id="timer-progress" aria-label="Proporção de tempo restante" max="300" value="300"></progress>
+      <div class="timer-options">
+        <div class="timer-presets" role="group" aria-label="Duração do treino">
+          <button type="button" data-minutes="5" aria-pressed="true">5 min</button>
+          <button type="button" data-minutes="7" aria-pressed="false">7 min</button>
+          <button type="button" data-minutes="10" aria-pressed="false">10 min</button>
+        </div>
+        <div class="timer-actions">
+          <button class="button timer-start" id="timer-toggle" type="button">Iniciar</button>
+          <button class="button timer-reset" id="timer-reset" type="button" aria-label="Reiniciar cronômetro" title="Reiniciar cronômetro"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11a8 8 0 1 1 1.5 6M4 5v6h6"/></svg></button>
+        </div>
+      </div>
+    </section>
+  </template>
+</body>
+</html>
