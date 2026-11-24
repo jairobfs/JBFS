@@ -435,3 +435,24 @@ dialog p { margin-top: .65rem; }
 @media (max-width: 495px) {
   .mobile-check-jump { display: inline-flex; padding-inline: 0; }
 }
+
+.exam-filters { display: flex; flex-wrap: wrap; gap: .5rem; }
+.station-group-title { grid-column: 1 / -1; margin: .55rem 0 0; font: 500 1.35rem/1.2 var(--display); }
+.station-group-title span { margin-left: .3rem; color: var(--muted); font: 600 .8rem var(--sans); }
+.exam-case details { margin-top: 1rem; padding-top: .75rem; border-top: 1px solid var(--line); }
+.exam-case summary { cursor: pointer; color: var(--accent-ink); font-weight: 700; }
+.exam-case details p, .exam-table-note { margin-top: .65rem; }
+.table-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+.exam-table table { width: 100%; border-spacing: 0; text-align: left; font-size: .9rem; }
+.exam-table th, .exam-table td { padding: .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.exam-table thead th { background: var(--surface-subtle); color: var(--accent-ink); }
+.exam-table tbody th { font-weight: 650; }
+.exam-table tbody tr:last-child > * { border-bottom: 0; }
+.exam-table .references, .exam-case .references { margin-top: .65rem; }
+.source-check-count { margin: .1rem 0 .75rem; color: var(--muted); font-size: .8rem; }
+
+@media (max-width: 570px) {
+  .exam-filters { width: 100%; }
+  .exam-filters .select-wrap { flex: 1; min-width: 8rem; }
+  .exam-table table { min-width: 22rem; }
+}

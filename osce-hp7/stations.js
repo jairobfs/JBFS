@@ -13,6 +13,12 @@ export const kinds = {
 };
 
 export const references = {
+  hypertension: ['ESC · Hipertensão e emergências hipertensivas, 2024', 'https://doi.org/10.1093/eurheartj/ehae178'],
+  heartFailure: ['ESC · Insuficiência cardíaca aguda e crônica, 2021', 'https://doi.org/10.1002/ejhf.2333'],
+  nitroprusside: ['FDA · Nitroprussiato de sódio', 'https://www.accessdata.fda.gov/drugsatfda_docs/label/2018/020937s003lbl.pdf'],
+  catheterFemale: ['Manual Merck · Cateterismo uretral feminino', 'https://www.merckmanuals.com/professional/genitourinary-disorders/how-to-do-genitourinary-procedures/how-to-do-urethral-catheterization-in-a-female'],
+  ascitesProtein: ['AASLD · Interpretação de GASA e proteína ascítica', 'https://www.aasld.org/liver-fellow-network/core-series/why-series/why-timing-matters-paracentesis-admission-cirrhosis'],
+  light: ['BTS · Diretriz de doença pleural, 2023', 'https://doi.org/10.1136/thorax-2023-220304'],
   aha: ['AHA · Suporte avançado de vida em adultos, 2025', 'https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support'],
   ahaAlgorithms: ['AHA · Algoritmos de emergências cardiovasculares, 2025', 'https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/algorithms/'],
   ahaBls: ['AHA · Suporte básico de vida em adultos, 2025', 'https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support'],

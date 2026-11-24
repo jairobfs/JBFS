@@ -2,6 +2,7 @@ import { stationArt } from './visuals.js';
 import { figuresFor, renderAtlasFigure, renderStationAtlas } from './atlas.js';
 import { axes, illustrations, kinds, references, stations } from './stations.js';
 import { clinicalPanel, renderCause, renderECG } from './clinical.js';
+import { extraChecks, examCases, examGroups, examStations, examTables, teachers } from './roteiro.js';
 
 const drawings = {
   arrow: '<path d="M5 12h13m-5-5 5 5-5 5"/>',
@@ -22,15 +23,23 @@ const resetDialog = document.querySelector('#reset-dialog');
 const atlasDialog = document.querySelector('#atlas-dialog');
 const prefix = 'osce-hp7:v1:';
 const timerKey = `${prefix}timer`;
-const filters = { query: '', kind: 'all', axis: 'all' };
+const defaultFilters = { query: '', kind: 'all', axis: 'all', group: 'all', teacher: 'all' };
+const filters = { ...defaultFilters };
 const minutesAllowed = [5, 7, 10];
 let timer = loadTimer();
 let selectedStation = null;
 
 const catalog = stations.map(station => {
-  const items = station.checks.flatMap(([, checks]) => checks);
-  const searchable = [station.title, station.summary, station.keywords, axes[station.axis].label, kinds[station.kind], ...items, ...station.notes.flat()].join(' ');
-  return { ...station, items, searchable: normalize(searchable) };
+  const [group, teacher, sourceCount] = examStations[station.id];
+  const extra = extraChecks[station.id];
+  const checks = extra ? [...station.checks, ['Itens complementares', extra]] : station.checks;
+  const items = checks.flatMap(([, items]) => items);
+  const studyCase = examCases[station.id];
+  const table = examTables[station.id];
+  const searchable = [station.title, station.summary, station.keywords, axes[station.axis].label, kinds[station.kind],
+    examGroups[group], teachers[teacher], ...items, ...station.notes.flat(), studyCase?.title, studyCase?.prompt,
+    table?.title, ...(table?.rows.flat() ?? [])].join(' ');
+  return { ...station, group, teacher, sourceCount, checks, items, searchable: normalize(searchable) };
 });
 const totalItems = catalog.reduce((total, station) => total + station.items.length, 0);
 const knownKeys = catalog.flatMap(station => station.items.map((_, index) => itemKey(station.id, index)));
@@ -90,7 +99,7 @@ function stationCard(station) {
   const total = station.items.length;
   return `<a class="station-card ${station.axis}" href="#${station.id}">
     <div class="atlas-thumb">${stationArt(station.id, true)}</div>
-    <div class="card-head"><span class="station-symbol">${icon(axes[station.axis].icon)}</span><span>${axes[station.axis].label}</span></div>
+    <div class="card-head"><span class="station-symbol">${icon(axes[station.axis].icon)}</span><span>${axes[station.axis].label}${station.teacher ? ` · Prof. ${teachers[station.teacher]}` : ''}</span></div>
     <h3>${station.title}</h3>
     <p>${station.summary}</p>
     <div class="card-foot"><span class="card-score${count === total ? ' complete' : ''}">${count === total ? 'Concluída' : `${count}/${total} itens`}</span><span class="card-arrow">${icon('arrow')}</span></div>
@@ -104,11 +113,16 @@ function updateList() {
   const terms = normalize(filters.query).trim().split(/\s+/u).filter(Boolean);
   const visible = catalog.filter(station => (filters.kind === 'all' || station.kind === filters.kind)
     && (filters.axis === 'all' || station.axis === filters.axis)
+    && (filters.group === 'all' || station.group === filters.group)
+    && (filters.teacher === 'all' || station.teacher === filters.teacher)
     && terms.every(term => station.searchable.includes(term)));
 
   document.querySelector('#result-count').textContent = visible.length === 1 ? '1 estação' : `${visible.length} estações`;
-  grid.innerHTML = visible.length ? visible.map(stationCard).join('') : '<p class="empty">Nenhuma estação corresponde à busca. <button class="text-button" data-action="clear-filters" type="button">Limpar filtros</button></p>';
-  document.querySelector('#axis-filter').value = filters.axis;
+  grid.innerHTML = visible.length ? Object.entries(examGroups).map(([group, label]) => {
+    const matching = visible.filter(station => station.group === group);
+    return matching.length ? `<h3 class="station-group-title">${label} <span>${matching.length}</span></h3>${matching.map(stationCard).join('')}` : '';
+  }).join('') : '<p class="empty">Nenhuma estação corresponde à busca. <button class="text-button" data-action="clear-filters" type="button">Limpar filtros</button></p>';
+  main.querySelectorAll('select[data-filter]').forEach(select => { select.value = filters[select.dataset.filter]; });
   main.querySelectorAll('[data-kind]').forEach(chip => chip.setAttribute('aria-pressed', String(chip.dataset.kind === filters.kind)));
 }
 
@@ -136,7 +150,11 @@ function landing() {
       <div class="filters">
         <div class="filter-fields">
           <label class="search-box">${icon('search')}<span class="sr-only">Buscar estações</span><input id="station-search" type="search" placeholder="Buscar procedimento, ritmo ou fármaco" autocomplete="off"></label>
-          <label class="select-wrap"><span class="sr-only">Eixo clínico</span><select id="axis-filter"><option value="all">Todos os eixos</option>${Object.entries(axes).map(([key, axis]) => `<option value="${key}">${axis.label}</option>`).join('')}</select></label>
+          <label class="select-wrap"><span class="sr-only">Eixo clínico</span><select id="axis-filter" data-filter="axis"><option value="all">Todos os eixos</option>${Object.entries(axes).map(([key, axis]) => `<option value="${key}">${axis.label}</option>`).join('')}</select></label>
+        </div>
+        <div class="exam-filters">
+          <label class="select-wrap"><span class="sr-only">Grupo da avaliação</span><select id="group-filter" data-filter="group"><option value="all">Todos os grupos</option>${Object.entries(examGroups).map(([key, label]) => `<option value="${key}">${label}</option>`).join('')}</select></label>
+          <label class="select-wrap"><span class="sr-only">Docente</span><select id="teacher-filter" data-filter="teacher"><option value="all">Todos os docentes</option>${Object.entries(teachers).map(([key, name]) => `<option value="${key}">Prof. ${name}</option>`).join('')}</select></label>
         </div>
         <div class="chips" role="group" aria-label="Tipo de estação">
           <button class="chip" data-kind="all" type="button" aria-pressed="true">Todas</button>
@@ -147,6 +165,33 @@ function landing() {
       </div>
       <div class="station-grid" id="station-grid"></div>
     </section>`;
+}
+
+function referenceList(keys) {
+  return `<ul class="references">${keys.map(key => {
+    const [name, url] = references[key];
+    return `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${name} ${icon('link')}</a></li>`;
+  }).join('')}</ul>`;
+}
+
+function renderExamCase(studyCase) {
+  if (!studyCase) return '';
+  return `<section class="detail-card exam-case" aria-labelledby="exam-case-title">
+    <h2 id="exam-case-title">${studyCase.title}</h2><p>${studyCase.prompt}</p>
+    <details><summary>Ver resposta comentada</summary><p>${studyCase.answer}</p>${referenceList(studyCase.refs)}</details>
+  </section>`;
+}
+
+function renderExamTable(data) {
+  if (!data) return '';
+  return `<section class="detail-card exam-table" aria-labelledby="exam-table-title">
+    <h2 id="exam-table-title">${data.title}</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="exam-table-title">
+      <table aria-labelledby="exam-table-title"><thead><tr>${data.columns.map(column => `<th scope="col">${column}</th>`).join('')}</tr></thead>
+      <tbody>${data.rows.map(([heading, ...cells]) => `<tr><th scope="row">${heading}</th>${cells.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table>
+    </div>
+    ${data.note ? `<p class="exam-table-note">${data.note}</p>` : ''}${referenceList(data.refs)}
+  </section>`;
 }
 
 function stationPage(station) {
@@ -165,7 +210,7 @@ function stationPage(station) {
     <div class="station-layout">
       <header class="station-intro ${station.axis}">
         <span class="station-symbol">${icon(axes[station.axis].icon)}</span>
-        <div><p class="label">${axes[station.axis].label} · ${kinds[station.kind]}</p><h1 id="page-title" tabindex="-1">${station.title}</h1><p>${station.summary}</p><button class="text-button mobile-check-jump" data-action="show-checklist" type="button">Ir ao checklist ${icon('arrow')}</button></div>
+        <div><p class="label">${examGroups[station.group]}${station.teacher ? ` · Prof. ${teachers[station.teacher]}` : ' · Critérios de ano anterior'}</p><h1 id="page-title" tabindex="-1">${station.title}</h1><p>${station.summary}</p><button class="text-button mobile-check-jump" data-action="show-checklist" type="button">Ir ao checklist ${icon('arrow')}</button></div>
       </header>
       <aside class="station-side" aria-label="Controles da estação">
         <div data-timer></div>
@@ -182,6 +227,7 @@ function stationPage(station) {
           <p>${station.scenario}</p><p class="task"><strong>Tarefa</strong><span>${station.task}</span></p>
           <ol class="route" aria-label="Sequência da estação">${station.route.map(step => `<li>${step}</li>`).join('')}</ol>
         </section>
+        ${renderExamCase(examCases[station.id])}
         ${renderStationAtlas(station.id)}
         ${clinicalPanel(station.tool)}
         ${picture ? `<section class="detail-card station-infographic" aria-label="Infográfico da estação">
@@ -192,17 +238,15 @@ function stationPage(station) {
             <figcaption>${picture[1]} <a href="../assets/habilidades-medicas-vii/mnemonics/${picture[0]}" target="_blank" rel="noopener">Ampliar</a></figcaption>
           </figure>
         </section>` : ''}
+        ${renderExamTable(examTables[station.id])}
         <section class="detail-card" aria-labelledby="check-title" id="checklist">
           <div class="check-top"><div><h2 id="check-title">Checklist</h2><output class="mobile-check-count" id="mobile-check-count" aria-live="polite"></output></div><button class="text-button" id="toggle-checks" data-action="toggle-checks" type="button">Marcar todos</button></div>
-          <div class="checklist">${checklist}</div>
+          <p class="source-check-count">Roteiro de referência · ${station.sourceCount} critérios. Checklist de prática · ${station.items.length} itens.</p><div class="checklist">${checklist}</div>
         </section>
         <details class="detail-card notes">
           <summary>Revisão e referências</summary>
           ${station.notes.map(([title, content]) => `<h3>${title}</h3><p>${content}</p>`).join('')}
-          <ul class="references">${station.refs.map(key => {
-            const [name, url] = references[key];
-            return `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${name} ${icon('link')}</a></li>`;
-          }).join('')}</ul>
+          ${referenceList(station.refs)}
         </details>
         <nav class="station-neighbors" aria-label="Estações vizinhas">
           ${previous ? `<a href="#${previous.id}">${icon('left')}<span>${previous.title}</span></a>` : '<span></span>'}
@@ -277,7 +321,7 @@ function loadTimer() {
   } catch {
     // Use the default session timer if saved data cannot be read.
   }
-  return { preset: 5, remaining: 300000, deadline: null };
+  return { preset: 7, remaining: 420000, deadline: null };
 }
 
 function saveTimer() {
@@ -342,8 +386,8 @@ main.addEventListener('input', event => {
 
 main.addEventListener('change', event => {
   const target = event.target;
-  if (target.id === 'axis-filter') {
-    filters.axis = target.value;
+  if (target.matches('select[data-filter]')) {
+    filters[target.dataset.filter] = target.value;
     updateList();
   } else if (selectedStation && target.matches('[data-check]')) {
     mark(selectedStation.id, Number(target.dataset.check), target.checked);
@@ -370,7 +414,7 @@ main.addEventListener('click', event => {
     document.querySelector('#clinical-answer').innerHTML = render(Number(choice));
     main.querySelectorAll('[data-clinical]').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
   } else if (action === 'clear-filters') {
-    Object.assign(filters, { query: '', kind: 'all', axis: 'all' });
+    Object.assign(filters, defaultFilters);
     document.querySelector('#station-search').value = '';
     updateList();
     document.querySelector('#station-search').focus();
