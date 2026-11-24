@@ -456,3 +456,17 @@ dialog p { margin-top: .65rem; }
   .exam-filters .select-wrap { flex: 1; min-width: 8rem; }
   .exam-table table { min-width: 22rem; }
 }
+
+.anatomy-memory { grid-column: 1 / -1; background: var(--surface); border-color: var(--axis-ink); padding: 1rem; }
+.anatomy-memory figcaption { padding-bottom: .6rem; border-bottom: 1px solid var(--line); }
+.memory-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: .85rem; }
+.memory-drawing { align-self: start; background: var(--atlas-wash); }
+.memory-cue { color: var(--axis-ink); font-size: .85rem; font-weight: 730; }
+.memory-terms dl { display: grid; gap: .45rem; margin: .38rem 0 0; }
+.memory-terms dl div { border-inline-start: 2px solid var(--axis-ink); padding-inline-start: .65rem; }
+.memory-terms dt { font-size: .9rem; font-weight: 740; }
+.memory-terms dd { margin: 0; color: var(--muted); font-size: .87rem; line-height: 1.35; }
+.anatomy-memory .anatomy-takeaway { padding-top: .6rem; border-top: 1px solid var(--line); }
+@media (max-width: 650px) {
+  .memory-grid { grid-template-columns: minmax(0, 1fr); }
+}

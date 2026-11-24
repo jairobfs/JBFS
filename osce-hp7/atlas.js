@@ -1,8 +1,13 @@
 import { anatomy } from './atlas-anatomia.js';
 import { applied } from './atlas-clinica.js';
+import { addedPlates, memoryCards } from './atlas-memoria.js';
 import { references } from './stations.js';
 
 const extraSources = {
+  palmar: ['StatPearls · Arcos arteriais palmares', 'https://www.ncbi.nlm.nih.gov/books/NBK545377/'],
+  puma: ['PUMA · Consenso de capnografia na intubação', 'https://doi.org/10.1111/anae.15817'],
+  cauti: ['CDC · Prevenção de infecção associada à sonda urinária', 'https://www.cdc.gov/infection-control/hcp/cauti/summary-of-recommendations.html'],
+  pericardiumWindow: ['ESC · Janelas guiadas para pericardiocentese', 'https://www.escardio.org/communities/councils/cardiology-practice/scientific-documents-and-publications/ejournal/volume-15/Pericardiocentesis-in-cardiac-tamponade-indications-and-practical-aspects/'],
   radialAtlas: ['StatPearls · Anatomia da artéria radial', 'https://www.ncbi.nlm.nih.gov/books/NBK546626/'],
   openstax: ['OpenStax · Atividade elétrica cardíaca', 'https://openstax.org/books/anatomy-and-physiology-2e/pages/19-2-cardiac-muscle-and-electrical-activity'],
   femaleCath: ['Manual MSD · Cateterismo uretral feminino', 'https://www.msdmanuals.com/professional/genitourinary-disorders/how-to-do-genitourinary-procedures/how-to-do-urethral-catheterization-in-a-female'],
@@ -12,7 +17,8 @@ const extraSources = {
 };
 
 export function figuresFor(id) {
-  return [...(anatomy[id] ?? []), ...(applied[id] ?? [])];
+  const memory = memoryCards[id];
+  return [...(memory ? [memory] : []), ...(anatomy[id] ?? []), ...(addedPlates[id] ?? []), ...(applied[id] ?? [])];
 }
 
 function numberedMarkers(labels) {
@@ -38,14 +44,24 @@ function renderFlow(columns) {
     `<div class="anatomy-lane"><strong>${column.title}</strong><ol>${column.steps.map(step => `<li>${step}</li>`).join('')}</ol></div>`).join('')}</div>`;
 }
 
+function renderMemory(figure) {
+  return `<div class="memory-grid">
+    <svg class="anatomy-drawing memory-drawing" viewBox="24 17 372 215" aria-hidden="true">${figure.geometry}</svg>
+    <div class="memory-terms">
+      <p class="memory-cue">${figure.cue}</p>
+      <dl>${figure.prompts.map(([term, meaning]) => `<div><dt>${term}</dt><dd>${meaning}</dd></div>`).join('')}</dl>
+    </div>
+  </div>`;
+}
+
 export function renderAtlasFigure(figure, index = null) {
   const [name, url] = extraSources[figure.source] ?? references[figure.source];
-  return `<figure class="anatomy-figure${figure.columns ? ' anatomy-figure-flow' : ''}">
+  return `<figure class="anatomy-figure${figure.prompts ? ' anatomy-memory' : ''}${figure.columns ? ' anatomy-figure-flow' : ''}">
     <figcaption>
       <p class="anatomy-plane">${figure.plane}</p>
       <h3${index === null ? ' id="atlas-dialog-title"' : ''}>${figure.title}</h3>
     </figcaption>
-    ${figure.columns ? renderFlow(figure.columns) : renderDiagram(figure)}
+    ${figure.prompts ? renderMemory(figure) : figure.columns ? renderFlow(figure.columns) : renderDiagram(figure)}
     <p class="anatomy-takeaway">${figure.takeaway}</p>
     <div class="anatomy-credits">
       <a href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>
