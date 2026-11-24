@@ -294,3 +294,33 @@ dialog p { margin-top: .65rem; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* Illustrated covers and station plates share the same clinical color palette. */
+.atlas-art { display: block; width: 100%; height: 100%; }
+.atlas-outline, .atlas-highlight, .atlas-orbit, .atlas-guides { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.atlas-outline { stroke: var(--axis-ink); stroke-width: 2.6; }
+.atlas-highlight { stroke: var(--axis-ink); stroke-width: 4.1; }
+.atlas-orbit { fill: var(--surface); fill-opacity: .45; stroke: var(--axis-ink); stroke-opacity: .16; }
+.atlas-guides { stroke: var(--axis-ink); stroke-width: 1; opacity: .35; }
+.atlas-thumb, .atlas-stage { background: var(--axis-soft); position: relative; overflow: hidden; }
+.atlas-thumb { height: 98px; border-radius: 12px; grid-column: 1 / -1; }
+.station-card { grid-template-rows: auto auto auto 1fr auto auto; }
+.station-card .card-head .station-symbol { display: none; }
+.station-card .card-head { margin-top: .25rem; }
+.atlas-plate { margin: 0; display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1fr); align-items: stretch; border: 1px solid var(--border, var(--line)); background: var(--surface); border-radius: 18px; overflow: hidden; }
+.atlas-stage { min-height: 148px; display: grid; place-items: center; }
+.atlas-stage .atlas-art { max-width: 265px; padding: .4rem; }
+.atlas-plate figcaption { padding: 1.05rem; align-self: center; }
+.atlas-plate figcaption h2 { font: 500 clamp(1.2rem, 2.9vw, 1.65rem)/1.14 var(--display); }
+.atlas-plate figcaption p { margin-top: .45rem; line-height: 1.5; color: var(--muted); font-size: .91rem; }
+.station-infographic .station-figure { margin: 0; }
+.station-infographic .station-figure img { width: min(100%, 520px); }
+.station-infographic figcaption { margin: .6rem auto 0; max-width: 52ch; color: var(--muted); font-size: .85rem; text-align: center; }
+.station-infographic figcaption a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: .2em; white-space: nowrap; }
+@media (max-width: 495px) {
+  .atlas-thumb { height: 108px; }
+  .atlas-plate { grid-template-columns: minmax(0, 1fr); }
+  .atlas-stage { min-height: 130px; }
+  .atlas-stage .atlas-art { max-height: 135px; }
+  .atlas-plate figcaption { padding: .85rem; }
+}

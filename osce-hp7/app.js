@@ -1,3 +1,4 @@
+import { stationArt, stationPlate } from './visuals.js';
 import { axes, illustrations, kinds, references, stations } from './stations.js';
 import { clinicalPanel, renderCause, renderECG } from './clinical.js';
 
@@ -86,6 +87,7 @@ function stationCard(station) {
   const count = markCount(station);
   const total = station.items.length;
   return `<a class="station-card ${station.axis}" href="#${station.id}">
+    <div class="atlas-thumb">${stationArt(station.id, true)}</div>
     <div class="card-head"><span class="station-symbol">${icon(axes[station.axis].icon)}</span><span>${axes[station.axis].label}</span></div>
     <h3>${station.title}</h3>
     <p>${station.summary}</p>
@@ -172,13 +174,22 @@ function stationPage(station) {
           <button class="text-button" data-action="show-checklist" type="button">Ir ao checklist ${icon('arrow')}</button>
         </section>
       </aside>
-      <div class="station-main">
+      <div class="station-main ${station.axis}">
+        ${stationPlate(station.id)}
         <section class="detail-card scenario-card" aria-labelledby="scenario-title">
           <h2 id="scenario-title">Cenário</h2>
           <p>${station.scenario}</p><p class="task"><strong>Tarefa</strong><span>${station.task}</span></p>
           <ol class="route" aria-label="Sequência da estação">${station.route.map(step => `<li>${step}</li>`).join('')}</ol>
         </section>
         ${clinicalPanel(station.tool)}
+        ${picture ? `<section class="detail-card station-infographic" aria-label="Infográfico da estação">
+          <figure class="station-figure">
+            <a href="../assets/habilidades-medicas-vii/mnemonics/${picture[0]}" target="_blank" rel="noopener" aria-label="Ampliar infográfico">
+              <img src="../assets/habilidades-medicas-vii/mnemonics/${picture[0]}" alt="${picture[1]}" width="1664" height="2080" loading="lazy" decoding="async">
+            </a>
+            <figcaption>${picture[1]} <a href="../assets/habilidades-medicas-vii/mnemonics/${picture[0]}" target="_blank" rel="noopener">Ampliar</a></figcaption>
+          </figure>
+        </section>` : ''}
         <section class="detail-card" aria-labelledby="check-title" id="checklist">
           <div class="check-top"><div><h2 id="check-title">Checklist</h2><output class="mobile-check-count" id="mobile-check-count" aria-live="polite"></output></div><button class="text-button" id="toggle-checks" data-action="toggle-checks" type="button">Marcar todos</button></div>
           <div class="checklist">${checklist}</div>
@@ -186,7 +197,6 @@ function stationPage(station) {
         <details class="detail-card notes">
           <summary>Revisão e referências</summary>
           ${station.notes.map(([title, content]) => `<h3>${title}</h3><p>${content}</p>`).join('')}
-          ${picture ? `<figure class="station-figure"><img src="../assets/habilidades-medicas-vii/mnemonics/${picture[0]}" alt="${picture[1]}" width="1664" height="2080" loading="lazy" decoding="async"></figure>` : ''}
           <ul class="references">${station.refs.map(key => {
             const [name, url] = references[key];
             return `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${name} ${icon('link')}</a></li>`;
