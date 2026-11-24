@@ -1,4 +1,5 @@
-import { stationArt, stationPlate } from './visuals.js';
+import { stationArt } from './visuals.js';
+import { figuresFor, renderAtlasFigure, renderStationAtlas } from './atlas.js';
 import { axes, illustrations, kinds, references, stations } from './stations.js';
 import { clinicalPanel, renderCause, renderECG } from './clinical.js';
 
@@ -18,6 +19,7 @@ const icon = name => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">$
 const main = document.querySelector('#main');
 const timerTemplate = document.querySelector('#timer-template');
 const resetDialog = document.querySelector('#reset-dialog');
+const atlasDialog = document.querySelector('#atlas-dialog');
 const prefix = 'osce-hp7:v1:';
 const timerKey = `${prefix}timer`;
 const filters = { query: '', kind: 'all', axis: 'all' };
@@ -163,7 +165,7 @@ function stationPage(station) {
     <div class="station-layout">
       <header class="station-intro ${station.axis}">
         <span class="station-symbol">${icon(axes[station.axis].icon)}</span>
-        <div><p class="label">${axes[station.axis].label} · ${kinds[station.kind]}</p><h1 id="page-title" tabindex="-1">${station.title}</h1><p>${station.summary}</p></div>
+        <div><p class="label">${axes[station.axis].label} · ${kinds[station.kind]}</p><h1 id="page-title" tabindex="-1">${station.title}</h1><p>${station.summary}</p><button class="text-button mobile-check-jump" data-action="show-checklist" type="button">Ir ao checklist ${icon('arrow')}</button></div>
       </header>
       <aside class="station-side" aria-label="Controles da estação">
         <div data-timer></div>
@@ -175,12 +177,12 @@ function stationPage(station) {
         </section>
       </aside>
       <div class="station-main ${station.axis}">
-        ${stationPlate(station.id)}
         <section class="detail-card scenario-card" aria-labelledby="scenario-title">
           <h2 id="scenario-title">Cenário</h2>
           <p>${station.scenario}</p><p class="task"><strong>Tarefa</strong><span>${station.task}</span></p>
           <ol class="route" aria-label="Sequência da estação">${station.route.map(step => `<li>${step}</li>`).join('')}</ol>
         </section>
+        ${renderStationAtlas(station.id)}
         ${clinicalPanel(station.tool)}
         ${picture ? `<section class="detail-card station-infographic" aria-label="Infográfico da estação">
           <figure class="station-figure">
@@ -381,6 +383,11 @@ main.addEventListener('click', event => {
     showStationProgress();
   } else if (action === 'reset-progress') {
     resetDialog.showModal();
+  } else if (action === 'zoom-figure' && selectedStation) {
+    const figure = figuresFor(selectedStation.id)[Number(button.dataset.figure)];
+    if (!figure) return;
+    atlasDialog.querySelector('.atlas-dialog-content').innerHTML = renderAtlasFigure(figure);
+    atlasDialog.showModal();
   } else if (action === 'show-checklist') {
     const first = main.querySelector('[data-check]');
     first.focus({ preventScroll: true });

@@ -302,25 +302,136 @@ dialog p { margin-top: .65rem; }
 .atlas-highlight { stroke: var(--axis-ink); stroke-width: 4.1; }
 .atlas-orbit { fill: var(--surface); fill-opacity: .45; stroke: var(--axis-ink); stroke-opacity: .16; }
 .atlas-guides { stroke: var(--axis-ink); stroke-width: 1; opacity: .35; }
-.atlas-thumb, .atlas-stage { background: var(--axis-soft); position: relative; overflow: hidden; }
-.atlas-thumb { height: 98px; border-radius: 12px; grid-column: 1 / -1; }
+.atlas-thumb { background: var(--axis-soft); overflow: hidden; height: 98px; border-radius: 12px; grid-column: 1 / -1; }
 .station-card { grid-template-rows: auto auto auto 1fr auto auto; }
 .station-card .card-head .station-symbol { display: none; }
 .station-card .card-head { margin-top: .25rem; }
-.atlas-plate { margin: 0; display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1fr); align-items: stretch; border: 1px solid var(--border, var(--line)); background: var(--surface); border-radius: 18px; overflow: hidden; }
-.atlas-stage { min-height: 148px; display: grid; place-items: center; }
-.atlas-stage .atlas-art { max-width: 265px; padding: .4rem; }
-.atlas-plate figcaption { padding: 1.05rem; align-self: center; }
-.atlas-plate figcaption h2 { font: 500 clamp(1.2rem, 2.9vw, 1.65rem)/1.14 var(--display); }
-.atlas-plate figcaption p { margin-top: .45rem; line-height: 1.5; color: var(--muted); font-size: .91rem; }
 .station-infographic .station-figure { margin: 0; }
 .station-infographic .station-figure img { width: min(100%, 520px); }
 .station-infographic figcaption { margin: .6rem auto 0; max-width: 52ch; color: var(--muted); font-size: .85rem; text-align: center; }
 .station-infographic figcaption a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: .2em; white-space: nowrap; }
 @media (max-width: 495px) {
   .atlas-thumb { height: 108px; }
-  .atlas-plate { grid-template-columns: minmax(0, 1fr); }
-  .atlas-stage { min-height: 130px; }
-  .atlas-stage .atlas-art { max-height: 135px; }
-  .atlas-plate figcaption { padding: .85rem; }
+}
+
+.station-atlas, #atlas-dialog {
+  --atlas-paper: #fbf8f0;
+  --atlas-outline: #30484a;
+  --atlas-ink: #153b3c;
+  --atlas-rule: #a9b5af;
+  --atlas-wash: #ecf1ec;
+  --tissue-skin: #f5d7c4;
+  --tissue-soft: #e7b590;
+  --tissue-muscle: #d98a86;
+  --tissue-organ: #ddb0bc;
+  --tissue-bone: #f3e6bd;
+  --tissue-cartilage: #84b7ae;
+  --tissue-airway: #cde7e4;
+  --tissue-fluid: #9ccfe2;
+  --tissue-vein: #477eb6;
+  --tissue-artery: #a13e42;
+  --tissue-nerve: #936711;
+  --tissue-device: #546fbb;
+  --tissue-device-fill: #aabbe4;
+}
+#atlas-dialog { width: min(840px, calc(100% - 1.3rem)); max-height: calc(100dvh - 1.6rem); margin: auto; }
+.atlas-dialog-controls { display: flex; justify-content: flex-end; margin: 0 0 .35rem; }
+.atlas-dialog-content { display: grid; }
+#atlas-dialog .anatomy-figure { border: none; }
+#atlas-dialog .anatomy-drawing { max-height: 54dvh; }
+.station-atlas h2 { margin: .5rem 0 .7rem; font: 500 clamp(1.47rem, 4vw, 2.05rem)/1.13 var(--display); letter-spacing: -.045em; }
+.atlas-figure-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; align-items: start; }
+.anatomy-figure { margin: 0; min-width: 0; display: grid; gap: .6rem; padding: .8rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.anatomy-figure-flow { grid-column: 1 / -1; }
+.anatomy-figure figcaption h3 { margin-top: .24rem; font: 500 clamp(1.18rem, 2.2vw, 1.45rem)/1.12 var(--display); letter-spacing: -.02em; }
+.anatomy-plane { font-size: .74rem; color: var(--axis-ink, var(--accent-ink)); font-weight: 720; line-height: 1.35; }
+.anatomy-drawing { display: block; width: 100%; height: auto; background: var(--atlas-paper); border-radius: 10px; }
+.anatomy-border { fill: none; stroke: var(--atlas-rule); stroke-width: 1; stroke-dasharray: 3 4; opacity: .55; }
+.anatomy-drawing .g-outline,
+.anatomy-drawing .g-faint,
+.anatomy-drawing .g-dash,
+.anatomy-drawing .g-grid,
+.anatomy-drawing .g-measure,
+.anatomy-drawing .g-signal,
+.anatomy-drawing .g-artery,
+.anatomy-drawing .g-arteryMinor,
+.anatomy-drawing .g-tendon,
+.anatomy-drawing .g-risk,
+.anatomy-drawing .g-deviceLine,
+.anatomy-drawing .g-boneLine,
+.anatomy-drawing .g-muscleLine,
+.anatomy-drawing .g-tissueLine,
+.anatomy-drawing .g-pleura,
+.anatomy-drawing .g-nerve,
+.anatomy-drawing .g-usLine,
+.anatomy-drawing .g-vein { fill: none; stroke: var(--atlas-outline); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+.anatomy-drawing .g-faint, .anatomy-drawing .g-grid { stroke: var(--atlas-rule); stroke-width: 1; opacity: .74; }
+.anatomy-drawing .g-dash { stroke: var(--atlas-ink); stroke-dasharray: 5 5; stroke-width: 1.7; }
+.anatomy-drawing .g-measure { stroke: var(--tissue-device); stroke-width: 1.6; }
+.anatomy-drawing .g-signal { stroke: var(--atlas-ink); stroke-width: 3; }
+.anatomy-drawing .g-skin, .anatomy-drawing .g-tissue, .anatomy-drawing .g-muscle, .anatomy-drawing .g-organ, .anatomy-drawing .g-bone,
+.anatomy-drawing .g-cartilage, .anatomy-drawing .g-airway, .anatomy-drawing .g-fluid, .anatomy-drawing .g-tendonFill,
+.anatomy-drawing .g-marrow, .anatomy-drawing .g-vessel, .anatomy-drawing .g-device, .anatomy-drawing .g-focus {
+  stroke: var(--atlas-outline); stroke-width: 1.6; stroke-linejoin: round;
+}
+.anatomy-drawing .g-skin { fill: var(--tissue-skin); }
+.anatomy-drawing .g-tissue { fill: var(--tissue-soft); }
+.anatomy-drawing .g-organ { fill: var(--tissue-organ); }
+.anatomy-drawing .g-muscle { fill: var(--tissue-muscle); }
+.anatomy-drawing .g-bone { fill: var(--tissue-bone); }
+.anatomy-drawing .g-cartilage { fill: var(--tissue-cartilage); }
+.anatomy-drawing .g-airway { fill: var(--tissue-airway); }
+.anatomy-drawing .g-fluid { fill: var(--tissue-fluid); }
+.anatomy-drawing .g-device { fill: var(--tissue-device-fill); }
+.anatomy-drawing .g-vessel, .anatomy-drawing .g-blood, .anatomy-drawing .g-arteryFill { fill: var(--tissue-artery); }
+.anatomy-drawing .g-veinFill { fill: var(--tissue-vein); stroke: var(--atlas-outline); stroke-width: 1.3; }
+.anatomy-drawing .g-focus { fill: #eed18d; }
+.anatomy-drawing .g-marrow { fill: var(--tissue-organ); }
+.anatomy-drawing .g-nerveFill { fill: #e9b45c; stroke: var(--tissue-nerve); stroke-width: 1.2; }
+.anatomy-drawing .g-tendonFill, .anatomy-drawing .g-lightTissue, .anatomy-drawing .g-airBubble { fill: #fff4d9; stroke: var(--atlas-outline); stroke-width: 1.3; }
+.anatomy-drawing .g-airBubble { fill: #f9f5ee; }
+.anatomy-drawing .g-darkCavity { fill: #471f38; }
+.anatomy-drawing .g-panel { fill: var(--atlas-wash); stroke: var(--atlas-rule); }
+.anatomy-drawing .g-hazard { fill: #d95a6a33; stroke: #ad5564; stroke-width: 1.4; stroke-dasharray: 4 4; }
+.anatomy-drawing .g-artery, .anatomy-drawing .g-arteryMinor, .anatomy-drawing .g-risk { stroke: var(--tissue-artery); stroke-width: 4; }
+.anatomy-drawing .g-arteryMinor { stroke-width: 2.8; }
+.anatomy-drawing .g-vein { stroke: var(--tissue-vein); stroke-width: 4; }
+.anatomy-drawing .g-nerve { stroke: var(--tissue-nerve); stroke-width: 3; }
+.anatomy-drawing .g-deviceLine { stroke: var(--tissue-device); stroke-width: 4; }
+.anatomy-drawing .g-pleura { stroke: #457e86; stroke-width: 3; }
+.anatomy-drawing .g-tendon, .anatomy-drawing .g-boneLine { stroke: #ad7642; stroke-width: 3; }
+.anatomy-drawing .g-muscleLine, .anatomy-drawing .g-tissueLine { stroke: #95455e; stroke-width: 3; }
+.anatomy-drawing .g-usFrame { fill: #17292f; }
+.anatomy-drawing .g-usWall { fill: #718284; }
+.anatomy-drawing .g-usTissue { fill: #9ea9a5; }
+.anatomy-drawing .g-usFluid { fill: #0e1e26; }
+.anatomy-drawing .g-usLine { stroke: #d7ddd3; stroke-width: 4; }
+.anatomy-drawing .g-word { fill: var(--atlas-ink); text-anchor: middle; font: 700 14px system-ui, sans-serif; }
+.atlas-leaders { fill: var(--atlas-paper); stroke: var(--atlas-ink); stroke-width: 1.7; }
+.atlas-leaders path { fill: none; paint-order: stroke; filter: drop-shadow(0 0 1px #fff); }
+.atlas-markers circle, .atlas-key { fill: var(--atlas-ink); background: var(--atlas-ink); }
+.atlas-markers text { fill: #fff; text-anchor: middle; dominant-baseline: middle; font: 760 14px system-ui, sans-serif; }
+.anatomy-legend { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .38rem .5rem; list-style: none; }
+.anatomy-legend li { display: grid; grid-template-columns: 1.24rem minmax(0, 1fr); gap: .42rem; align-items: start; font-size: .78rem; line-height: 1.35; }
+.atlas-key { display: inline-grid; place-items: center; width: 1.24rem; height: 1.24rem; border-radius: 50%; color: #fff; font-size: .68rem; font-weight: 750; }
+.anatomy-takeaway { padding-top: .55rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .83rem; line-height: 1.46; }
+.anatomy-credits { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+.anatomy-credits a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: .15em; font-size: .74rem; }
+.atlas-zoom { min-width: 4.1rem; justify-content: center; font-size: .76rem; }
+.anatomy-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: .65rem; }
+.anatomy-lane { min-width: 0; border: 1px solid var(--line); background: var(--accent-soft); border-radius: 10px; padding: .6rem; }
+.anatomy-lane strong { font-size: .8rem; color: var(--accent-ink); }
+.anatomy-lane ol { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; row-gap: .75rem; }
+.anatomy-lane li { position: relative; background: var(--surface); padding: .45rem .55rem; border-radius: 6px; font-size: .81rem; line-height: 1.35; }
+.anatomy-lane li+li::before { content: ''; position: absolute; top: -.61rem; left: .85rem; width: .38rem; height: .38rem; border-bottom: 1.5px solid var(--accent); border-right: 1.5px solid var(--accent); transform: rotate(45deg); }
+@media (max-width: 650px) {
+  .atlas-figure-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 375px) {
+  .anatomy-legend { grid-template-columns: minmax(0, 1fr); }
+}
+
+.mobile-check-jump { display: none; }
+@media (max-width: 495px) {
+  .mobile-check-jump { display: inline-flex; padding-inline: 0; }
 }
